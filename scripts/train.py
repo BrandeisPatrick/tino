@@ -150,6 +150,9 @@ def main():
                 batch = [train_rows[i] for i in idx]
                 ids, dec, o, mask, lab = collate(batch, enc.pad_id)
                 (loss, correct), grads = loss_and_grad(model, ids, dec, o, mask, lab)
+                # Evaluate loss and grads together. Reading loss.item() first runs the forward pass alone and keeps every
+                # activation the pending backward needs alive, defeating gradient checkpointing (9.2 GB vs 3.9 GB peak).
+                mx.eval(loss, correct, grads)
                 grads_acc = grads if grads_acc is None else tree_map(mx.add, grads_acc, grads)
                 micro_in_step += 1; rows_in_step += len(batch)
                 win["loss"] += loss.item(); win["correct"] += correct.item(); win["rows"] += len(batch)
