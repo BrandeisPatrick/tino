@@ -897,6 +897,225 @@
      }
     }
    }
+  },
+  "transfer-v9/test": {
+   "questions": 30,
+   "labelled": 30,
+   "minutes": 0.22132933537165325,
+   "hub_commit": "e83dd014c87d7c0f9185a1a55610bb49edf7e4d7",
+   "path": "qwen3-4b-instruct-2507-smoke/transfer-v9/test.jsonl",
+   "data": {
+    "repo": "jaredpalmer/kev-suites",
+    "revision": "cc4bac803e73112689ec327ffa481c519cbc7a05",
+    "file": "v9/transfer-v9/test.jsonl",
+    "sha256": "048abea5e12c73c3a622ce5836898c00fa43766e0bf48fb2459e77ee9873497f",
+    "manifest_checked": true,
+    "records": 1264
+   },
+   "raw": {
+    "n": 30,
+    "accuracy": 0.5666666666666667,
+    "nll": 5.942200008543592,
+    "brier": 0.7887940787782495,
+    "ece": 0.378759473405349,
+    "confident_error": 0.36666666666666664,
+    "mean_confidence": 0.9454261400720156,
+    "macro_source_accuracy": 0.5614035087719298,
+    "by_source": {
+     "buried_paws": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "buried_tweet_offensive": {
+      "n": 1,
+      "accuracy": 0.0
+     },
+     "composition_final_combination": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "composition_final_exception": {
+      "n": 1,
+      "accuracy": 0.0
+     },
+     "composition_final_negation": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "contrastive_authorization": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "contrastive_deadline": {
+      "n": 1,
+      "accuracy": 0.0
+     },
+     "emotion": {
+      "n": 3,
+      "accuracy": 0.3333333333333333
+     },
+     "mmlu": {
+      "n": 3,
+      "accuracy": 0.3333333333333333
+     },
+     "mmlu_pro": {
+      "n": 4,
+      "accuracy": 0.5
+     },
+     "paws": {
+      "n": 2,
+      "accuracy": 0.5
+     },
+     "qnli": {
+      "n": 2,
+      "accuracy": 1.0
+     },
+     "sciq": {
+      "n": 2,
+      "accuracy": 1.0
+     },
+     "tweet_offensive": {
+      "n": 2,
+      "accuracy": 1.0
+     },
+     "unknowable_authorization": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "unknowable_late_fee": {
+      "n": 1,
+      "accuracy": 0.0
+     },
+     "unknowable_quantity_limit": {
+      "n": 1,
+      "accuracy": 0.0
+     },
+     "unknowable_return_window": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "unknowable_warranty_claim": {
+      "n": 1,
+      "accuracy": 0.0
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 16,
+      "accuracy": 0.5
+     },
+     "noul": {
+      "n": 11,
+      "accuracy": 0.8181818181818182
+     },
+     "score": {
+      "n": 3,
+      "accuracy": 0.0
+     }
+    }
+   },
+   "calibrated": {
+    "n": 30,
+    "accuracy": 0.5666666666666667,
+    "nll": 1.123483515145381,
+    "brier": 0.5853705807152462,
+    "ece": 0.26828125988463325,
+    "confident_error": 0.06666666666666667,
+    "mean_confidence": 0.6929292231020644,
+    "macro_source_accuracy": 0.5614035087719298,
+    "by_source": {
+     "buried_paws": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "buried_tweet_offensive": {
+      "n": 1,
+      "accuracy": 0.0
+     },
+     "composition_final_combination": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "composition_final_exception": {
+      "n": 1,
+      "accuracy": 0.0
+     },
+     "composition_final_negation": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "contrastive_authorization": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "contrastive_deadline": {
+      "n": 1,
+      "accuracy": 0.0
+     },
+     "emotion": {
+      "n": 3,
+      "accuracy": 0.3333333333333333
+     },
+     "mmlu": {
+      "n": 3,
+      "accuracy": 0.3333333333333333
+     },
+     "mmlu_pro": {
+      "n": 4,
+      "accuracy": 0.5
+     },
+     "paws": {
+      "n": 2,
+      "accuracy": 0.5
+     },
+     "qnli": {
+      "n": 2,
+      "accuracy": 1.0
+     },
+     "sciq": {
+      "n": 2,
+      "accuracy": 1.0
+     },
+     "tweet_offensive": {
+      "n": 2,
+      "accuracy": 1.0
+     },
+     "unknowable_authorization": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "unknowable_late_fee": {
+      "n": 1,
+      "accuracy": 0.0
+     },
+     "unknowable_quantity_limit": {
+      "n": 1,
+      "accuracy": 0.0
+     },
+     "unknowable_return_window": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "unknowable_warranty_claim": {
+      "n": 1,
+      "accuracy": 0.0
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 16,
+      "accuracy": 0.5
+     },
+     "noul": {
+      "n": 11,
+      "accuracy": 0.8181818181818182
+     },
+     "score": {
+      "n": 3,
+      "accuracy": 0.0
+     }
+    }
+   }
   }
  },
  "temperature": 8.771914344710346
