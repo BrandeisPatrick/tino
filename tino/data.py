@@ -48,6 +48,7 @@ def build_rows(encoder, records, suite=""):
     for i, rec in enumerate(records):
         rid = (rec.get("_meta") or {}).get("id") or f"{suite}/{i}"
         for r in encoder.encode_record(rec, rec_id=rid):
+            r["rec_idx"] = i
             if r["label"] is None:
                 skipped["no_label"] += 1
             elif len(r["ids"]) > encoder.max_row:
