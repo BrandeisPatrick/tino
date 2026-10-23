@@ -1,4 +1,8 @@
 {
  "local_dir": "checkpoints/20261023-085627-tino-adapter/publish",
- "published": null
+ "published": {
+  "repo": "BrandeisPatrick/tino-adapter",
+  "revision": "792b38f5f4f27445ea71693d16be1b02e217efd9",
+  "url": "https://huggingface.co/BrandeisPatrick/tino-adapter/tree/792b38f5f4f27445ea71693d16be1b02e217efd9"
+ }
 }
