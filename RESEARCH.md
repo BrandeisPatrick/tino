@@ -74,13 +74,28 @@ Probe on 380 development questions: the teacher scores 0.677 on trained sources 
 
 | ID | Run | Status |
 |---|---|---|
-| D0 | label all splits with the teacher (labels on the Hub) | running |
-| D1 | `tino-distil`, α = 0.5, full data | queued |
+| D0 | label all splits with the teacher | done: [`tino-teacher-labels`](https://huggingface.co/datasets/BrandeisPatrick/tino-teacher-labels) @ `31e5bfd7`, run [`20261023-140510`](runs/20261023-140510-teacher-qwen3-4b) |
+| D1 | `tino-distil`, α = 0.5, full data | done: run [`20261023-153602`](runs/20261023-153602-tino-distil) |
 | D2 | α sweep at 4k: 0.25, 0.5, 1.0 (1.0 = teacher only, no gold labels) | queued |
 
 Success means `tino-distil` beats `tino-adapter` on new sources by more than noise, without losing more than a point on trained sources.
 
-**Answer so far:** labeling in progress.
+**Answer so far: yes, for calibration; not yet for accuracy.**
+
+The teacher, zero-shot and temperature-scaled, scores 0.775 on trained sources and 0.745 on new sources (test splits). Its calibrated ECE is about 0.05.
+
+Paired against `tino-adapter` (same student, gold labels only) on identical test questions:
+
+| Test split | tino-adapter | tino-distil | Accuracy gap | McNemar p | Brier improvement, 95% interval |
+|---|---|---|---|---|---|
+| decision-v7 (trained sources) | 0.810 | 0.808 | −0.2 pts | 0.88 | +0.005, from −0.014 to +0.026 |
+| transfer-v4 (new sources) | 0.613 | 0.636 | +2.4 pts | 0.12 | **+0.063, from +0.037 to +0.091** |
+| transfer-v9 (hardest) | 0.548 | 0.555 | +0.6 pts | 0.62 | **+0.076, from +0.055 to +0.098** |
+
+- **Calibration transfers.** The distilled student's probabilities are clearly better out of domain (Brier improves by 0.06–0.08, intervals exclude zero). It needs no temperature correction: its fitted temperature is 0.95, against 2.01 for the adapter and 2.45 for the full fine-tune. Its raw ECE is 0.03–0.05, against 0.10–0.18 for the others.
+- **Nothing is lost in domain.** Trained-source accuracy is unchanged.
+- **Out-of-domain accuracy barely moves.** The +2.4 points on transfer-v4 test is not significant (p = 0.12), and the development split shows no gain (0.596 vs 0.594). Most of the teacher's 0.745 does not come across. This matches Kev's finding that a 0.6B student is capacity-limited out of domain.
+- The α sweep (D2) tests whether more weight on the teacher moves accuracy, and whether gold labels are needed at all (α = 1.0).
 
 ## Model objectives
 
@@ -90,7 +105,7 @@ Released models live on private Hugging Face repos. Ablation runs stay as tracke
 |---|---|---|---|
 | [`tino-finetuned`](https://huggingface.co/BrandeisPatrick/tino-finetuned) | RQ2 | full fine-tune, Qwen3-0.6B-Base | done |
 | [`tino-adapter`](https://huggingface.co/BrandeisPatrick/tino-adapter) | RQ1 baseline, RQ2 | LoRA r16, Qwen3-0.6B-Base | done |
-| `tino-distil` | RQ4 | LoRA r16 + Qwen3-4B-Instruct teacher | queued |
+| [`tino-distil`](https://huggingface.co/BrandeisPatrick/tino-distil) | RQ4 | LoRA r16 + Qwen3-4B-Instruct teacher | done |
 | `tino-adapter-post` | RQ3b | LoRA r16, Qwen3-0.6B (post-trained, thinking-capable) | queued |
 
 Bar for every released model:
