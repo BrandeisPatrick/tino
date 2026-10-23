@@ -57,7 +57,7 @@ Both models share the base, data, pointer head, schedule, batching, and fp32 num
 
 What it shows:
 
-- **Same accuracy, 40x fewer trainable weights.** On this base and data, full fine-tuning and LoRA land within half a point of each other on every suite. The adapter is 43 MB instead of 2.1 GB and trains in half the memory.
+- **Same accuracy, 40x fewer trainable weights.** On this base and data, full fine-tuning and LoRA land within half a point of each other on every suite. The adapter is 43 MB instead of 2.1 GB and trains in 4 GB of memory.
 - **No transfer advantage for LoRA here.** Both trail Kev-0.6B by about 2.5 points on new sources. Since the two tino models agree with each other, the gap more likely comes from recipe or harness differences than from the method.
 - **Calibration is good after one temperature.** Raw probabilities are overconfident for both (ECE about 0.10 in domain, 0.15–0.19 out of domain). Temperature scaling brings ECE to 0.03–0.07.
 - **Score questions remain the weak spot.** Exact-level accuracy on 5-point scales is 0.51 (finetuned) and 0.58 (adapter), against 0.85–0.88 for Choice and yes/no.
