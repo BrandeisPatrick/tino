@@ -65,6 +65,8 @@ def main():
                 print(f"[skip] {path_in_repo} already on the Hub", flush=True)
                 local = api.hf_hub_download(repo, path_in_repo, repo_type="dataset")
                 rows = [json.loads(l) for l in open(local)]
+                summary["splits"][f"{suite}/{split}"] = {"questions": len(rows), "labelled": sum(r["teacher_logp"] is not None for r in rows),
+                                                         "path": path_in_repo, "resumed": True, "data": prov}
             else:
                 todo = [x for x in items if x["ids"] is not None]
                 t0 = time.time()
