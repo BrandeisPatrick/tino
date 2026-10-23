@@ -1,0 +1,10 @@
+{
+  "name": "think-eval",
+  "subset": [["decision-v7", "development", 150], ["transfer-v4", "development", 150]],
+  "models": [
+    {"name": "qwen3-4b-instruct", "repo": "mlx-community/Qwen3-4B-Instruct-2507-4bit", "revision": "50d42775", "mode": "direct"},
+    {"name": "qwen3-4b-thinking", "repo": "mlx-community/Qwen3-4B-Thinking-2507-4bit", "revision": "627b019c66f22d4de0a641d289b41497651a55c9", "mode": "thinking"}
+  ],
+  "max_think": 2048,
+  "guard": {"mlx_cap_gb": 10.0, "cache_gb": 1.0, "pause_free_pct": 25, "abort_free_pct": 12, "max_swap_growth_gb": 3.0, "max_pause_min": 30}
+}

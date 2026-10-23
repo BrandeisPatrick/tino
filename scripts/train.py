@@ -4,6 +4,8 @@
     uv run python scripts/train.py --config configs/tino-finetuned.json --smoke   # tiny end-to-end check
 """
 import argparse
+import gzip
+import random
 import json
 import math
 import os
@@ -43,6 +45,32 @@ def loss_fn(model, ids, dec, opt, mask, labels):
     z = model(ids, dec, opt, mask)
     ce = mx.logsumexp(z, axis=-1) - mx.take_along_axis(z, labels[:, None], axis=-1).squeeze(-1)
     return ce.sum(), (mx.argmax(z, axis=-1) == labels).sum()
+
+
+def make_ce_loss(brier_weight=0.0):
+    """Cross-entropy, optionally plus brier_weight x multi-class Brier score (a proper scoring rule that punishes
+    confident mistakes less harshly than log loss)."""
+    if not brier_weight:
+        return loss_fn
+
+    def fn(model, ids, dec, opt, mask, labels):
+        z = model(ids, dec, opt, mask)
+        logp = z - mx.logsumexp(z, axis=-1, keepdims=True)
+        ce = -mx.take_along_axis(logp, labels[:, None], axis=-1).squeeze(-1)
+        onehot = (mx.arange(z.shape[-1])[None, :] == labels[:, None]).astype(mx.float32)
+        brier = ((mx.exp(logp) - onehot) ** 2).sum(axis=-1)
+        return (ce + brier_weight * brier).sum(), (mx.argmax(z, axis=-1) == labels).sum()
+    return fn
+
+
+def write_predictions(run_dir, name, rows, preds):
+    """Per-question predictions (gzipped JSONL) so runs can be compared question by question."""
+    from tino.metrics import softmax
+    os.makedirs(os.path.join(run_dir, "predictions"), exist_ok=True)
+    with gzip.open(os.path.join(run_dir, "predictions", name.replace("/", "--") + ".jsonl.gz"), "wt") as f:
+        for r, p in zip(rows, preds):
+            f.write(json.dumps({"rec_idx": r["rec_idx"], "qid": r["qid"], "src": r["src"], "qtype": r["qtype"], "label": r["label"],
+                                "logits": [round(float(x), 4) for x in p["logits"]]}) + "\n")
 
 
 def make_distil_loss(alpha):
@@ -114,6 +142,10 @@ def main():
                                 "teacher": man["teacher"], "teacher_revision": man["teacher_revision"], "prompt_sha": man["prompt_sha"],
                                 "temperature": t_temp, "alpha": dcfg["alpha"], "coverage": cov}
         print(f"[distil] teacher {man['teacher']} T={t_temp:.3f} alpha={dcfg['alpha']} coverage {cov}", flush=True)
+    if cfg.get("train_limit"):
+        # Fixed subset (subset_seed, not the training seed), so seeds and methods at the same size see the same questions.
+        pick = sorted(random.Random(cfg.get("subset_seed", 0)).sample(range(len(train_rows)), min(cfg["train_limit"], len(train_rows))))
+        train_rows = [train_rows[i] for i in pick]
     if args.smoke:
         train_rows, dev_rows = train_rows[:: max(1, len(train_rows) // 240)][:240], dev_rows[:: max(1, len(dev_rows) // 120)][:120]
     n_tok = sum(len(r["ids"]) for r in train_rows)
@@ -142,7 +174,7 @@ def main():
     run.write("data.json", data_prov | {"train_questions": len(train_rows), "train_tokens": n_tok, "dev_questions": len(dev_rows)})
     print(f"[model] trainable {trainable/1e6:.1f}M of {count(model.parameters())/1e6:.1f}M params; {total_steps} steps", flush=True)
 
-    loss_and_grad = nn.value_and_grad(model, make_distil_loss(dcfg["alpha"]) if dcfg else loss_fn)
+    loss_and_grad = nn.value_and_grad(model, make_distil_loss(dcfg["alpha"]) if dcfg else make_ce_loss(cfg.get("brier_weight", 0.0)))
     eval_every = max(1, total_steps // (cfg["evals_per_epoch"] * epochs)) if not args.smoke else max(1, total_steps // 2)
     ckpt_root = os.path.join(REPO_ROOT, "checkpoints", run.id)
     best = {"accuracy": -1}
@@ -240,6 +272,7 @@ def main():
         if args.smoke:
             rows = rows[:100]
         preds, sec = predict(model, rows, enc.pad_id, cfg['eval_token_budget'], guard)
+        write_predictions(run.dir, f"{suite}/{split}", rows, preds)
         final["evals"][f"{suite}/{split}"] = {"raw": summarize(preds), "calibrated": summarize(preds, T),
                                                "sec_per_question": sec, "data": prov | {"skipped": skipped}}
         r = final["evals"][f"{suite}/{split}"]

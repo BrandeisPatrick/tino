@@ -23,5 +23,5 @@ def predict(model, rows, pad_id, token_budget=4096, guard=None):
         for j, i in enumerate(idx):
             r = rows[i]
             out[i] = {"logits": z[j, : len(r["opt_idx"])].tolist(), "label": r["label"], "src": r["src"],
-                      "qtype": r["qtype"], "rec_id": r["rec_id"], "qid": r["qid"], "keys": r["keys"]}
+                      "qtype": r["qtype"], "rec_id": r["rec_id"], "rec_idx": r.get("rec_idx"), "qid": r["qid"], "keys": r["keys"]}
     return out, (time.time() - t0) / max(len(rows), 1)
