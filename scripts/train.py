@@ -103,9 +103,14 @@ def main():
         return optim.join_schedules([optim.linear_schedule(0.0, peak, warm),
                                      optim.cosine_decay(peak, max(1, total_steps - warm), peak * cfg["min_lr_frac"])], [warm])
 
+    if cfg.get("backbone_optimizer", "adamw") == "adafactor":
+        # Factored second moments, no first moment: optimizer state is a few MB instead of 2 x fp32 weights (~3.5 GB).
+        backbone_opt = optim.Adafactor(learning_rate=sched(cfg["backbone_lr"]), relative_step=False,
+                                       scale_parameter=False, beta_1=None, clip_threshold=1.0)
+    else:
+        backbone_opt = optim.AdamW(learning_rate=sched(cfg["backbone_lr"]), weight_decay=cfg["weight_decay"])
     opt = optim.MultiOptimizer(
-        [optim.AdamW(learning_rate=sched(cfg["head_lr"]), weight_decay=0.0),
-         optim.AdamW(learning_rate=sched(cfg["backbone_lr"]), weight_decay=cfg["weight_decay"])],
+        [optim.AdamW(learning_rate=sched(cfg["head_lr"]), weight_decay=0.0), backbone_opt],
         [lambda path, _: path.startswith("head")])
     trainable = count(model.trainable_parameters())
     run.write("data.json", data_prov | {"train_questions": len(train_rows), "train_tokens": n_tok, "dev_questions": len(dev_rows)})

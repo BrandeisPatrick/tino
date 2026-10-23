@@ -1,0 +1,1 @@
+{"reason": "Stopped manually at step 10 of 25. Full fine-tuning with AdamW peaked at 10.1 GB of MLX memory, dropping system free memory to 19-24% on every step and tripping the guard's 25% pause line each step. Pipeline itself worked: loss fell from 3.39 to 1.77.", "step": 10, "peak_mlx_gb": 10.1, "min_system_free_pct": 19, "fix": "backbone optimizer switched to Adafactor"}
