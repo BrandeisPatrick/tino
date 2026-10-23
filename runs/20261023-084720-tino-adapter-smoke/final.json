@@ -1,0 +1,368 @@
+{
+ "run_id": "20261023-084720-tino-adapter-smoke",
+ "best_step": 25,
+ "temperature": 3.529687492068832,
+ "calibration_data": {
+  "repo": "jaredpalmer/kev-suites",
+  "revision": "cc4bac803e73112689ec327ffa481c519cbc7a05",
+  "file": "v7/decision-v7/calibration.jsonl",
+  "sha256": "12c2029a07d24828f5f8cc48f09f572c81457de96f3d5d16180be4c090abd5ca",
+  "manifest_checked": true,
+  "records": 968
+ },
+ "train_minutes": 2.3058008988698324,
+ "trainable_params": 10617344,
+ "evals": {
+  "decision-v7/development": {
+   "raw": {
+    "n": 100,
+    "accuracy": 0.12,
+    "nll": 3.7470478621086385,
+    "brier": 0.8850029232566885,
+    "ece": 0.03837110433724599,
+    "confident_error": 0.0,
+    "mean_confidence": 0.1294208072656592,
+    "macro_source_accuracy": 0.3,
+    "by_source": {
+     "banking77": {
+      "n": 80,
+      "accuracy": 0.0
+     },
+     "boolq": {
+      "n": 20,
+      "accuracy": 0.6
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 80,
+      "accuracy": 0.0
+     },
+     "noul": {
+      "n": 20,
+      "accuracy": 0.6
+     }
+    }
+   },
+   "calibrated": {
+    "n": 100,
+    "accuracy": 0.12,
+    "nll": 3.630880435340476,
+    "brier": 0.8875850098208627,
+    "ece": 0.029068529328505937,
+    "confident_error": 0.0,
+    "mean_confidence": 0.11573976104239442,
+    "macro_source_accuracy": 0.3,
+    "by_source": {
+     "banking77": {
+      "n": 80,
+      "accuracy": 0.0
+     },
+     "boolq": {
+      "n": 20,
+      "accuracy": 0.6
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 80,
+      "accuracy": 0.0
+     },
+     "noul": {
+      "n": 20,
+      "accuracy": 0.6
+     }
+    }
+   },
+   "sec_per_question": 0.30630221843719485,
+   "data": {
+    "repo": "jaredpalmer/kev-suites",
+    "revision": "cc4bac803e73112689ec327ffa481c519cbc7a05",
+    "file": "v7/decision-v7/development.jsonl",
+    "sha256": "8d5765d7aec4d08c61854f4664ca79ec2ba44ed092e9b967eaf61ed86c496d9c",
+    "manifest_checked": true,
+    "records": 1204,
+    "skipped": {
+     "no_label": 0,
+     "too_long": 0
+    }
+   }
+  },
+  "decision-v7/test": {
+   "raw": {
+    "n": 100,
+    "accuracy": 0.09,
+    "nll": 3.6969387878610434,
+    "brier": 0.8982764873964706,
+    "ece": 0.04292937048363017,
+    "confident_error": 0.0,
+    "mean_confidence": 0.13040932156331694,
+    "macro_source_accuracy": 0.20625000000000002,
+    "by_source": {
+     "banking77": {
+      "n": 80,
+      "accuracy": 0.0125
+     },
+     "boolq": {
+      "n": 20,
+      "accuracy": 0.4
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 80,
+      "accuracy": 0.0125
+     },
+     "noul": {
+      "n": 20,
+      "accuracy": 0.4
+     }
+    }
+   },
+   "calibrated": {
+    "n": 100,
+    "accuracy": 0.09,
+    "nll": 3.6174053398928026,
+    "brier": 0.8912817619807403,
+    "ece": 0.026010838204309113,
+    "confident_error": 0.0,
+    "mean_confidence": 0.11601083820430912,
+    "macro_source_accuracy": 0.20625000000000002,
+    "by_source": {
+     "banking77": {
+      "n": 80,
+      "accuracy": 0.0125
+     },
+     "boolq": {
+      "n": 20,
+      "accuracy": 0.4
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 80,
+      "accuracy": 0.0125
+     },
+     "noul": {
+      "n": 20,
+      "accuracy": 0.4
+     }
+    }
+   },
+   "sec_per_question": 0.3082965707778931,
+   "data": {
+    "repo": "jaredpalmer/kev-suites",
+    "revision": "cc4bac803e73112689ec327ffa481c519cbc7a05",
+    "file": "v7/decision-v7/test.jsonl",
+    "sha256": "cd7d129a84232e0c7a4e92b4840a6dfe14c8bb93c5d1904b526fa8c085325d2d",
+    "manifest_checked": true,
+    "records": 1176,
+    "skipped": {
+     "no_label": 0,
+     "too_long": 0
+    }
+   }
+  },
+  "transfer-v4/development": {
+   "raw": {
+    "n": 100,
+    "accuracy": 0.25,
+    "nll": 1.4667480140209963,
+    "brier": 0.7647011232262635,
+    "ece": 0.06218920576284144,
+    "confident_error": 0.0,
+    "mean_confidence": 0.29746813373797276,
+    "macro_source_accuracy": 0.175,
+    "by_source": {
+     "emotion": {
+      "n": 20,
+      "accuracy": 0.05
+     },
+     "mmlu": {
+      "n": 80,
+      "accuracy": 0.3
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 100,
+      "accuracy": 0.25
+     }
+    }
+   },
+   "calibrated": {
+    "n": 100,
+    "accuracy": 0.25,
+    "nll": 1.463185983767331,
+    "brier": 0.7641044023780695,
+    "ece": 0.048979605000856276,
+    "confident_error": 0.0,
+    "mean_confidence": 0.2507397073349752,
+    "macro_source_accuracy": 0.175,
+    "by_source": {
+     "emotion": {
+      "n": 20,
+      "accuracy": 0.05
+     },
+     "mmlu": {
+      "n": 80,
+      "accuracy": 0.3
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 100,
+      "accuracy": 0.25
+     }
+    }
+   },
+   "sec_per_question": 0.05984220981597901,
+   "data": {
+    "repo": "jaredpalmer/kev-suites",
+    "revision": "cc4bac803e73112689ec327ffa481c519cbc7a05",
+    "file": "v4/transfer-v4/development.jsonl",
+    "sha256": "ff374c49c6c9f15f8a56fb274b4a4857d20497eb8dd1ac07ce01560e682a5f2e",
+    "manifest_checked": true,
+    "records": 764,
+    "skipped": {
+     "no_label": 0,
+     "too_long": 0
+    }
+   }
+  },
+  "transfer-v4/test": {
+   "raw": {
+    "n": 100,
+    "accuracy": 0.3,
+    "nll": 1.4523532117001792,
+    "brier": 0.757913644681607,
+    "ece": 0.04264738206523879,
+    "confident_error": 0.0,
+    "mean_confidence": 0.29274862667469675,
+    "macro_source_accuracy": 0.22499999999999998,
+    "by_source": {
+     "emotion": {
+      "n": 20,
+      "accuracy": 0.1
+     },
+     "mmlu": {
+      "n": 80,
+      "accuracy": 0.35
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 100,
+      "accuracy": 0.3
+     }
+    }
+   },
+   "calibrated": {
+    "n": 100,
+    "accuracy": 0.3,
+    "nll": 1.4593573827782358,
+    "brier": 0.7625620660376464,
+    "ece": 0.07892456984761202,
+    "confident_error": 0.0,
+    "mean_confidence": 0.24958695874032089,
+    "macro_source_accuracy": 0.22499999999999998,
+    "by_source": {
+     "emotion": {
+      "n": 20,
+      "accuracy": 0.1
+     },
+     "mmlu": {
+      "n": 80,
+      "accuracy": 0.35
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 100,
+      "accuracy": 0.3
+     }
+    }
+   },
+   "sec_per_question": 0.07047780990600586,
+   "data": {
+    "repo": "jaredpalmer/kev-suites",
+    "revision": "cc4bac803e73112689ec327ffa481c519cbc7a05",
+    "file": "v4/transfer-v4/test.jsonl",
+    "sha256": "c30a91274f9b483aac9e4f02ada5dea953b3f1a2829456e0bc07806c4e73b517",
+    "manifest_checked": true,
+    "records": 764,
+    "skipped": {
+     "no_label": 0,
+     "too_long": 0
+    }
+   }
+  },
+  "transfer-v9/test": {
+   "raw": {
+    "n": 100,
+    "accuracy": 0.3,
+    "nll": 1.4523532117001792,
+    "brier": 0.757913644681607,
+    "ece": 0.04264738206523879,
+    "confident_error": 0.0,
+    "mean_confidence": 0.29274862667469675,
+    "macro_source_accuracy": 0.22499999999999998,
+    "by_source": {
+     "emotion": {
+      "n": 20,
+      "accuracy": 0.1
+     },
+     "mmlu": {
+      "n": 80,
+      "accuracy": 0.35
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 100,
+      "accuracy": 0.3
+     }
+    }
+   },
+   "calibrated": {
+    "n": 100,
+    "accuracy": 0.3,
+    "nll": 1.4593573827782358,
+    "brier": 0.7625620660376464,
+    "ece": 0.07892456984761202,
+    "confident_error": 0.0,
+    "mean_confidence": 0.24958695874032089,
+    "macro_source_accuracy": 0.22499999999999998,
+    "by_source": {
+     "emotion": {
+      "n": 20,
+      "accuracy": 0.1
+     },
+     "mmlu": {
+      "n": 80,
+      "accuracy": 0.35
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 100,
+      "accuracy": 0.3
+     }
+    }
+   },
+   "sec_per_question": 0.07054078102111816,
+   "data": {
+    "repo": "jaredpalmer/kev-suites",
+    "revision": "cc4bac803e73112689ec327ffa481c519cbc7a05",
+    "file": "v9/transfer-v9/test.jsonl",
+    "sha256": "048abea5e12c73c3a622ce5836898c00fa43766e0bf48fb2459e77ee9873497f",
+    "manifest_checked": true,
+    "records": 1264,
+    "skipped": {
+     "no_label": 0,
+     "too_long": 0
+    }
+   }
+  }
+ }
+}
