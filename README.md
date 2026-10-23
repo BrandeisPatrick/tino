@@ -7,7 +7,7 @@ Three models, one per approach, all on the same base, data, and evaluation:
 | Model | Approach | Status |
 |---|---|---|
 | [`tino-finetuned`](https://huggingface.co/BrandeisPatrick/tino-finetuned) | Method 0: full fine-tune of every transformer layer plus a pointer head (Adafactor, embeddings frozen) | done, run [`20261022-225150`](runs/20261022-225150-tino-finetuned) |
-| `tino-adapter` | Method 1: rank-16 LoRA on a frozen base plus a pointer head | planned |
+| [`tino-adapter`](https://huggingface.co/BrandeisPatrick/tino-adapter) | Method 1: rank-16 LoRA on a frozen base plus a pointer head (Kev's LoRA recipe) | done, run [`20261023-085627`](runs/20261023-085627-tino-adapter) |
 | `tino-distil` | Method 2: same student as the adapter, trained on Jev's probability distributions | planned |
 
 ## Setup
@@ -20,25 +20,48 @@ Three models, one per approach, all on the same base, data, and evaluation:
 
 ## Results
 
-`tino-finetuned`, run [`20261022-225150-tino-finetuned`](runs/20261022-225150-tino-finetuned), checkpoint selected at step 2,520 of 2,881 by development accuracy. Test splits were read once. "Calibrated" divides logits by T = 2.45, fitted on the decision-v7 calibration split. Kev-0.6B numbers come from its model card (LoRA on the same base and data, evaluated with Kev's own harness), so treat the comparison as close, not exact.
+Both models share the base, data, pointer head, schedule, batching, and fp32 numerics; only how the backbone trains differs. Each checkpoint was selected by development accuracy, test splits were read once, and "calibrated" divides logits by a temperature fitted on the decision-v7 calibration split. Kev-0.6B numbers come from its model card (LoRA on the same base and data, evaluated with Kev's own harness), so that column is close, not exact.
 
-| Suite / split | Questions | Accuracy | Kev-0.6B | Jev | Brier | ECE raw | ECE calibrated | Confident error, calibrated |
-|---|---|---|---|---|---|---|---|---|
-| decision-v7 dev (trained sources) | 1,468 | 0.794 | – | – | 0.307 | 0.103 | 0.031 | 2.6% |
-| decision-v7 test (trained sources) | 1,440 | **0.810** | 0.808 | – | 0.295 | 0.105 | 0.038 | 2.6% |
-| transfer-v4 dev (new sources) | 764 | 0.598 | 0.620 | 0.857 | 0.532 | 0.181 | 0.060 | 0.3% |
-| transfer-v4 test (new sources) | 764 | 0.618 | 0.642 | – | 0.526 | 0.169 | 0.050 | 0.1% |
-| transfer-v9 test (adds MMLU-Pro, buried, unknowable) | 1,264 | 0.544 | – | – | 0.622 | 0.194 | 0.041 | 0.2% |
+**Accuracy**
+
+| Suite / split | Questions | tino-finetuned | tino-adapter | Kev-0.6B | Jev |
+|---|---|---|---|---|---|
+| decision-v7 dev (trained sources) | 1,468 | 0.794 | 0.788 | – | – |
+| decision-v7 test (trained sources) | 1,440 | **0.810** | **0.810** | 0.808 | – |
+| transfer-v4 dev (new sources) | 764 | 0.598 | 0.594 | 0.620 | 0.857 |
+| transfer-v4 test (new sources) | 764 | 0.618 | 0.613 | 0.642 | – |
+| transfer-v9 test (adds MMLU-Pro, buried, unknowable) | 1,264 | 0.544 | 0.548 | – | – |
+
+**Calibration** (test splits; ECE and confident errors after temperature scaling)
+
+| Suite / split | Brier, finetuned | Brier, adapter | ECE, finetuned | ECE, adapter | Confident error, finetuned | Confident error, adapter |
+|---|---|---|---|---|---|---|
+| decision-v7 test | 0.295 | 0.286 | 0.037 | 0.034 | 2.6% | 1.7% |
+| transfer-v4 test | 0.526 | 0.529 | 0.050 | 0.055 | 0.1% | 1.4% |
+| transfer-v9 test | 0.622 | 0.622 | 0.041 | 0.071 | 0.2% | 1.7% |
+
+**Cost on the M4**
+
+| | tino-finetuned | tino-adapter |
+|---|---|---|
+| Trainable parameters | 441M | 10.6M (2.4% of that) |
+| Published weights | 2.1 GB (full model) | 43 MB (adapter + head; base from the Hub) |
+| Training time, 2 epochs | 183 min | 193 min |
+| Peak MLX memory | 7.7 GB* | 4.0 GB |
+| Lowest system free memory | 31% | 58% |
+| Fitted temperature | 2.45 | 2.01 |
+| Best checkpoint | step 2,520 of 2,881 | step 2,881 of 2,881 |
+| Inference, fp32 | 40–66 ms per question | 52–85 ms per question (LoRA unfused) |
+
+\* Measured before a fix that evaluates loss and gradients together. Reading the loss first had kept every activation alive and defeated gradient checkpointing. The fix changes memory only; results are identical.
 
 What it shows:
 
-- **Trained sources**: full fine-tuning matches the LoRA adapter (0.810 vs 0.808).
-- **New sources**: it trails the adapter by about 2.5 points (0.618 vs 0.642). Updating every weight fits the training sources at least as well, but carries over slightly less to unseen ones.
-- **Calibration**: raw probabilities are overconfident (ECE 0.10 in domain, 0.17 out of domain). One temperature brings ECE to 0.03–0.06 and confident errors to under 3%.
-- **Weak spot**: Score questions (exact level on 5-point sentiment or star scales) reach only 0.51 on decision-v7 test, against 0.88 for Choice and 0.86 for yes/no.
-- Per-source accuracy on transfer-v4 test: SciQ 0.85, QNLI 0.79, TweetEval-offensive 0.76, Emotion 0.56, PAWS 0.56, MMLU 0.40, held-out deadline rules 0.25.
-
-Training cost on the M4: 183 minutes for 2 epochs (31,152 question passes), about 515 tokens per second, peak 7.7 GB of MLX memory, system free memory never below 31%. Inference: 66 ms per question in fp32.
+- **Same accuracy, 40x fewer trainable weights.** On this base and data, full fine-tuning and LoRA land within half a point of each other on every suite. The adapter is 43 MB instead of 2.1 GB and trains in half the memory.
+- **No transfer advantage for LoRA here.** Both trail Kev-0.6B by about 2.5 points on new sources. Since the two tino models agree with each other, the gap more likely comes from recipe or harness differences than from the method.
+- **Calibration is good after one temperature.** Raw probabilities are overconfident for both (ECE about 0.10 in domain, 0.15–0.19 out of domain). Temperature scaling brings ECE to 0.03–0.07.
+- **Score questions remain the weak spot.** Exact-level accuracy on 5-point scales is 0.51 (finetuned) and 0.58 (adapter), against 0.85–0.88 for Choice and yes/no.
+- **The adapter was still improving at the last step**, so a third epoch might help it; the full fine-tune peaked before the end.
 
 ## Tracking
 
