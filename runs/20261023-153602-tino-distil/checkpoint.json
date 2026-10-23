@@ -1,4 +1,8 @@
 {
  "local_dir": "checkpoints/20261023-153602-tino-distil/publish",
- "published": null
+ "published": {
+  "repo": "BrandeisPatrick/tino-distil",
+  "revision": "59598ad8cc52427700a7f4297d99baeef098c55a",
+  "url": "https://huggingface.co/BrandeisPatrick/tino-distil/tree/59598ad8cc52427700a7f4297d99baeef098c55a"
+ }
 }
