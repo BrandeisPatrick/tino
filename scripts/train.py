@@ -82,6 +82,13 @@ def main():
         model.backbone.embed_tokens.set_dtype(mx.bfloat16)   # frozen: no need for fp32, saves ~0.3 GB
     if cfg["grad_checkpoint"]:
         grad_checkpoint(model.backbone.layers[0])
+    # Materialize dtype conversions now: left lazy, the bf16->fp32 copy runs inside the first training step with both
+    # copies alive (a one-off 9 GB spike in the first adapter smoke run). Reset the peak so logs show training memory.
+    mx.eval(model.parameters())
+    setup_peak = mx.get_peak_memory() / 2**30
+    mx.clear_cache()
+    mx.reset_peak_memory()
+    print(f"[guard] after model setup: active {mx.get_active_memory()/2**30:.2f} GB, setup peak {setup_peak:.2f} GB", flush=True)
     enc = Encoder(tok, cfg["max_state"], cfg["max_row"])
 
     data_prov = {}
