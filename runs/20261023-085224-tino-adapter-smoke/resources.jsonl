@@ -2,3 +2,4 @@
 {"step": 10, "free_pct": 71, "swap_gb": 2.53, "mlx_active_gb": 2.42, "mlx_cache_gb": 0.99, "mlx_peak_gb": 3.98}
 {"step": 15, "free_pct": 72, "swap_gb": 2.53, "mlx_active_gb": 2.42, "mlx_cache_gb": 1.0, "mlx_peak_gb": 3.98}
 {"step": 20, "free_pct": 73, "swap_gb": 2.53, "mlx_active_gb": 2.42, "mlx_cache_gb": 0.97, "mlx_peak_gb": 3.98}
+{"step": 25, "free_pct": 83, "swap_gb": 2.53, "mlx_active_gb": 2.42, "mlx_cache_gb": 1.0, "mlx_peak_gb": 3.98}
