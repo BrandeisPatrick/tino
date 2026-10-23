@@ -30,6 +30,13 @@ METHOD = {
         "optimizer": "Adafactor (backbone, peak lr {backbone_lr}), AdamW (head, peak lr {head_lr})",
         "weights": "full fp32 weights (~2 GB)",
     },
+    "distil": {
+        "tag": "distillation",
+        "intro": "This is the **distilled** member of the tino family (`tino-finetuned`, `tino-adapter`, `tino-distil`): the same rank-{rank} LoRA student as `tino-adapter` on frozen `{base}`, trained on a mix of gold labels and the option probabilities of `{teacher}`, an autoregressive LLM read zero-shot (loss = {alpha} x KL to the teacher + {one_minus} x cross-entropy on gold; teacher softened with T = {t_temp:.2f}).",
+        "trainable": "LoRA rank {rank} (scale {scale}, dropout {dropout}) on q/k/v/o and gate/up/down in all layers + pointer head; base frozen",
+        "optimizer": "AdamW (LoRA, peak lr {backbone_lr}, weight decay {weight_decay}), AdamW (head, peak lr {head_lr})",
+        "weights": "adapter + head only (~{size}); the base loads from the Hub at its pinned revision",
+    },
     "lora": {
         "tag": "lora",
         "intro": "This is the **adapter** member of the tino family (`tino-finetuned`, `tino-adapter`, `tino-distil`): `{base}` stays frozen; only rank-{rank} LoRA adapters on every attention and MLP projection and a pointer head are trained.",
@@ -40,11 +47,14 @@ METHOD = {
 }
 
 
-def model_card(cfg, final, run_id, repo, size="20 MB"):
-    m = METHOD[cfg["method"]]
+def model_card(cfg, final, run_id, repo, size="20 MB", teacher=None):
+    m = METHOD["distil" if cfg.get("distil") else cfg["method"]]
     lora = cfg.get("lora") or {}
+    d = cfg.get("distil") or {}
     fill = dict(base=cfg["base_model"], backbone_lr=cfg["backbone_lr"], head_lr=cfg["head_lr"], weight_decay=cfg.get("weight_decay"),
-                rank=lora.get("rank"), scale=lora.get("scale"), dropout=lora.get("dropout"), size=size)
+                rank=lora.get("rank"), scale=lora.get("scale"), dropout=lora.get("dropout"), size=size,
+                teacher=(teacher or {}).get("teacher"), alpha=d.get("alpha"), one_minus=None if d.get("alpha") is None else round(1 - d["alpha"], 2),
+                t_temp=(teacher or {}).get("temperature") or 0.0)
     rows = []
     for name, r in final["evals"].items():
         raw, cal = r["raw"], r["calibrated"]
@@ -137,7 +147,7 @@ def main():
     run_id = os.path.basename(run_dir.rstrip("/"))
     repo = args.repo or f"BrandeisPatrick/{cfg['name']}"
     size_mb = os.path.getsize(os.path.join(local, "model.safetensors")) / 1e6
-    open(os.path.join(local, "README.md"), "w").write(model_card(cfg, final, run_id, repo, f"{size_mb:.0f} MB"))
+    open(os.path.join(local, "README.md"), "w").write(model_card(cfg, final, run_id, repo, f"{size_mb:.0f} MB", data.get("teacher")))
     json.dump(final, open(os.path.join(local, "results.json"), "w"), indent=1)
     api = HfApi()
     api.create_repo(repo, private=True, exist_ok=True)

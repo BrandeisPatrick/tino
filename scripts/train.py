@@ -18,6 +18,7 @@ import mlx.optimizers as optim
 from mlx.utils import tree_flatten, tree_map
 
 from tino.data import batches, build_rows, load_records
+from tino.distil import attach, collate_teacher, distil_loss, load_teacher_labels
 from tino.evaluate import predict
 from tino.format import Encoder
 from tino.guard import ResourceAbort, ResourceGuard
@@ -42,6 +43,13 @@ def loss_fn(model, ids, dec, opt, mask, labels):
     z = model(ids, dec, opt, mask)
     ce = mx.logsumexp(z, axis=-1) - mx.take_along_axis(z, labels[:, None], axis=-1).squeeze(-1)
     return ce.sum(), (mx.argmax(z, axis=-1) == labels).sum()
+
+
+def make_distil_loss(alpha):
+    def fn(model, ids, dec, opt, mask, labels, teacher_p, has_teacher):
+        z = model(ids, dec, opt, mask)
+        return distil_loss(z, labels, teacher_p, has_teacher, alpha).sum(), (mx.argmax(z, axis=-1) == labels).sum()
+    return fn
 
 
 def count(params):
@@ -97,6 +105,15 @@ def main():
     data_prov["train"]["skipped"] = skipped
     recs, data_prov["dev"] = load_records(cfg["dev_suite"], "development")
     dev_rows, _ = build_rows(enc, recs, cfg["dev_suite"])
+    dcfg = cfg.get("distil")
+    if dcfg:
+        labels, man = load_teacher_labels(dcfg["labels_repo"], dcfg["labels_prefix"], dcfg["labels_revision"], cfg["train_suite"], "train")
+        t_temp = man["temperature"] if dcfg.get("teacher_temperature", "manifest") == "manifest" else float(dcfg["teacher_temperature"])
+        cov = attach(train_rows, labels, t_temp)
+        data_prov["teacher"] = {"repo": dcfg["labels_repo"], "prefix": dcfg["labels_prefix"], "revision": dcfg["labels_revision"],
+                                "teacher": man["teacher"], "teacher_revision": man["teacher_revision"], "prompt_sha": man["prompt_sha"],
+                                "temperature": t_temp, "alpha": dcfg["alpha"], "coverage": cov}
+        print(f"[distil] teacher {man['teacher']} T={t_temp:.3f} alpha={dcfg['alpha']} coverage {cov}", flush=True)
     if args.smoke:
         train_rows, dev_rows = train_rows[:: max(1, len(train_rows) // 240)][:240], dev_rows[:: max(1, len(dev_rows) // 120)][:120]
     n_tok = sum(len(r["ids"]) for r in train_rows)
@@ -125,7 +142,7 @@ def main():
     run.write("data.json", data_prov | {"train_questions": len(train_rows), "train_tokens": n_tok, "dev_questions": len(dev_rows)})
     print(f"[model] trainable {trainable/1e6:.1f}M of {count(model.parameters())/1e6:.1f}M params; {total_steps} steps", flush=True)
 
-    loss_and_grad = nn.value_and_grad(model, loss_fn)
+    loss_and_grad = nn.value_and_grad(model, make_distil_loss(dcfg["alpha"]) if dcfg else loss_fn)
     eval_every = max(1, total_steps // (cfg["evals_per_epoch"] * epochs)) if not args.smoke else max(1, total_steps // 2)
     ckpt_root = os.path.join(REPO_ROOT, "checkpoints", run.id)
     best = {"accuracy": -1}
@@ -149,7 +166,8 @@ def main():
                 guard.check()
                 batch = [train_rows[i] for i in idx]
                 ids, dec, o, mask, lab = collate(batch, enc.pad_id)
-                (loss, correct), grads = loss_and_grad(model, ids, dec, o, mask, lab)
+                extra = collate_teacher(batch, o.shape[1]) if dcfg else ()
+                (loss, correct), grads = loss_and_grad(model, ids, dec, o, mask, lab, *extra)
                 # Evaluate loss and grads together. Reading loss.item() first runs the forward pass alone and keeps every
                 # activation the pending backward needs alive, defeating gradient checkpointing (9.2 GB vs 3.9 GB peak).
                 mx.eval(loss, correct, grads)
