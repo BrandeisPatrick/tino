@@ -432,6 +432,177 @@
      }
     }
    }
+  },
+  "decision-v7/test": {
+   "questions": 30,
+   "labelled": 27,
+   "minutes": 0.1974832018216451,
+   "hub_commit": "4382fb2b60ca7424478fb9bb0d2ac82f26086252",
+   "path": "qwen3-4b-instruct-2507-smoke/decision-v7/test.jsonl",
+   "data": {
+    "repo": "jaredpalmer/kev-suites",
+    "revision": "cc4bac803e73112689ec327ffa481c519cbc7a05",
+    "file": "v7/decision-v7/test.jsonl",
+    "sha256": "cd7d129a84232e0c7a4e92b4840a6dfe14c8bb93c5d1904b526fa8c085325d2d",
+    "manifest_checked": true,
+    "records": 1176
+   },
+   "raw": {
+    "n": 27,
+    "accuracy": 0.8148148148148148,
+    "nll": 2.1752656733745295,
+    "brier": 0.35282090544387223,
+    "ece": 0.17090318594745613,
+    "confident_error": 0.14814814814814814,
+    "mean_confidence": 0.9857180007622708,
+    "macro_source_accuracy": 0.7435897435897435,
+    "by_source": {
+     "agnews": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "agnews_yn": {
+      "n": 5,
+      "accuracy": 1.0
+     },
+     "amazon": {
+      "n": 1,
+      "accuracy": 0.0
+     },
+     "boolq": {
+      "n": 2,
+      "accuracy": 1.0
+     },
+     "contrastive_age_eligibility": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "contrastive_return_window": {
+      "n": 1,
+      "accuracy": 0.0
+     },
+     "contrastive_spend_threshold": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "dbpedia14": {
+      "n": 3,
+      "accuracy": 1.0
+     },
+     "imdb": {
+      "n": 2,
+      "accuracy": 1.0
+     },
+     "mnli": {
+      "n": 2,
+      "accuracy": 0.5
+     },
+     "sst5": {
+      "n": 2,
+      "accuracy": 0.5
+     },
+     "trec": {
+      "n": 3,
+      "accuracy": 0.6666666666666666
+     },
+     "yelp": {
+      "n": 3,
+      "accuracy": 1.0
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 10,
+      "accuracy": 0.8
+     },
+     "noul": {
+      "n": 11,
+      "accuracy": 0.9090909090909091
+     },
+     "score": {
+      "n": 6,
+      "accuracy": 0.6666666666666666
+     }
+    }
+   },
+   "calibrated": {
+    "n": 27,
+    "accuracy": 0.8148148148148148,
+    "nll": 0.4886691297396513,
+    "brier": 0.26727408790102214,
+    "ece": 0.18343372617024453,
+    "confident_error": 0.0,
+    "mean_confidence": 0.801886377547388,
+    "macro_source_accuracy": 0.7435897435897435,
+    "by_source": {
+     "agnews": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "agnews_yn": {
+      "n": 5,
+      "accuracy": 1.0
+     },
+     "amazon": {
+      "n": 1,
+      "accuracy": 0.0
+     },
+     "boolq": {
+      "n": 2,
+      "accuracy": 1.0
+     },
+     "contrastive_age_eligibility": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "contrastive_return_window": {
+      "n": 1,
+      "accuracy": 0.0
+     },
+     "contrastive_spend_threshold": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "dbpedia14": {
+      "n": 3,
+      "accuracy": 1.0
+     },
+     "imdb": {
+      "n": 2,
+      "accuracy": 1.0
+     },
+     "mnli": {
+      "n": 2,
+      "accuracy": 0.5
+     },
+     "sst5": {
+      "n": 2,
+      "accuracy": 0.5
+     },
+     "trec": {
+      "n": 3,
+      "accuracy": 0.6666666666666666
+     },
+     "yelp": {
+      "n": 3,
+      "accuracy": 1.0
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 10,
+      "accuracy": 0.8
+     },
+     "noul": {
+      "n": 11,
+      "accuracy": 0.9090909090909091
+     },
+     "score": {
+      "n": 6,
+      "accuracy": 0.6666666666666666
+     }
+    }
+   }
   }
  },
  "temperature": 8.771914344710346
