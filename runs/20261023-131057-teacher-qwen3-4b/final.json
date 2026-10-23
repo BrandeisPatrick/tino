@@ -952,6 +952,193 @@
      }
     }
    }
+  },
+  "decision-v7/test": {
+   "questions": 1440,
+   "labelled": 1324,
+   "minutes": 10.137156466643015,
+   "hub_commit": "7fbf49a3a1057eabf0c39788da9c902f856c4954",
+   "path": "qwen3-4b-instruct-2507/decision-v7/test.jsonl",
+   "data": {
+    "repo": "jaredpalmer/kev-suites",
+    "revision": "cc4bac803e73112689ec327ffa481c519cbc7a05",
+    "file": "v7/decision-v7/test.jsonl",
+    "sha256": "cd7d129a84232e0c7a4e92b4840a6dfe14c8bb93c5d1904b526fa8c085325d2d",
+    "manifest_checked": true,
+    "records": 1176
+   },
+   "raw": {
+    "n": 1324,
+    "accuracy": 0.7749244712990937,
+    "nll": 3.170311654586356,
+    "brier": 0.43068627605961485,
+    "ece": 0.21046027416545995,
+    "confident_error": 0.20241691842900303,
+    "mean_confidence": 0.9852857533466503,
+    "macro_source_accuracy": 0.7703777716404955,
+    "by_source": {
+     "agnews": {
+      "n": 116,
+      "accuracy": 0.8189655172413793
+     },
+     "agnews_yn": {
+      "n": 184,
+      "accuracy": 0.8152173913043478
+     },
+     "amazon": {
+      "n": 80,
+      "accuracy": 0.55
+     },
+     "boolq": {
+      "n": 80,
+      "accuracy": 0.8625
+     },
+     "contrastive_age_eligibility": {
+      "n": 40,
+      "accuracy": 1.0
+     },
+     "contrastive_quantity_limit": {
+      "n": 40,
+      "accuracy": 0.7
+     },
+     "contrastive_return_window": {
+      "n": 40,
+      "accuracy": 0.675
+     },
+     "contrastive_spend_threshold": {
+      "n": 76,
+      "accuracy": 0.9210526315789473
+     },
+     "dbpedia14": {
+      "n": 116,
+      "accuracy": 0.9482758620689655
+     },
+     "imdb": {
+      "n": 80,
+      "accuracy": 0.925
+     },
+     "mnli": {
+      "n": 116,
+      "accuracy": 0.7241379310344828
+     },
+     "sst5": {
+      "n": 80,
+      "accuracy": 0.45
+     },
+     "trec": {
+      "n": 116,
+      "accuracy": 0.7155172413793104
+     },
+     "yelp": {
+      "n": 80,
+      "accuracy": 0.575
+     },
+     "yelp_yn": {
+      "n": 80,
+      "accuracy": 0.875
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 580,
+      "accuracy": 0.8103448275862069
+     },
+     "noul": {
+      "n": 504,
+      "accuracy": 0.8531746031746031
+     },
+     "score": {
+      "n": 240,
+      "accuracy": 0.525
+     }
+    }
+   },
+   "calibrated": {
+    "n": 1324,
+    "accuracy": 0.7749244712990937,
+    "nll": 0.6346238901470317,
+    "brier": 0.3358197223554734,
+    "ece": 0.053981119084566306,
+    "confident_error": 0.03323262839879154,
+    "mean_confidence": 0.7862539173354256,
+    "macro_source_accuracy": 0.7703777716404955,
+    "by_source": {
+     "agnews": {
+      "n": 116,
+      "accuracy": 0.8189655172413793
+     },
+     "agnews_yn": {
+      "n": 184,
+      "accuracy": 0.8152173913043478
+     },
+     "amazon": {
+      "n": 80,
+      "accuracy": 0.55
+     },
+     "boolq": {
+      "n": 80,
+      "accuracy": 0.8625
+     },
+     "contrastive_age_eligibility": {
+      "n": 40,
+      "accuracy": 1.0
+     },
+     "contrastive_quantity_limit": {
+      "n": 40,
+      "accuracy": 0.7
+     },
+     "contrastive_return_window": {
+      "n": 40,
+      "accuracy": 0.675
+     },
+     "contrastive_spend_threshold": {
+      "n": 76,
+      "accuracy": 0.9210526315789473
+     },
+     "dbpedia14": {
+      "n": 116,
+      "accuracy": 0.9482758620689655
+     },
+     "imdb": {
+      "n": 80,
+      "accuracy": 0.925
+     },
+     "mnli": {
+      "n": 116,
+      "accuracy": 0.7241379310344828
+     },
+     "sst5": {
+      "n": 80,
+      "accuracy": 0.45
+     },
+     "trec": {
+      "n": 116,
+      "accuracy": 0.7155172413793104
+     },
+     "yelp": {
+      "n": 80,
+      "accuracy": 0.575
+     },
+     "yelp_yn": {
+      "n": 80,
+      "accuracy": 0.875
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 580,
+      "accuracy": 0.8103448275862069
+     },
+     "noul": {
+      "n": 504,
+      "accuracy": 0.8531746031746031
+     },
+     "score": {
+      "n": 240,
+      "accuracy": 0.525
+     }
+    }
+   }
   }
  },
  "temperature": 8.987205336086184
