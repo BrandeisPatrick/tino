@@ -20,6 +20,7 @@ from mlx.utils import tree_flatten, tree_map
 from tino.data import batches, build_rows, load_records
 from tino.evaluate import predict
 from tino.format import Encoder
+from tino.guard import ResourceAbort, ResourceGuard
 from tino.metrics import fit_temperature, summarize
 from tino.model import collate, load_base, save_checkpoint
 from tino.track import REPO_ROOT, Run
@@ -67,12 +68,16 @@ def main():
     run = Run(name, cfg | {"smoke": args.smoke}, allow_dirty=args.allow_dirty or args.smoke, sync=not args.no_sync)
     print(f"[run] {run.id}", flush=True)
     mx.random.seed(cfg["seed"])
+    g = cfg.get("guard", {})
+    guard = ResourceGuard(**g, log=lambda m: print(m, flush=True))
+    print(f"[guard] start {guard.snapshot()} limits {g}", flush=True)
 
     model, tok, base_config = load_base(cfg["base_model"], cfg["base_revision"], cfg["pointer_dim"])
     model.set_dtype(getattr(mx, cfg["dtype"]))
     model.head.set_dtype(mx.float32)
     if cfg["freeze_embeddings"]:
         model.backbone.embed_tokens.freeze()
+        model.backbone.embed_tokens.set_dtype(mx.bfloat16)   # frozen: no need for fp32, saves ~0.3 GB
     if cfg["grad_checkpoint"]:
         grad_checkpoint(model.backbone.layers[0])
     enc = Encoder(tok, cfg["max_state"], cfg["max_row"])
@@ -117,55 +122,66 @@ def main():
 
     def evaluate_dev():
         model.eval()
-        preds, sec = predict(model, dev_rows, enc.pad_id)
+        preds, sec = predict(model, dev_rows, enc.pad_id, cfg['eval_token_budget'], guard)
         model.train()
         return summarize(preds) | {"sec_per_question": sec}
 
     grads_acc, micro_in_step, rows_in_step = None, 0, 0
     model.train()
-    for e, eb in enumerate(epoch_batches):
-        for idx in eb:
-            batch = [train_rows[i] for i in idx]
-            ids, dec, o, mask, lab = collate(batch, enc.pad_id)
-            (loss, correct), grads = loss_and_grad(model, ids, dec, o, mask, lab)
-            grads_acc = grads if grads_acc is None else tree_map(mx.add, grads_acc, grads)
-            micro_in_step += 1; rows_in_step += len(batch)
-            win["loss"] += loss.item(); win["correct"] += correct.item(); win["rows"] += len(batch)
-            win["tokens"] += sum(len(r["ids"]) for r in batch)
-            if micro_in_step < cfg["accum_microbatches"]:
-                continue
-            g = tree_map(lambda x: x / rows_in_step, grads_acc)
-            g, gnorm = optim.clip_grad_norm(g, cfg["grad_clip"])
-            opt.update(model, g)
-            mx.eval(model.parameters(), opt.state)
-            grads_acc, micro_in_step, rows_in_step = None, 0, 0
-            step += 1
+    try:
+        for e, eb in enumerate(epoch_batches):
+            for idx in eb:
+                guard.check()
+                batch = [train_rows[i] for i in idx]
+                ids, dec, o, mask, lab = collate(batch, enc.pad_id)
+                (loss, correct), grads = loss_and_grad(model, ids, dec, o, mask, lab)
+                grads_acc = grads if grads_acc is None else tree_map(mx.add, grads_acc, grads)
+                micro_in_step += 1; rows_in_step += len(batch)
+                win["loss"] += loss.item(); win["correct"] += correct.item(); win["rows"] += len(batch)
+                win["tokens"] += sum(len(r["ids"]) for r in batch)
+                if micro_in_step < cfg["accum_microbatches"]:
+                    continue
+                g = tree_map(lambda x: x / rows_in_step, grads_acc)
+                g, gnorm = optim.clip_grad_norm(g, cfg["grad_clip"])
+                opt.update(model, g)
+                mx.eval(model.parameters(), opt.state)
+                grads_acc, micro_in_step, rows_in_step = None, 0, 0
+                step += 1
 
-            if step % cfg["log_every"] == 0 or step == total_steps:
-                dt = time.time() - win["t"]
-                rec = {"step": step, "epoch": e, "loss": win["loss"] / win["rows"], "accuracy": win["correct"] / win["rows"],
-                       "grad_norm": gnorm.item(), "lr_backbone": float(opt.optimizers[1].learning_rate.item()),
-                       "tokens_per_sec": win["tokens"] / dt, "questions_per_sec": win["rows"] / dt,
-                       "peak_mem_gb": mx.get_peak_memory() / 2**30, "elapsed_min": (time.time() - t0) / 60}
-                run.log("train_log.jsonl", rec, step)
-                eta = (time.time() - t0) / step * (total_steps - step) / 60
-                print(f"[train] step {step}/{total_steps} loss {rec['loss']:.4f} acc {rec['accuracy']:.3f} "
-                      f"{rec['tokens_per_sec']:.0f} tok/s mem {rec['peak_mem_gb']:.1f}GB eta {eta:.0f}m", flush=True)
-                win = {"loss": 0.0, "correct": 0, "rows": 0, "tokens": 0, "t": time.time()}
+                if step % cfg["log_every"] == 0 or step == total_steps:
+                    dt = time.time() - win["t"]
+                    rec = {"step": step, "epoch": e, "loss": win["loss"] / win["rows"], "accuracy": win["correct"] / win["rows"],
+                           "grad_norm": gnorm.item(), "lr_backbone": float(opt.optimizers[1].learning_rate.item()),
+                           "tokens_per_sec": win["tokens"] / dt, "questions_per_sec": win["rows"] / dt,
+                           "peak_mem_gb": mx.get_peak_memory() / 2**30, "elapsed_min": (time.time() - t0) / 60}
+                    run.log("train_log.jsonl", rec, step)
+                    eta = (time.time() - t0) / step * (total_steps - step) / 60
+                    print(f"[train] step {step}/{total_steps} loss {rec['loss']:.4f} acc {rec['accuracy']:.3f} "
+                          f"{rec['tokens_per_sec']:.0f} tok/s mem {rec['peak_mem_gb']:.1f}GB eta {eta:.0f}m", flush=True)
+                    win = {"loss": 0.0, "correct": 0, "rows": 0, "tokens": 0, "t": time.time()}
 
-            if step % eval_every == 0 or step == total_steps:
-                m = evaluate_dev()
-                m.update(step=step, epoch=e)
-                is_best = m["accuracy"] > best["accuracy"]
-                m["best"] = is_best
-                run.log("evals.jsonl", {k: v for k, v in m.items() if k not in ("by_source", "by_type")} |
-                        {"by_source": m["by_source"]}, step)
-                print(f"[eval] step {step} dev acc {m['accuracy']:.4f} nll {m['nll']:.4f} ece {m['ece']:.4f}"
-                      f"{' (best)' if is_best else ''}", flush=True)
-                if is_best:
-                    best = m
-                    save_checkpoint(model, os.path.join(ckpt_root, "best"), tok, base_config, meta | {"step": step})
-                run.sync(f"step {step}, dev acc {m['accuracy']:.4f}")
+                if step % eval_every == 0 or step == total_steps:
+                    m = evaluate_dev()
+                    m.update(step=step, epoch=e)
+                    is_best = m["accuracy"] > best["accuracy"]
+                    m["best"] = is_best
+                    run.log("evals.jsonl", {k: v for k, v in m.items() if k not in ("by_source", "by_type")} |
+                            {"by_source": m["by_source"]}, step)
+                    print(f"[eval] step {step} dev acc {m['accuracy']:.4f} nll {m['nll']:.4f} ece {m['ece']:.4f}"
+                          f"{' (best)' if is_best else ''}", flush=True)
+                    if is_best:
+                        best = m
+                        save_checkpoint(model, os.path.join(ckpt_root, "best"), tok, base_config, meta | {"step": step})
+                    run.sync(f"step {step}, dev acc {m['accuracy']:.4f}")
+                if step % cfg["log_every"] == 0:
+                    run.log("resources.jsonl", {"step": step} | guard.snapshot(), step)
+    except ResourceAbort as err:
+        snap = guard.snapshot()
+        print(f"[guard] ABORT: {err} {snap}", flush=True)
+        run.write("aborted.json", {"reason": str(err), "step": step, "resources": snap,
+                                   "best_dev_accuracy": best.get("accuracy"), "best_checkpoint_kept": best.get("accuracy", -1) >= 0})
+        run.sync(f"aborted by resource guard at step {step}: {err}")
+        sys.exit(3)
 
     # Final: reload best, fit temperature on the calibration split, read each final eval set once.
     from tino.model import load_checkpoint
@@ -178,7 +194,7 @@ def main():
     cal_rows, _ = build_rows(enc, recs, suite)
     if args.smoke:
         cal_rows = cal_rows[:100]
-    cal_preds, _ = predict(model, cal_rows, enc.pad_id)
+    cal_preds, _ = predict(model, cal_rows, enc.pad_id, cfg['eval_token_budget'], guard)
     T = fit_temperature(cal_preds)
     final = {"run_id": run.id, "best_step": best["step"], "temperature": T, "calibration_data": cal_prov,
              "train_minutes": (time.time() - t0) / 60, "trainable_params": trainable, "evals": {}}
@@ -187,7 +203,7 @@ def main():
         rows, skipped = build_rows(enc, recs, suite)
         if args.smoke:
             rows = rows[:100]
-        preds, sec = predict(model, rows, enc.pad_id)
+        preds, sec = predict(model, rows, enc.pad_id, cfg['eval_token_budget'], guard)
         final["evals"][f"{suite}/{split}"] = {"raw": summarize(preds), "calibrated": summarize(preds, T),
                                                "sec_per_question": sec, "data": prov | {"skipped": skipped}}
         r = final["evals"][f"{suite}/{split}"]

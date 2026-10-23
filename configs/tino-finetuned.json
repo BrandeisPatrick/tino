@@ -5,18 +5,42 @@
   "base_revision": "da87bfb608c14b7cf20ba1ce41287e8de496c0cd",
   "train_suite": "decision-v7",
   "dev_suite": "decision-v7",
-  "final_evals": [["decision-v7", "development"], ["decision-v7", "test"], ["transfer-v4", "development"], ["transfer-v4", "test"], ["transfer-v9", "test"]],
-  "calibration": ["decision-v7", "calibration"],
+  "final_evals": [
+    [
+      "decision-v7",
+      "development"
+    ],
+    [
+      "decision-v7",
+      "test"
+    ],
+    [
+      "transfer-v4",
+      "development"
+    ],
+    [
+      "transfer-v4",
+      "test"
+    ],
+    [
+      "transfer-v9",
+      "test"
+    ]
+  ],
+  "calibration": [
+    "decision-v7",
+    "calibration"
+  ],
   "seed": 0,
   "dtype": "float32",
   "freeze_embeddings": true,
   "grad_checkpoint": true,
   "pointer_dim": 256,
   "epochs": 2,
-  "token_budget": 4096,
+  "token_budget": 2048,
   "accum_microbatches": 1,
-  "backbone_lr": 1e-5,
-  "head_lr": 2e-4,
+  "backbone_lr": 1e-05,
+  "head_lr": 0.0002,
   "weight_decay": 0.01,
   "warmup_frac": 0.05,
   "min_lr_frac": 0.1,
@@ -25,5 +49,14 @@
   "max_row": 1536,
   "log_every": 20,
   "evals_per_epoch": 4,
-  "publish_dtype": "bfloat16"
+  "publish_dtype": "bfloat16",
+  "eval_token_budget": 4096,
+  "guard": {
+    "mlx_cap_gb": 10.0,
+    "cache_gb": 1.0,
+    "pause_free_pct": 25,
+    "abort_free_pct": 12,
+    "max_swap_growth_gb": 3.0,
+    "max_pause_min": 30
+  }
 }

@@ -1,0 +1,54 @@
+{
+ "name": "tino-finetuned",
+ "method": "full_finetune",
+ "base_model": "Qwen/Qwen3-0.6B-Base",
+ "base_revision": "da87bfb608c14b7cf20ba1ce41287e8de496c0cd",
+ "train_suite": "decision-v7",
+ "dev_suite": "decision-v7",
+ "final_evals": [
+  [
+   "decision-v7",
+   "development"
+  ],
+  [
+   "decision-v7",
+   "test"
+  ],
+  [
+   "transfer-v4",
+   "development"
+  ],
+  [
+   "transfer-v4",
+   "test"
+  ],
+  [
+   "transfer-v9",
+   "test"
+  ]
+ ],
+ "calibration": [
+  "decision-v7",
+  "calibration"
+ ],
+ "seed": 0,
+ "dtype": "float32",
+ "freeze_embeddings": true,
+ "grad_checkpoint": true,
+ "pointer_dim": 256,
+ "epochs": 2,
+ "token_budget": 4096,
+ "accum_microbatches": 1,
+ "backbone_lr": 1e-05,
+ "head_lr": 0.0002,
+ "weight_decay": 0.01,
+ "warmup_frac": 0.05,
+ "min_lr_frac": 0.1,
+ "grad_clip": 1.0,
+ "max_state": 384,
+ "max_row": 1536,
+ "log_every": 5,
+ "evals_per_epoch": 4,
+ "publish_dtype": "bfloat16",
+ "smoke": true
+}
