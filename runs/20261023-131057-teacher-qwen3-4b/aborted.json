@@ -1,0 +1,18 @@
+{
+ "reason": "swap grew 3.6 GB since start (limit 3.0 GB)",
+ "resources": {
+  "free_pct": 17,
+  "swap_gb": 4.74,
+  "mlx_active_gb": 2.13,
+  "mlx_cache_gb": 1.03,
+  "mlx_peak_gb": 2.82
+ },
+ "done": [
+  "decision-v7/calibration",
+  "decision-v7/development",
+  "decision-v7/test",
+  "transfer-v4/development",
+  "transfer-v4/test",
+  "transfer-v9/test"
+ ]
+}
