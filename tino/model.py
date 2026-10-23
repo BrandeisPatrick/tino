@@ -68,10 +68,27 @@ def load_base(repo, revision=None, dp=256):
     return DecisionModel(lm.model, config["hidden_size"], dp), tok._tokenizer, config
 
 
+LORA_KEYS = ["self_attn.q_proj", "self_attn.k_proj", "self_attn.v_proj", "self_attn.o_proj",
+             "mlp.gate_proj", "mlp.up_proj", "mlp.down_proj"]
+
+
+def apply_lora(model, lora):
+    """Freeze the backbone and wrap its attention and MLP projections in LoRA layers (every transformer block).
+    lora: {"rank", "scale", "dropout"}; scale is alpha / rank (Kev: rank 16, alpha 32 -> scale 2.0)."""
+    from mlx_lm.tuner.utils import linear_to_lora_layers
+    model.backbone.freeze()
+    linear_to_lora_layers(model.backbone, len(model.backbone.layers),
+                          {"rank": lora["rank"], "scale": lora["scale"], "dropout": lora.get("dropout", 0.0),
+                           "keys": lora.get("keys", LORA_KEYS)})
+    return model
+
+
 def save_checkpoint(model, out_dir, tokenizer, base_config, meta, dtype=None):
-    """Self-contained directory: weights, base config (architecture), tokenizer, and tino metadata."""
+    """Self-contained directory: weights, base config (architecture), tokenizer, and tino metadata.
+    meta["weights"] == "adapter" saves only trainable parameters (LoRA + head); the base is pulled from the Hub."""
     os.makedirs(out_dir, exist_ok=True)
-    weights = dict(tree_flatten(model.parameters()))
+    adapter = meta.get("weights") == "adapter"
+    weights = dict(tree_flatten(model.trainable_parameters() if adapter else model.parameters()))
     if dtype is not None:
         weights = {k: (v.astype(dtype) if k.startswith("backbone.") else v.astype(mx.float32)) for k, v in weights.items()}
     mx.save_safetensors(os.path.join(out_dir, "model.safetensors"), weights)
@@ -89,8 +106,14 @@ def load_checkpoint(path_or_repo, revision=None):
         path = snapshot_download(path_or_repo, revision=revision)
     config = json.load(open(os.path.join(path, "config.json")))
     meta = json.load(open(os.path.join(path, "tino_config.json")))
-    model = DecisionModel(_backbone_from_config(config), config["hidden_size"], meta.get("pointer_dim", 256))
-    model.load_weights(os.path.join(path, "model.safetensors"))
+    if meta.get("weights") == "adapter":
+        model, _, _ = load_base(meta["base_model"], meta["base_revision"], meta.get("pointer_dim", 256))
+        model.set_dtype(getattr(mx, meta.get("base_dtype", "float32")))
+        apply_lora(model, meta["lora"])
+        model.load_weights(os.path.join(path, "model.safetensors"), strict=False)
+    else:
+        model = DecisionModel(_backbone_from_config(config), config["hidden_size"], meta.get("pointer_dim", 256))
+        model.load_weights(os.path.join(path, "model.safetensors"))
     mx.eval(model.parameters())
     return model, AutoTokenizer.from_pretrained(path), meta
 

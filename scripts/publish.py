@@ -22,7 +22,29 @@ def fmt(x, nd=3):
     return "–" if x is None else f"{x:.{nd}f}"
 
 
-def model_card(cfg, final, run_id, repo):
+METHOD = {
+    "full_finetune": {
+        "tag": "full-finetune",
+        "intro": "This is the **full fine-tune** member of the tino family (`tino-finetuned`, `tino-adapter`, `tino-distil`): every transformer layer of `{base}` is trained together with a pointer head; the token embeddings stay frozen.",
+        "trainable": "all transformer layers + pointer head; embeddings frozen",
+        "optimizer": "Adafactor (backbone, peak lr {backbone_lr}), AdamW (head, peak lr {head_lr})",
+        "weights": "full fp32 weights (~2 GB)",
+    },
+    "lora": {
+        "tag": "lora",
+        "intro": "This is the **adapter** member of the tino family (`tino-finetuned`, `tino-adapter`, `tino-distil`): `{base}` stays frozen; only rank-{rank} LoRA adapters on every attention and MLP projection and a pointer head are trained.",
+        "trainable": "LoRA rank {rank} (scale {scale}, dropout {dropout}) on q/k/v/o and gate/up/down in all layers + pointer head; base frozen",
+        "optimizer": "AdamW (LoRA, peak lr {backbone_lr}, weight decay {weight_decay}), AdamW (head, peak lr {head_lr})",
+        "weights": "adapter + head only (~{size}); the base loads from the Hub at its pinned revision",
+    },
+}
+
+
+def model_card(cfg, final, run_id, repo, size="20 MB"):
+    m = METHOD[cfg["method"]]
+    lora = cfg.get("lora") or {}
+    fill = dict(base=cfg["base_model"], backbone_lr=cfg["backbone_lr"], head_lr=cfg["head_lr"], weight_decay=cfg.get("weight_decay"),
+                rank=lora.get("rank"), scale=lora.get("scale"), dropout=lora.get("dropout"), size=size)
     rows = []
     for name, r in final["evals"].items():
         raw, cal = r["raw"], r["calibrated"]
@@ -36,16 +58,14 @@ license: apache-2.0
 base_model: {cfg['base_model']}
 pipeline_tag: text-classification
 library_name: mlx
-tags: [decision-model, calibration, jev, typesafe, mlx, full-finetune]
+tags: [decision-model, calibration, jev, typesafe, mlx, {m['tag']}]
 datasets: [jaredpalmer/kev-suites]
 ---
 
 # {cfg['name']}
 
 A Jev-style **decision model**: a state plus typed questions (choice, score, yes/no) in, a probability distribution per
-question out, in one forward pass with no generated text. This is the **full fine-tune** member of the tino family
-(`tino-finetuned`, `tino-adapter`, `tino-distil`): every transformer layer of `{cfg['base_model']}` is trained together
-with a pointer head; the token embeddings stay frozen.
+question out, in one forward pass with no generated text. {m['intro'].format(**fill)} Weights: {m['weights'].format(**fill)}.
 
 Trained on an Apple M4 laptop (16 GB) with MLX. Run record, config, logs, and provenance: [{run_id}]({gh}).
 
@@ -71,9 +91,9 @@ Per-source accuracy on transfer-v4 test: {src_line}.
 | | |
 |---|---|
 | Base | `{cfg['base_model']}` @ `{cfg['base_revision'][:8]}` |
-| Trainable | {final['trainable_params']/1e6:.0f}M parameters (all transformer layers + pointer head; embeddings frozen) |
+| Trainable | {final['trainable_params']/1e6:.1f}M parameters ({m['trainable'].format(**fill)}) |
 | Data | decision-v7 train: {final.get('train_questions', '15,576')} questions, {cfg['epochs']} epochs |
-| Optimizer | Adafactor (backbone, peak lr {cfg['backbone_lr']}), AdamW (head, peak lr {cfg['head_lr']}), warmup {cfg['warmup_frac']:.0%}, cosine to {cfg['min_lr_frac']:.0%} |
+| Optimizer | {m['optimizer'].format(**fill)}, warmup {cfg['warmup_frac']:.0%}, cosine to {cfg['min_lr_frac']:.0%} |
 | Batching | length-bucketed, ≤ {cfg['token_budget']} padded tokens per step |
 | Selection | best development accuracy, step {final['best_step']} |
 | Hardware | Apple M4, 16 GB, MLX; {final['train_minutes']:.0f} minutes |
@@ -116,7 +136,8 @@ def main():
     local = os.path.join(REPO_ROOT, ck["local_dir"])
     run_id = os.path.basename(run_dir.rstrip("/"))
     repo = args.repo or f"BrandeisPatrick/{cfg['name']}"
-    open(os.path.join(local, "README.md"), "w").write(model_card(cfg, final, run_id, repo))
+    size_mb = os.path.getsize(os.path.join(local, "model.safetensors")) / 1e6
+    open(os.path.join(local, "README.md"), "w").write(model_card(cfg, final, run_id, repo, f"{size_mb:.0f} MB"))
     json.dump(final, open(os.path.join(local, "results.json"), "w"), indent=1)
     api = HfApi()
     api.create_repo(repo, private=True, exist_ok=True)

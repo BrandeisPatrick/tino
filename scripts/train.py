@@ -22,7 +22,7 @@ from tino.evaluate import predict
 from tino.format import Encoder
 from tino.guard import ResourceAbort, ResourceGuard
 from tino.metrics import fit_temperature, summarize
-from tino.model import collate, load_base, save_checkpoint
+from tino.model import apply_lora, collate, load_base, save_checkpoint
 from tino.track import REPO_ROOT, Run
 
 
@@ -75,7 +75,9 @@ def main():
     model, tok, base_config = load_base(cfg["base_model"], cfg["base_revision"], cfg["pointer_dim"])
     model.set_dtype(getattr(mx, cfg["dtype"]))
     model.head.set_dtype(mx.float32)
-    if cfg["freeze_embeddings"]:
+    if cfg["method"] == "lora":
+        apply_lora(model, cfg["lora"])                          # frozen base, trainable LoRA + head
+    elif cfg["freeze_embeddings"]:
         model.backbone.embed_tokens.freeze()
         model.backbone.embed_tokens.set_dtype(mx.bfloat16)   # frozen: no need for fp32, saves ~0.3 GB
     if cfg["grad_checkpoint"]:
@@ -110,7 +112,7 @@ def main():
     else:
         backbone_opt = optim.AdamW(learning_rate=sched(cfg["backbone_lr"]), weight_decay=cfg["weight_decay"])
     opt = optim.MultiOptimizer(
-        [optim.AdamW(learning_rate=sched(cfg["head_lr"]), weight_decay=0.0), backbone_opt],
+        [optim.AdamW(learning_rate=sched(cfg["head_lr"]), weight_decay=cfg.get("head_weight_decay", 0.0)), backbone_opt],
         [lambda path, _: path.startswith("head")])
     trainable = count(model.trainable_parameters())
     run.write("data.json", data_prov | {"train_questions": len(train_rows), "train_tokens": n_tok, "dev_questions": len(dev_rows)})
@@ -123,7 +125,8 @@ def main():
     step, t0, win = 0, time.time(), {"loss": 0.0, "correct": 0, "rows": 0, "tokens": 0, "t": time.time()}
     meta = {"name": cfg["name"], "method": cfg["method"], "base_model": cfg["base_model"], "base_revision": cfg["base_revision"],
             "pointer_dim": cfg["pointer_dim"], "max_state": cfg["max_state"], "max_row": cfg["max_row"], "run_id": run.id,
-            "temperature": 1.0}
+            "temperature": 1.0, "weights": "adapter" if cfg["method"] == "lora" else "full", "lora": cfg.get("lora"),
+            "base_dtype": cfg["dtype"]}
 
     def evaluate_dev():
         model.eval()
