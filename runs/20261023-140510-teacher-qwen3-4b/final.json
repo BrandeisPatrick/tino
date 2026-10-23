@@ -2515,5 +2515,6 @@
    }
   }
  },
- "temperature": 8.987205336086184
+ "temperature": 8.987205336086184,
+ "labels_revision": "31e5bfd7100cb600f8272437c33a7ab755a1cfbe"
 }
