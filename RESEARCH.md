@@ -59,7 +59,7 @@ Still needed: a paired test on the same test questions, a second seed, and a dat
 
 | ID | Question | Comparison | Cost | Status |
 |---|---|---|---|---|
-| 3a | Does reasoning before answering make a better decision maker? | Qwen3-4B-Instruct-2507 (answers directly) vs Qwen3-4B-Thinking-2507 (reasons, then answers), zero-shot on a fixed 300-question development subset | thinking runs at roughly 10–20 s per question, about 1.5 h | queued |
+| 3a | Does reasoning before answering make a better decision maker? | Qwen3-4B-Instruct-2507 (answers directly) vs Qwen3-4B-Thinking-2507 (reasons, then answers), zero-shot on a fixed 200-question development subset (100 per suite) | thinking runs at roughly 10–20 s per question, about 1.5 h | queued |
 | 3b | Is a thinking-capable model a better starting point for the student? | `Qwen3-0.6B-Base` vs `Qwen3-0.6B` (post-trained, thinking-capable), identical `tino-adapter` recipe | one 3 h run | queued |
 
 Hypothesis: thinking helps on reasoning-heavy sources (MMLU, policy and deadline rules) but costs 20–50x latency, and the post-trained starting point makes little difference once the decision head is trained.
