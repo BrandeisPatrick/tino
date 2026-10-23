@@ -51,7 +51,7 @@ def fit_temperature(preds):
     """Single temperature minimizing NLL: coarse log grid, then golden-section refinement."""
     def nll(T):
         return float(np.mean([-np.log(max(softmax(p["logits"], T)[p["label"]], 1e-12)) for p in preds]))
-    grid = np.exp(np.linspace(np.log(0.25), np.log(8.0), 41))
+    grid = np.exp(np.linspace(np.log(0.1), np.log(25.0), 61))
     i = int(np.argmin([nll(t) for t in grid]))
     lo, hi = grid[max(i - 1, 0)], grid[min(i + 1, len(grid) - 1)]
     g = (5 ** 0.5 - 1) / 2

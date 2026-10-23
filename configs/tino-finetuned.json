@@ -49,7 +49,7 @@
   "max_row": 1536,
   "log_every": 20,
   "evals_per_epoch": 4,
-  "publish_dtype": "bfloat16",
+  "publish_dtype": null,
   "eval_token_budget": 4096,
   "guard": {
     "mlx_cap_gb": 10.0,
