@@ -126,6 +126,132 @@
      "think_tokens": 0
     }
    ]
+  },
+  "qwen3-4b-thinking": {
+   "repo": "mlx-community/Qwen3-4B-Thinking-2507-4bit",
+   "revision": "627b019c66f22d4de0a641d289b41497651a55c9",
+   "mode": "thinking",
+   "sec_per_question": 193.2005644440651,
+   "mean_think_tokens": 809.75,
+   "unclosed_thinking": 0,
+   "suites": {
+    "decision-v7/development": {
+     "n": 2,
+     "accuracy": 1.0,
+     "nll": 9.309920620764587e-10,
+     "brier": 2.400414456866639e-18,
+     "ece": 9.309920612210476e-10,
+     "confident_error": 0.0,
+     "mean_confidence": 0.9999999990690079,
+     "macro_source_accuracy": 1.0,
+     "by_source": {
+      "boolq": {
+       "n": 1,
+       "accuracy": 1.0
+      },
+      "trec": {
+       "n": 1,
+       "accuracy": 1.0
+      }
+     },
+     "by_type": {
+      "choice": {
+       "n": 1,
+       "accuracy": 1.0
+      },
+      "noul": {
+       "n": 1,
+       "accuracy": 1.0
+      }
+     }
+    },
+    "transfer-v4/development": {
+     "n": 2,
+     "accuracy": 1.0,
+     "nll": 1.281008160102617e-08,
+     "brier": 6.372666439492939e-16,
+     "ece": 1.2810081440051135e-08,
+     "confident_error": 0.0,
+     "mean_confidence": 0.9999999871899186,
+     "macro_source_accuracy": 1.0,
+     "by_source": {
+      "mmlu": {
+       "n": 1,
+       "accuracy": 1.0
+      },
+      "paws": {
+       "n": 1,
+       "accuracy": 1.0
+      }
+     },
+     "by_type": {
+      "choice": {
+       "n": 1,
+       "accuracy": 1.0
+      },
+      "noul": {
+       "n": 1,
+       "accuracy": 1.0
+      }
+     }
+    }
+   },
+   "predictions": [
+    {
+     "suite": "decision-v7/development",
+     "rec_idx": 80,
+     "qid": "answer",
+     "src": "boolq",
+     "label": 1,
+     "logits": [
+      -25.125,
+      0.0
+     ],
+     "think_tokens": 290
+    },
+    {
+     "suite": "decision-v7/development",
+     "rec_idx": 515,
+     "qid": "answer_type",
+     "src": "trec",
+     "label": 2,
+     "logits": [
+      -22.625,
+      -21.875,
+      0.0,
+      -20.625,
+      -22.75,
+      -22.625
+     ],
+     "think_tokens": 532
+    },
+    {
+     "suite": "transfer-v4/development",
+     "rec_idx": 0,
+     "qid": "answer",
+     "src": "mmlu",
+     "label": 2,
+     "logits": [
+      -24.75,
+      -22.125,
+      0.0,
+      -17.5
+     ],
+     "think_tokens": 566
+    },
+    {
+     "suite": "transfer-v4/development",
+     "rec_idx": 375,
+     "qid": "paraphrase",
+     "src": "paws",
+     "label": 0,
+     "logits": [
+      0.0,
+      -22.125
+     ],
+     "think_tokens": 1851
+    }
+   ]
   }
  }
 }
