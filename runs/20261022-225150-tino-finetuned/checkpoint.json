@@ -1,4 +1,8 @@
 {
  "local_dir": "checkpoints/20261022-225150-tino-finetuned/publish",
- "published": null
+ "published": {
+  "repo": "BrandeisPatrick/tino-finetuned",
+  "revision": "d6b3c99762aa2b45a764f0440d8e70834d52214a",
+  "url": "https://huggingface.co/BrandeisPatrick/tino-finetuned/tree/d6b3c99762aa2b45a764f0440d8e70834d52214a"
+ }
 }
