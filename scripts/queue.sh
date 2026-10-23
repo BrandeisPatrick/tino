@@ -12,8 +12,8 @@ TRAIN="uv run python scripts/train.py"
 DEV='[["decision-v7","development"],["transfer-v4","development"]]'
 SMALL=(evals_per_epoch=2 "final_evals=$DEV")
 
-# Teacher labels must be complete before any distillation job; pin the dataset revision the labeling run recorded.
-while pgrep -f scripts/label_teacher.py >/dev/null; do sleep 60; done
+# Teacher labels must be complete before any distillation job (run scripts/label_teacher.py first, not concurrently);
+# pin the dataset revision the labeling run recorded.
 LREV=$(python3 -c "import json,glob; f=sorted(glob.glob('runs/*-teacher-qwen3-4b/final.json'))[-1]; print(json.load(open(f)).get('labels_revision',''))")
 [ -z "$LREV" ] && { echo "[queue] teacher labels incomplete; distillation jobs will fail"; }
 distil() { echo "{\"labels_repo\":\"BrandeisPatrick/tino-teacher-labels\",\"labels_prefix\":\"qwen3-4b-instruct-2507\",\"labels_revision\":\"$LREV\",\"alpha\":$1,\"teacher_temperature\":\"manifest\"}"; }
