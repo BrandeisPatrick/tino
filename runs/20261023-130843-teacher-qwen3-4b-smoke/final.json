@@ -1116,6 +1116,161 @@
      }
     }
    }
+  },
+  "decision-v7/train": {
+   "questions": 30,
+   "labelled": 27,
+   "minutes": 0.24924629926681519,
+   "hub_commit": "7bd16f8d51322072573fb8cfc4bc975cc1dd3598",
+   "path": "qwen3-4b-instruct-2507-smoke/decision-v7/train.jsonl",
+   "data": {
+    "repo": "jaredpalmer/kev-suites",
+    "revision": "cc4bac803e73112689ec327ffa481c519cbc7a05",
+    "file": "v7/decision-v7/train.jsonl",
+    "sha256": "7ed5254b5cb5291baefaceb09edf7e13110258211518c8038f4a12c11bd628ad",
+    "manifest_checked": true,
+    "records": 12576
+   },
+   "raw": {
+    "n": 27,
+    "accuracy": 0.7407407407407407,
+    "nll": 3.3547733412670926,
+    "brier": 0.4872294184918299,
+    "ece": 0.2606288370825094,
+    "confident_error": 0.2222222222222222,
+    "mean_confidence": 0.9687945100926214,
+    "macro_source_accuracy": 0.8,
+    "by_source": {
+     "agnews": {
+      "n": 5,
+      "accuracy": 0.8
+     },
+     "amazon": {
+      "n": 4,
+      "accuracy": 0.5
+     },
+     "composition_rand:unless(or(not(0),unless(1,2)),3)": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "contrastive_return_window": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "dbpedia14": {
+      "n": 3,
+      "accuracy": 1.0
+     },
+     "imdb": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "mnli": {
+      "n": 2,
+      "accuracy": 0.5
+     },
+     "sst5": {
+      "n": 3,
+      "accuracy": 0.3333333333333333
+     },
+     "trec": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "yelp": {
+      "n": 3,
+      "accuracy": 0.6666666666666666
+     },
+     "yelp_yn": {
+      "n": 3,
+      "accuracy": 1.0
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 12,
+      "accuracy": 0.8333333333333334
+     },
+     "noul": {
+      "n": 5,
+      "accuracy": 1.0
+     },
+     "score": {
+      "n": 10,
+      "accuracy": 0.5
+     }
+    }
+   },
+   "calibrated": {
+    "n": 27,
+    "accuracy": 0.7407407407407407,
+    "nll": 0.7717247129308978,
+    "brier": 0.3952397695066403,
+    "ece": 0.18340437968653503,
+    "confident_error": 0.0,
+    "mean_confidence": 0.7015341255782223,
+    "macro_source_accuracy": 0.8,
+    "by_source": {
+     "agnews": {
+      "n": 5,
+      "accuracy": 0.8
+     },
+     "amazon": {
+      "n": 4,
+      "accuracy": 0.5
+     },
+     "composition_rand:unless(or(not(0),unless(1,2)),3)": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "contrastive_return_window": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "dbpedia14": {
+      "n": 3,
+      "accuracy": 1.0
+     },
+     "imdb": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "mnli": {
+      "n": 2,
+      "accuracy": 0.5
+     },
+     "sst5": {
+      "n": 3,
+      "accuracy": 0.3333333333333333
+     },
+     "trec": {
+      "n": 1,
+      "accuracy": 1.0
+     },
+     "yelp": {
+      "n": 3,
+      "accuracy": 0.6666666666666666
+     },
+     "yelp_yn": {
+      "n": 3,
+      "accuracy": 1.0
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 12,
+      "accuracy": 0.8333333333333334
+     },
+     "noul": {
+      "n": 5,
+      "accuracy": 1.0
+     },
+     "score": {
+      "n": 10,
+      "accuracy": 0.5
+     }
+    }
+   }
   }
  },
  "temperature": 8.771914344710346
