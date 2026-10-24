@@ -1,0 +1,18 @@
+{
+ "run_id": "20261024-052020-abl-lr5e-5-4k",
+ "code": {
+  "commit": "80c80684eb05e4919505a977077e9cba377d0f74",
+  "dirty": false,
+  "dirty_files": []
+ },
+ "environment": {
+  "python": "3.12.13",
+  "mlx": "0.32.3",
+  "mlx_lm": "0.32.0",
+  "machine": "arm64",
+  "os": "macOS-27.0.1-arm64-arm-64bit",
+  "chip": "Apple M4",
+  "memory_gb": 16
+ },
+ "started": "2026-10-24T05:20:21-0400"
+}
