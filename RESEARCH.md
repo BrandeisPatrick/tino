@@ -134,7 +134,7 @@ Probe on 380 development questions: the teacher scores 0.677 on trained sources 
 
 Success means `tino-distil` beats `tino-adapter` on new sources by more than noise, without losing more than a point on trained sources.
 
-**Answer so far: yes, for calibration; not yet for accuracy.**
+**Answer so far: yes for calibration (robust); accuracy and Brier gains are within seed variation.**
 
 The teacher, zero-shot and temperature-scaled, scores 0.775 on trained sources and 0.745 on new sources (test splits). Its calibrated ECE is about 0.05.
 
@@ -146,7 +146,8 @@ Paired against `tino-adapter` (same student, gold labels only) on identical test
 | transfer-v4 (new sources) | 0.613 | 0.636 | +2.4 pts | 0.12 | **+0.063, from +0.037 to +0.091** |
 | transfer-v9 (hardest) | 0.548 | 0.555 | +0.6 pts | 0.62 | **+0.076, from +0.055 to +0.098** |
 
-- **Calibration transfers.** The distilled student's probabilities are clearly better out of domain (Brier improves by 0.06–0.08, intervals exclude zero). It needs no temperature correction: its fitted temperature is 0.95, against 2.01 for the adapter and 2.45 for the full fine-tune. Its raw ECE is 0.03–0.05, against 0.10–0.18 for the others.
+- **Calibration transfers.** The distilled student needs no temperature correction: its fitted temperature is 0.95, against 1.96–2.01 for both adapter seeds and 2.45 for the full fine-tune. Its raw ECE out of domain is about 0.05, against 0.11–0.15 for the adapter seeds.
+- **Seed caution.** A second adapter seed scored 0.651 on transfer-v4 test (Brier 0.485), 3.8 points above the first (McNemar p = 0.007). Paired tests cover test-set sampling, not training randomness, and out of domain that randomness is about 4 points. Against the better adapter seed, distillation's Brier edge shrinks to 0.02. A second distillation seed is queued; accuracy and Brier claims wait for it.
 - **Nothing is lost in domain.** Trained-source accuracy is unchanged.
 - **Out-of-domain accuracy barely moves.** The +2.4 points on transfer-v4 test is not significant (p = 0.12), and the development split shows no gain (0.596 vs 0.594). Most of the teacher's 0.745 does not come across. This matches Kev's finding that a 0.6B student is capacity-limited out of domain.
 - The α sweep (D2) tests whether more weight on the teacher moves accuracy, and whether gold labels are needed at all (α = 1.0).

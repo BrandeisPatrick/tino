@@ -17,4 +17,6 @@ job $TRAIN --config configs/tino-distil.json --set name=abl-distil-a05-4k-s1 see
 # RQ4: teacher-only distillation (alpha 1.0) gave the best new-source accuracy at 4k; confirm at full data with test reads.
 job $TRAIN --config configs/tino-distil.json --set name=tino-distil-a1 "distil={\"labels_repo\":\"BrandeisPatrick/tino-teacher-labels\",\"labels_prefix\":\"qwen3-4b-instruct-2507\",\"labels_revision\":\"$LREV\",\"alpha\":1.0,\"teacher_temperature\":\"manifest\"}"
 d=$(ls -d runs/*-tino-distil-a1 2>/dev/null | tail -1); [ -n "$d" ] && [ -f "$d/final.json" ] && job uv run python scripts/publish.py --run "$d"
+# RQ4: the adapter's two seeds differ by 3.8 points out of domain, so distillation needs a second seed too.
+job $TRAIN --config configs/tino-distil.json --set name=tino-distil-s1 seed=1 "distil={\"labels_repo\":\"BrandeisPatrick/tino-teacher-labels\",\"labels_prefix\":\"qwen3-4b-instruct-2507\",\"labels_revision\":\"$LREV\",\"alpha\":0.5,\"teacher_temperature\":\"manifest\"}"
 echo "[queue] $(date '+%F %T') FOLLOWUP DONE"
