@@ -59,12 +59,26 @@ Still needed: a paired test on the same test questions, a second seed, and a dat
 
 | ID | Question | Comparison | Cost | Status |
 |---|---|---|---|---|
-| 3a | Does reasoning before answering make a better decision maker? | Qwen3-4B-Instruct-2507 (answers directly) vs Qwen3-4B-Thinking-2507 (reasons, then answers), zero-shot on a fixed 200-question development subset (100 per suite) | thinking runs at roughly 10–20 s per question, about 1.5 h | queued |
+| 3a | Does reasoning before answering make a better decision maker? | Qwen3-4B-Instruct-2507 (answers directly) vs Qwen3-4B-Thinking-2507 (reasons, then answers), zero-shot on a fixed 200-question development subset (100 per suite) | thinking runs at roughly 10–20 s per question, about 1.5 h | done: run [`20261023-185358`](runs/20261023-185358-think-eval) |
 | 3b | Is a thinking-capable model a better starting point for the student? | `Qwen3-0.6B-Base` vs `Qwen3-0.6B` (post-trained, thinking-capable), identical `tino-adapter` recipe | one 3 h run | queued |
 
 Hypothesis: thinking helps on reasoning-heavy sources (MMLU, policy and deadline rules) but costs 20–50x latency, and the post-trained starting point makes little difference once the decision head is trained.
 
-**Answer so far:** none yet.
+**Answer so far (3a): no significant gain, at about 95x the cost.**
+
+Same 200 development questions (100 trained-source, 100 new-source), both models 4-bit on the M4:
+
+| Model | Trained sources | New sources | Calibration error | Seconds per question |
+|---|---|---|---|---|
+| Qwen3-4B-Instruct-2507, answers directly | 0.740 | 0.760 | 0.23–0.26 | 0.33 |
+| Qwen3-4B-Thinking-2507, reasons first (mean 1,137 tokens) | 0.770 | 0.790 | 0.19–0.23 | 31.6 |
+
+- Over all 200 questions thinking is +3.0 points (0.780 vs 0.750), but the 95% interval is −3.0 to +9.0 and McNemar p = 0.41 (thinking alone right on 21, instruct alone on 15).
+- Gains concentrate on rule-following records, as hypothesized: held-out deadline rules go from 2 of 6 to 6 of 6, return-window and quantity-limit records also improve. Thinking does worse on QNLI (0.91 to 0.73) and slightly worse on MMLU (0.76 to 0.71).
+- 43 of 200 reasoning traces (21.5%) hit the 2,048-token cap before finishing, so thinking may be slightly understated. A higher cap costs proportionally more time.
+- For a decision model that must answer in milliseconds, direct answering is the practical choice. Thinking is worth it only for rule-heavy decisions where 30 seconds per question is acceptable.
+
+3b (student starting point) is running.
 
 ### RQ4. Can an autoregressive model be distilled into a decision model?
 
