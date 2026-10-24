@@ -36,7 +36,34 @@ An ablation over the knobs that matter, one change at a time from a fixed baseli
 | A7 | loss: cross-entropy + Brier score | queued |
 | A8 | method: distillation from the Qwen teacher | queued (shared with RQ4) |
 
-**Answer so far:** none yet beyond RQ2's method comparison.
+**Interim results** (4,000-question subset, 2 epochs, development splits only, one seed each; seed reruns are queued):
+
+| ID | Change | Trained-source dev | New-source dev | Calibrated ECE (new) | Run |
+|---|---|---|---|---|---|
+| A0 | baseline: LoRA r16, all projections, lr 1e-4, cross-entropy | 0.730 | 0.567 | 0.060 | [`20261023-235901`](runs/20261023-235901-abl-adapter-4k) |
+| A1 | full fine-tune instead of LoRA | 0.749 | 0.582 | 0.073 | [`20261024-005557`](runs/20261024-005557-abl-finetuned-4k) |
+| A2 | LoRA rank 4 | 0.755 | 0.565 | 0.133 | [`20261024-023723`](runs/20261024-023723-abl-rank4-4k) |
+| A3 | LoRA rank 64 (alpha 128, scale 2.0) | collapsed (0.336) | collapsed (0.343) | – | [`20261024-033412`](runs/20261024-033412-abl-rank64-4k) |
+| A4 | LoRA on attention projections only | collapsed (0.347) | collapsed (0.418) | – | [`20261024-043220`](runs/20261024-043220-abl-attn-only-4k) |
+| A5 | learning rate 5e-5 | 0.750 | 0.593 | 0.073 | [`20261024-052020`](runs/20261024-052020-abl-lr5e-5-4k) |
+| A6 | learning rate 2e-4 | collapsed (0.339) | collapsed (0.449) | – | [`20261024-061741`](runs/20261024-061741-abl-lr2e-4-4k) |
+| A7 | loss: cross-entropy + Brier | 0.682 | 0.552 | 0.052 | [`20261024-071515`](runs/20261024-071515-abl-brier-4k) |
+| D2a | distillation, teacher weight 0.25 | 0.755 | 0.573 | 0.095 | [`20261024-081309`](runs/20261024-081309-abl-distil-a025-4k) |
+| D2b | distillation, teacher weight 0.5 | collapsed (0.341) | collapsed (0.394) | – | [`20261024-091047`](runs/20261024-091047-abl-distil-a05-4k) |
+| D2c | distillation, teacher only (weight 1.0, no gold labels) | 0.723 | 0.611 | 0.056 | [`20261024-100808`](runs/20261024-100808-abl-distil-a1-4k) |
+| C1a | LoRA baseline at 1k questions | collapsed (0.348) | collapsed (0.394) | – | [`20261024-014925`](runs/20261024-014925-abl-adapter-1k) |
+| C1b | full fine-tune at 1k questions | 0.356 | 0.403 | 0.044 | [`20261024-021503`](runs/20261024-021503-abl-finetuned-1k) |
+
+"Collapsed" means the decision head stopped separating options: its scores differ by less than 0.002, so every option gets the same probability (dev log-loss exactly 1.478, the uniform value).
+
+What the interim results show:
+
+- **Training stability is the first-order effect at small data.** 4 of 9 LoRA runs at 4k collapsed (rank 64, attention-only, lr 2e-4, distillation at weight 0.5), while 0 of 3 LoRA runs at full data did. Distillation at 0.5 trained fine at full data, so collapse is partly chance. Seed reruns of the collapsed settings will measure how much.
+- **Smaller updates are safer.** Rank 4 and lr 5e-5 both beat the baseline (0.755 and 0.750 vs 0.730 on trained sources). Rank 64 with scale-with-rank alpha and lr 2e-4 both collapsed. A rank-64 rerun with fixed alpha (scale 0.5) is queued as the fair test of rank.
+- **More teacher, better transfer.** On new sources, teacher-only distillation scores 0.611, the best of any 4k run and above both full-data gold-label models (0.594 and 0.598). Gold-only scores 0.567.
+- **Brier loss does not help.** It costs about 5 points on trained sources and does not improve calibration after temperature scaling.
+- **1,000 questions is too few for this recipe.** Both methods stay near the uniform-guess plateau (about 185 steps).
+- A full-data, teacher-only model (`tino-distil-a1`) is queued to confirm the transfer result on the test splits.
 
 ### RQ2. Full fine-tuning or an adapter?
 
