@@ -67,18 +67,32 @@ What the interim results show:
 
 ### RQ2. Full fine-tuning or an adapter?
 
-Same base, data, head, schedule, and numerics; only the backbone training differs.
+Same base, data, head, schedule, and numerics; only the backbone training differs. Two seeds each at full data, test splits:
 
-| Run | Trained sources | New sources | Trainable | Size | Peak memory | Status |
-|---|---|---|---|---|---|---|
-| `tino-finetuned` seed 0 | 0.810 | 0.618 | 441M | 2.1 GB | 7.7 GB | done |
-| `tino-adapter` seed 0 | 0.810 | 0.613 | 10.6M | 43 MB | 4.0 GB | done |
-| both, seed 1 | | | | | | queued |
-| both at 1k and 4k questions | | | | | | queued |
+| Test split | Full fine-tune: seed 0 / seed 1 / mean | Adapter: seed 0 / seed 1 / mean |
+|---|---|---|
+| decision-v7 (trained sources) | 0.810 / 0.821 / **0.815** | 0.810 / 0.818 / **0.814** |
+| transfer-v4 (new sources) | 0.618 / 0.607 / **0.613** | 0.613 / 0.651 / **0.632** |
+| transfer-v9 (hardest) | 0.544 / 0.533 / **0.539** | 0.548 / 0.568 / **0.558** |
 
-Still needed: a paired test on the same test questions, a second seed, and a data-size curve. Adapters are often said to win when data is scarce, which the 1k and 4k points test.
+| Cost | Full fine-tune | Adapter |
+|---|---|---|
+| Trainable parameters | 441M | 10.6M |
+| Published size | 2.1 GB | 43 MB |
+| Peak training memory | 7.7 GB (before the loss/grad fix; lower after) | 4.0 GB |
+| Fitted temperature (overconfidence) | 2.45, 2.75 | 2.01, 1.96 |
 
-**Answer so far:** a tie at full data on one seed. The adapter gets the same accuracy with 40x fewer trained weights, a 43 MB file, and 4 GB of training memory.
+Runs: [`finetuned s0`](runs/20261022-225150-tino-finetuned), [`finetuned s1`](runs/20261024-142648-tino-finetuned-s1), [`adapter s0`](runs/20261023-085627-tino-adapter), [`adapter s1`](runs/20261024-110527-tino-adapter-s1).
+
+At smaller data (4,000 questions, development splits) the full fine-tune led: 0.749 vs 0.730 in domain, 0.582 vs 0.567 on new sources. At 1,000 questions neither method trained.
+
+**Answer: the adapter, on cost; the two tie on accuracy in domain, and the adapter leans ahead out of domain.**
+
+- In domain they are identical (0.815 vs 0.814, two seeds each).
+- Out of domain the adapter averages about 2 points higher on both new-source test sets. Its own two seeds differ by 3.8 points, though, so this is a consistent lean, not a proven win.
+- The full fine-tune is more overconfident (needs a temperature of 2.5–2.75 vs 2.0) and costs 40x the trainable weights, 50x the file size, and about twice the memory.
+- With only 4,000 questions the full fine-tune was ahead by 1.5–2 points, and LoRA runs at that size often collapsed (see RQ1). So with little data, full fine-tuning is the safer choice.
+- Seed variation out of domain (up to about 4 points) is larger than any method difference measured here.
 
 ### RQ3. Base Qwen or thinking Qwen?
 
