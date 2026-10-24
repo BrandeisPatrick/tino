@@ -1,0 +1,18 @@
+{
+ "run_id": "20261024-021503-abl-finetuned-1k",
+ "code": {
+  "commit": "c561fc036584eeb4917ed6c53aaa7fd54ab6d409",
+  "dirty": false,
+  "dirty_files": []
+ },
+ "environment": {
+  "python": "3.12.13",
+  "mlx": "0.32.3",
+  "mlx_lm": "0.32.0",
+  "machine": "arm64",
+  "os": "macOS-27.0.1-arm64-arm-64bit",
+  "chip": "Apple M4",
+  "memory_gb": 16
+ },
+ "started": "2026-10-24T02:15:04-0400"
+}
