@@ -1,0 +1,18 @@
+{
+ "run_id": "20261024-192429-abl-adapter-4k-s1",
+ "code": {
+  "commit": "190937a8235e26445373ed8f0b5230ae77313f5c",
+  "dirty": false,
+  "dirty_files": []
+ },
+ "environment": {
+  "python": "3.12.13",
+  "mlx": "0.32.3",
+  "mlx_lm": "0.32.0",
+  "machine": "arm64",
+  "os": "macOS-27.0.1-arm64-arm-64bit",
+  "chip": "Apple M4",
+  "memory_gb": 16
+ },
+ "started": "2026-10-24T19:24:30-0400"
+}
