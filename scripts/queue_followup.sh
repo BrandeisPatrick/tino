@@ -10,4 +10,8 @@ SMALL=(train_limit=4000 evals_per_epoch=2 "final_evals=$DEV")
 job $TRAIN --config configs/tino-adapter.json --set name=abl-attn-only-4k-s1 seed=1 'lora={"rank":16,"scale":2.0,"dropout":0.05,"keys":["self_attn.q_proj","self_attn.k_proj","self_attn.v_proj","self_attn.o_proj"]}' "${SMALL[@]}"
 job $TRAIN --config configs/tino-adapter.json --set name=abl-rank64-a32-4k 'lora={"rank":64,"scale":0.5,"dropout":0.05}' "${SMALL[@]}"
 job $TRAIN --config configs/tino-adapter.json --set name=abl-adapter-4k-s1 seed=1 "${SMALL[@]}"
+# Two more collapsed 4k runs (uniform predictions on dev), rerun with another seed to tell config from chance.
+LREV=$(python3 -c "import json,glob; f=sorted(glob.glob('runs/*-teacher-qwen3-4b/final.json'))[-1]; print(json.load(open(f)).get('labels_revision',''))")
+job $TRAIN --config configs/tino-adapter.json --set name=abl-lr2e-4-4k-s1 seed=1 backbone_lr=2e-4 "${SMALL[@]}"
+job $TRAIN --config configs/tino-distil.json --set name=abl-distil-a05-4k-s1 seed=1 "distil={\"labels_repo\":\"BrandeisPatrick/tino-teacher-labels\",\"labels_prefix\":\"qwen3-4b-instruct-2507\",\"labels_revision\":\"$LREV\",\"alpha\":0.5,\"teacher_temperature\":\"manifest\"}" "${SMALL[@]}"
 echo "[queue] $(date '+%F %T') FOLLOWUP DONE"
