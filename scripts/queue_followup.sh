@@ -14,4 +14,7 @@ job $TRAIN --config configs/tino-adapter.json --set name=abl-adapter-4k-s1 seed=
 LREV=$(python3 -c "import json,glob; f=sorted(glob.glob('runs/*-teacher-qwen3-4b/final.json'))[-1]; print(json.load(open(f)).get('labels_revision',''))")
 job $TRAIN --config configs/tino-adapter.json --set name=abl-lr2e-4-4k-s1 seed=1 backbone_lr=2e-4 "${SMALL[@]}"
 job $TRAIN --config configs/tino-distil.json --set name=abl-distil-a05-4k-s1 seed=1 "distil={\"labels_repo\":\"BrandeisPatrick/tino-teacher-labels\",\"labels_prefix\":\"qwen3-4b-instruct-2507\",\"labels_revision\":\"$LREV\",\"alpha\":0.5,\"teacher_temperature\":\"manifest\"}" "${SMALL[@]}"
+# RQ4: teacher-only distillation (alpha 1.0) gave the best new-source accuracy at 4k; confirm at full data with test reads.
+job $TRAIN --config configs/tino-distil.json --set name=tino-distil-a1 "distil={\"labels_repo\":\"BrandeisPatrick/tino-teacher-labels\",\"labels_prefix\":\"qwen3-4b-instruct-2507\",\"labels_revision\":\"$LREV\",\"alpha\":1.0,\"teacher_temperature\":\"manifest\"}"
+d=$(ls -d runs/*-tino-distil-a1 2>/dev/null | tail -1); [ -n "$d" ] && [ -f "$d/final.json" ] && job uv run python scripts/publish.py --run "$d"
 echo "[queue] $(date '+%F %T') FOLLOWUP DONE"
