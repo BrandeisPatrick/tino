@@ -60,7 +60,7 @@ Still needed: a paired test on the same test questions, a second seed, and a dat
 | ID | Question | Comparison | Cost | Status |
 |---|---|---|---|---|
 | 3a | Does reasoning before answering make a better decision maker? | Qwen3-4B-Instruct-2507 (answers directly) vs Qwen3-4B-Thinking-2507 (reasons, then answers), zero-shot on a fixed 200-question development subset (100 per suite) | thinking runs at roughly 10–20 s per question, about 1.5 h | done: run [`20261023-185358`](runs/20261023-185358-think-eval) |
-| 3b | Is a thinking-capable model a better starting point for the student? | `Qwen3-0.6B-Base` vs `Qwen3-0.6B` (post-trained, thinking-capable), identical `tino-adapter` recipe | one 3 h run | queued |
+| 3b | Is a thinking-capable model a better starting point for the student? | `Qwen3-0.6B-Base` vs `Qwen3-0.6B` (post-trained, thinking-capable), identical `tino-adapter` recipe | one 3 h run | done: run [`20261023-204028`](runs/20261023-204028-tino-adapter-post) |
 
 Hypothesis: thinking helps on reasoning-heavy sources (MMLU, policy and deadline rules) but costs 20–50x latency, and the post-trained starting point makes little difference once the decision head is trained.
 
@@ -78,7 +78,20 @@ Same 200 development questions (100 trained-source, 100 new-source), both models
 - 43 of 200 reasoning traces (21.5%) hit the 2,048-token cap before finishing, so thinking may be slightly understated. A higher cap costs proportionally more time.
 - For a decision model that must answer in milliseconds, direct answering is the practical choice. Thinking is worth it only for rule-heavy decisions where 30 seconds per question is acceptable.
 
-3b (student starting point) is running.
+**Answer (3b): no difference once trained; the post-trained start only learns faster.**
+
+Identical `tino-adapter` recipe from `Qwen3-0.6B-Base` vs the post-trained, thinking-capable `Qwen3-0.6B`, paired on the same test questions:
+
+| Test split | From base | From post-trained | Gap | McNemar p |
+|---|---|---|---|---|
+| decision-v7 (trained sources) | 0.810 | 0.810 | 0.0 pts | 1.00 |
+| transfer-v4 (new sources) | 0.613 | 0.615 | +0.3 pts | 0.93 |
+| transfer-v9 (hardest) | 0.548 | 0.532 | −1.7 pts | 0.18 |
+
+- Brier scores are also indistinguishable (all intervals include zero), and both need a similar temperature (1.96 vs 2.01).
+- The post-trained start led on development accuracy through the first epoch (0.715 vs 0.693 at step 360, 0.798 vs 0.768 at step 1,440), then the base caught up.
+- Post-training for chat and thinking does not carry into the decision head. Either start works; the base model keeps the setup simplest.
+
 
 ### RQ4. Can an autoregressive model be distilled into a decision model?
 
@@ -120,7 +133,7 @@ Released models live on private Hugging Face repos. Ablation runs stay as tracke
 | [`tino-finetuned`](https://huggingface.co/BrandeisPatrick/tino-finetuned) | RQ2 | full fine-tune, Qwen3-0.6B-Base | done |
 | [`tino-adapter`](https://huggingface.co/BrandeisPatrick/tino-adapter) | RQ1 baseline, RQ2 | LoRA r16, Qwen3-0.6B-Base | done |
 | [`tino-distil`](https://huggingface.co/BrandeisPatrick/tino-distil) | RQ4 | LoRA r16 + Qwen3-4B-Instruct teacher | done |
-| `tino-adapter-post` | RQ3b | LoRA r16, Qwen3-0.6B (post-trained, thinking-capable) | queued |
+| [`tino-adapter-post`](https://huggingface.co/BrandeisPatrick/tino-adapter-post) | RQ3b | LoRA r16, Qwen3-0.6B (post-trained, thinking-capable) | done |
 
 Bar for every released model:
 
