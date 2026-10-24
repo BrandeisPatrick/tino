@@ -1,0 +1,18 @@
+{
+ "run_id": "20261023-204028-tino-adapter-post",
+ "code": {
+  "commit": "8173cc3f0c9c79ca0bbbf72eee552916aa284114",
+  "dirty": false,
+  "dirty_files": []
+ },
+ "environment": {
+  "python": "3.12.13",
+  "mlx": "0.32.3",
+  "mlx_lm": "0.32.0",
+  "machine": "arm64",
+  "os": "macOS-27.0.1-arm64-arm-64bit",
+  "chip": "Apple M4",
+  "memory_gb": 16
+ },
+ "started": "2026-10-23T20:40:29-0400"
+}
