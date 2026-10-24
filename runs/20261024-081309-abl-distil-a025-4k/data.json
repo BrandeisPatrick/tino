@@ -1,0 +1,39 @@
+{
+ "train": {
+  "repo": "jaredpalmer/kev-suites",
+  "revision": "cc4bac803e73112689ec327ffa481c519cbc7a05",
+  "file": "v7/decision-v7/train.jsonl",
+  "sha256": "7ed5254b5cb5291baefaceb09edf7e13110258211518c8038f4a12c11bd628ad",
+  "manifest_checked": true,
+  "records": 12576,
+  "skipped": {
+   "no_label": 0,
+   "too_long": 0
+  }
+ },
+ "dev": {
+  "repo": "jaredpalmer/kev-suites",
+  "revision": "cc4bac803e73112689ec327ffa481c519cbc7a05",
+  "file": "v7/decision-v7/development.jsonl",
+  "sha256": "8d5765d7aec4d08c61854f4664ca79ec2ba44ed092e9b967eaf61ed86c496d9c",
+  "manifest_checked": true,
+  "records": 1204
+ },
+ "teacher": {
+  "repo": "BrandeisPatrick/tino-teacher-labels",
+  "prefix": "qwen3-4b-instruct-2507",
+  "revision": "31e5bfd7100cb600f8272437c33a7ab755a1cfbe",
+  "teacher": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+  "teacher_revision": "50d42775",
+  "prompt_sha": "4641f74f5393",
+  "temperature": 8.987205336086184,
+  "alpha": 0.25,
+  "coverage": {
+   "with_teacher": 14576,
+   "without_teacher": 1000
+  }
+ },
+ "train_questions": 4000,
+ "train_tokens": 658686,
+ "dev_questions": 1468
+}
