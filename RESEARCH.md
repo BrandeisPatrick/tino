@@ -168,7 +168,7 @@ Two seeds per model, test splits (seed 0 / seed 1):
 | decision-v7 (trained sources) | 0.810 / 0.818 | 0.808 / 0.820 | 0.750 / 0.766 | 0.775 |
 | transfer-v4 (new sources) | 0.613 / 0.651 | 0.636 / 0.626 | 0.671 / 0.626 | 0.745 |
 | transfer-v9 (hardest) | 0.548 / 0.568 | 0.555 / 0.548 | 0.577 / 0.543 | 0.672 |
-| Mean of the three, per model | 0.668 | 0.666 | 0.656 | – |
+| Mean of the three, per model | 0.668 | 0.666 | 0.655 | – |
 | Fitted temperature | 2.01 / 1.96 | 0.95 / 0.84 | 0.87 / 0.92 | 9.0 |
 | Raw ECE, transfer-v4 | 0.152 / 0.111 | 0.049 / 0.040 | 0.097 / 0.040 | 0.245 |
 | Brier, transfer-v4 (two-seed mean) | 0.507 | 0.470 | 0.463 | – |
@@ -185,7 +185,7 @@ Pooled over both seeds, against the gold-label adapter:
 - **Gold labels are not needed.** Trained on the teacher's probabilities alone, the student averages 0.758 in domain and 0.649 out of domain, 87% of the 4B teacher's out-of-domain accuracy in a model a sixth the size, answering in about 50 ms instead of 330.
 - **But teacher-only is a trade, not a win.** It loses 5.6 points in domain on both seeds. Its out-of-domain edge is +1.7 points on transfer-v4 and +0.2 on transfer-v9, neither significant. Seed 0's 0.671 was the high end: seed 1 scored 0.626.
 - **Calibration is the robust effect.** All four distilled runs needed a temperature of 0.84–0.95; all three gold-label models needed 1.96–2.75.
-- **Seed variation dominates accuracy comparisons out of domain.** The same recipe moved by 3.8 points (adapter) and 4.5 points (teacher-only) between seeds.
+- **Seed variation dominates accuracy comparisons out of domain.** The same recipe moved by 3.8 points (adapter) and 4.6 points (teacher-only) between seeds.
 
 ## Model objectives
 
