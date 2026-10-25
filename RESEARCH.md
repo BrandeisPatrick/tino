@@ -45,18 +45,18 @@ Results on development splits (4,000-question subset, 2 epochs). Each cell is tr
 | A2 | LoRA rank 4 | 0.755 / 0.565 | – | [`20261024-023723`](runs/20261024-023723-abl-rank4-4k) |
 | A3 | LoRA rank 64, alpha scaled with rank (scale 2.0) | collapsed | – | [`20261024-033412`](runs/20261024-033412-abl-rank64-4k) |
 | A3b | LoRA rank 64, alpha fixed at 32 (scale 0.5) | 0.743 / 0.552 | – | [`20261024-182602`](runs/20261024-182602-abl-rank64-a32-4k) |
-| A4 | LoRA on attention projections only | 0.347 / 0.418 | 0.725 / 0.606 | [`20261024-043220`](runs/20261024-043220-abl-attn-only-4k), [`20261024-173603`](runs/20261024-173603-abl-attn-only-4k-s1) |
+| A4 | LoRA on attention projections only | stalled at uniform (0.347 / 0.418) | 0.725 / 0.606 | [`20261024-043220`](runs/20261024-043220-abl-attn-only-4k), [`20261024-173603`](runs/20261024-173603-abl-attn-only-4k-s1) |
 | A5 | Learning rate 5e-5 | 0.750 / 0.593 | – | [`20261024-052020`](runs/20261024-052020-abl-lr5e-5-4k) |
 | A6 | Learning rate 2e-4 | collapsed | collapsed | [`20261024-061741`](runs/20261024-061741-abl-lr2e-4-4k), [`20261024-202356`](runs/20261024-202356-abl-lr2e-4-4k-s1) |
 | A7 | Loss: cross-entropy + Brier | 0.682 / 0.552 | – | [`20261024-071515`](runs/20261024-071515-abl-brier-4k) |
 | D2a | Distillation, teacher weight 0.25 | 0.755 / 0.573 | – | [`20261024-081309`](runs/20261024-081309-abl-distil-a025-4k) |
 | D2b | Distillation, teacher weight 0.5 | collapsed | 0.689 / 0.555 | [`20261024-091047`](runs/20261024-091047-abl-distil-a05-4k), [`20261024-212329`](runs/20261024-212329-abl-distil-a05-4k-s1) |
 | D2c | Distillation, teacher only (no gold labels) | 0.723 / 0.611 | – | [`20261024-100808`](runs/20261024-100808-abl-distil-a1-4k) |
-| C1 | 1,000 questions (LoRA / full fine-tune) | 0.348 / 0.394 (near uniform) | 0.356 / 0.403 (near uniform) | [`20261024-014925`](runs/20261024-014925-abl-adapter-1k), [`20261024-021503`](runs/20261024-021503-abl-finetuned-1k) |
+| C1 | 1,000 questions | LoRA: 0.348 / 0.394, near uniform | full fine-tune: 0.356 / 0.403, near uniform | [`20261024-014925`](runs/20261024-014925-abl-adapter-1k), [`20261024-021503`](runs/20261024-021503-abl-finetuned-1k) |
 
 **Answer: for a small decision model, the recipe matters in this order.**
 
-1. **Keep training stable; it is the biggest effect at small data.** lr 2e-4 collapsed on both seeds, and rank 64 with alpha scaled to rank collapsed too, because both make each update too large. Rank 64 with fixed alpha trains normally. The baseline recipe also collapsed by chance about 1 time in 4 at 4k (attention-only and teacher-at-0.5 collapsed on one seed and trained fine on the other). No LoRA run collapsed at full data (0 of 5). Practical rule: lr ≤ 1e-4, fixed alpha, at least 2 seeds, and reject any run whose dev log-loss sits at the uniform value.
+1. **Keep training stable; it is the biggest effect at small data.** lr 2e-4 collapsed on both seeds, and rank 64 with alpha scaled to rank collapsed too, because both make each update too large. Rank 64 with fixed alpha trains normally. The baseline recipe also collapsed by chance about 1 time in 4 at 4k (attention-only stalled and teacher-at-0.5 collapsed on one seed, and both trained fine on the other). No LoRA run collapsed at full data (0 of 5). Practical rule: lr ≤ 1e-4, fixed alpha, at least 2 seeds, and reject any run whose dev log-loss sits at the uniform value.
 2. **What the model learns from matters most for transfer.** Teacher soft labels beat gold labels out of domain: teacher-only scored 0.611 on new-source dev at 4k against 0.559 for gold-only (two-seed mean). At full data the same holds on test (RQ4). The teacher weight is a dial: more teacher means better transfer and worse in-domain accuracy.
 3. **Smaller updates and fewer adapted modules help a little.** lr 5e-5 (0.750 / 0.593) and rank 4 (0.755 / 0.565) both beat the baseline in domain. Attention-only, when it trained, had the best gold-label transfer (0.606). Each is one seed, so these are leads, not settled.
 4. **More rank does not help.** Rank 64 (fixed alpha) is no better than rank 16 on new sources.
