@@ -2,9 +2,9 @@
 
 Turning small decoder LMs into [Jev](https://openrouter.ai/blog/insights/what-is-jev/)-style decision models: a state plus typed questions in (choice, score, yes/no), calibrated probabilities out, one forward pass, no generated text.
 
-The research questions, experiments, and current answers are in [RESEARCH.md](RESEARCH.md).
+The research questions, experiments, and answers are in [RESEARCH.md](RESEARCH.md).
 
-Three models, one per approach, all on the same base, data, and evaluation:
+Five released models, all on the same 0.6B base family, data, and evaluation:
 
 | Model | Approach | Trained sources | New sources |
 |---|---|---|---|
