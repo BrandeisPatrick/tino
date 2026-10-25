@@ -6,11 +6,15 @@ The research questions, experiments, and current answers are in [RESEARCH.md](RE
 
 Three models, one per approach, all on the same base, data, and evaluation:
 
-| Model | Approach | Status |
-|---|---|---|
-| [`tino-finetuned`](https://huggingface.co/BrandeisPatrick/tino-finetuned) | Method 0: full fine-tune of every transformer layer plus a pointer head (Adafactor, embeddings frozen) | done, run [`20261022-225150`](runs/20261022-225150-tino-finetuned) |
-| [`tino-adapter`](https://huggingface.co/BrandeisPatrick/tino-adapter) | Method 1: rank-16 LoRA on a frozen base plus a pointer head (Kev's LoRA recipe) | done, run [`20261023-085627`](runs/20261023-085627-tino-adapter) |
-| `tino-distil` | Method 2: same student as the adapter, trained on Jev's probability distributions | planned |
+| Model | Approach | Trained sources | New sources |
+|---|---|---|---|
+| [`tino-finetuned`](https://huggingface.co/BrandeisPatrick/tino-finetuned) | Full fine-tune of every transformer layer plus a pointer head (Adafactor, embeddings frozen) | 0.810 | 0.618 |
+| [`tino-adapter`](https://huggingface.co/BrandeisPatrick/tino-adapter) | Rank-16 LoRA on a frozen base plus a pointer head (Kev's LoRA recipe) | 0.810 | 0.613 |
+| [`tino-adapter-post`](https://huggingface.co/BrandeisPatrick/tino-adapter-post) | Same adapter, starting from post-trained Qwen3-0.6B instead of the base | 0.810 | 0.615 |
+| [`tino-distil`](https://huggingface.co/BrandeisPatrick/tino-distil) | Same adapter, trained half on gold labels and half on an autoregressive Qwen3-4B teacher's option probabilities; calibrated without temperature scaling | 0.808 | 0.636 |
+| [`tino-distil-a1`](https://huggingface.co/BrandeisPatrick/tino-distil-a1) | Same adapter, trained on the Qwen3-4B teacher only, no gold labels; best out of domain | 0.750 | 0.671 |
+
+Test accuracy on `decision-v7` (trained sources) and `transfer-v4` (new sources). For reference, Kev-0.6B scores 0.808 / 0.642 and Jev 0.857 on new-source development data.
 
 ## Setup
 
@@ -22,48 +26,14 @@ Three models, one per approach, all on the same base, data, and evaluation:
 
 ## Results
 
-Both models share the base, data, pointer head, schedule, batching, and fp32 numerics; only how the backbone trains differs. Each checkpoint was selected by development accuracy, test splits were read once, and "calibrated" divides logits by a temperature fitted on the decision-v7 calibration split. Kev-0.6B numbers come from its model card (LoRA on the same base and data, evaluated with Kev's own harness), so that column is close, not exact.
+[RESEARCH.md](RESEARCH.md) holds the four research questions, every experiment, and the answers, with paired significance tests and two seeds where it mattered. In short:
 
-**Accuracy**
+- **Recipe (RQ1):** training stability dominates at small data; keep lr ≤ 1e-4 and alpha fixed, and run 2+ seeds. Teacher soft labels are the biggest lever for transfer.
+- **Full fine-tune vs adapter (RQ2):** same accuracy; the adapter is 40x fewer trained weights, a 43 MB file, and 4 GB of training memory.
+- **Base vs thinking Qwen (RQ3):** thinking adds about 3 points as a zero-shot decider (not significant) at 95x the latency; the student's starting point does not matter.
+- **Distillation (RQ4):** an autoregressive Qwen3-4B teacher can be distilled into a 0.6B decision model, without gold labels, reaching 90% of the teacher's out-of-domain accuracy.
 
-| Suite / split | Questions | tino-finetuned | tino-adapter | Kev-0.6B | Jev |
-|---|---|---|---|---|---|
-| decision-v7 dev (trained sources) | 1,468 | 0.794 | 0.788 | – | – |
-| decision-v7 test (trained sources) | 1,440 | **0.810** | **0.810** | 0.808 | – |
-| transfer-v4 dev (new sources) | 764 | 0.598 | 0.594 | 0.620 | 0.857 |
-| transfer-v4 test (new sources) | 764 | 0.618 | 0.613 | 0.642 | – |
-| transfer-v9 test (adds MMLU-Pro, buried, unknowable) | 1,264 | 0.544 | 0.548 | – | – |
-
-**Calibration** (test splits; ECE and confident errors after temperature scaling)
-
-| Suite / split | Brier, finetuned | Brier, adapter | ECE, finetuned | ECE, adapter | Confident error, finetuned | Confident error, adapter |
-|---|---|---|---|---|---|---|
-| decision-v7 test | 0.295 | 0.286 | 0.037 | 0.034 | 2.6% | 1.7% |
-| transfer-v4 test | 0.526 | 0.529 | 0.050 | 0.055 | 0.1% | 1.4% |
-| transfer-v9 test | 0.622 | 0.622 | 0.041 | 0.071 | 0.2% | 1.7% |
-
-**Cost on the M4**
-
-| | tino-finetuned | tino-adapter |
-|---|---|---|
-| Trainable parameters | 441M | 10.6M (2.4% of that) |
-| Published weights | 2.1 GB (full model) | 43 MB (adapter + head; base from the Hub) |
-| Training time, 2 epochs | 183 min | 193 min |
-| Peak MLX memory | 7.7 GB* | 4.0 GB |
-| Lowest system free memory | 31% | 58% |
-| Fitted temperature | 2.45 | 2.01 |
-| Best checkpoint | step 2,520 of 2,881 | step 2,881 of 2,881 |
-| Inference, fp32 | 40–66 ms per question | 52–85 ms per question (LoRA unfused) |
-
-\* Measured before a fix that evaluates loss and gradients together. Reading the loss first had kept every activation alive and defeated gradient checkpointing. The fix changes memory only; results are identical.
-
-What it shows:
-
-- **Same accuracy, 40x fewer trainable weights.** On this base and data, full fine-tuning and LoRA land within half a point of each other on every suite. The adapter is 43 MB instead of 2.1 GB and trains in 4 GB of memory.
-- **No transfer advantage for LoRA here.** Both trail Kev-0.6B by about 2.5 points on new sources. Since the two tino models agree with each other, the gap more likely comes from recipe or harness differences than from the method.
-- **Calibration is good after one temperature.** Raw probabilities are overconfident for both (ECE about 0.10 in domain, 0.15–0.19 out of domain). Temperature scaling brings ECE to 0.03–0.07.
-- **Score questions remain the weak spot.** Exact-level accuracy on 5-point scales is 0.51 (finetuned) and 0.58 (adapter), against 0.85–0.88 for Choice and yes/no.
-- **The adapter was still improving at the last step**, so a third epoch might help it; the full fine-tune peaked before the end.
+All runs, including the ones that failed or were stopped, are in `runs/`.
 
 ## Tracking
 
