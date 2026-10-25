@@ -6,10 +6,10 @@
 
 | Question | Answer |
 |---|---|
-| **RQ1.** Which fine-tuning recipe is best? | Stability first: lr ≤ 1e-4, alpha fixed (not scaled with rank), 2+ seeds, and reject runs whose dev log-loss sits at the uniform value; 1 in 4 small-data LoRA runs collapsed by chance and lr 2e-4 always did. Then supervision: teacher soft labels transfer best. Rank above 16 and Brier loss do not help. Need well over 1,000 questions. |
+| **RQ1.** Which fine-tuning recipe is best? | Stability first: lr ≤ 1e-4, alpha fixed (not scaled with rank), 2+ seeds, and reject runs whose dev log-loss sits at the uniform value; 1 in 4 small-data LoRA runs collapsed by chance and lr 2e-4 always did. Then supervision: teacher soft labels give calibrated probabilities; their out-of-domain accuracy gain did not hold up over two seeds. Rank above 16 and Brier loss do not help. Need well over 1,000 questions. |
 | **RQ2.** Full fine-tune or adapter? | Adapter. Same in-domain accuracy (0.814 vs 0.815, 2 seeds), a lean of about 2 points out of domain within seed noise, and 40x fewer trained weights, a 43 MB file, 4 GB of training memory. Full fine-tuning is the safer pick only with very little data. |
 | **RQ3.** Base or thinking Qwen? | As a zero-shot decider, thinking adds 3 points (not significant, p = 0.41) at 95x the latency; it helps on rule-following questions. As the student's starting point, post-trained vs base makes no difference after training. |
-| **RQ4.** Can an autoregressive model be distilled into a decision model? | Yes. Teacher-only distillation from Qwen3-4B gives the best out-of-domain model (0.671, above Kev-0.6B) at a 6-point in-domain cost. A half-teacher mix matches gold-label accuracy and comes out calibrated without temperature scaling. |
+| **RQ4.** Can an autoregressive model be distilled into a decision model? | Yes. A half-teacher, half-gold student matches gold-label accuracy and comes out calibrated without temperature scaling, with better out-of-domain probabilities. Teacher only, with no gold labels, also works but costs 5.6 points in domain (significant) for a +1.7-point out-of-domain lean that is not significant over two seeds. |
 
 Seed-to-seed variation out of domain is up to about 4 points, larger than most method differences here; single-seed gaps smaller than that are treated as unproven throughout.
 
@@ -68,7 +68,7 @@ Results on development splits (4,000-question subset, 2 epochs). Each cell is tr
 **Answer: for a small decision model, the recipe matters in this order.**
 
 1. **Keep training stable; it is the biggest effect at small data.** lr 2e-4 collapsed on both seeds, and rank 64 with alpha scaled to rank collapsed too, because both make each update too large. Rank 64 with fixed alpha trains normally. The baseline recipe also collapsed by chance about 1 time in 4 at 4k (attention-only stalled and teacher-at-0.5 collapsed on one seed, and both trained fine on the other). No LoRA run collapsed at full data (0 of 5). Practical rule: lr ≤ 1e-4, fixed alpha, at least 2 seeds, and reject any run whose dev log-loss sits at the uniform value.
-2. **What the model learns from matters most for transfer.** Teacher soft labels beat gold labels out of domain: teacher-only scored 0.611 on new-source dev at 4k against 0.559 for gold-only (two-seed mean). At full data the same holds on test (RQ4). The teacher weight is a dial: more teacher means better transfer and worse in-domain accuracy.
+2. **Teacher soft labels change calibration more than accuracy.** At 4k, teacher-only scored 0.611 on new-source dev against 0.559 for gold-only, but at full data with two seeds the out-of-domain gain shrank to +1.7 points (not significant) while the in-domain cost stayed at 5.6 points. Every distilled run came out calibrated (RQ4).
 3. **Smaller updates and fewer adapted modules help a little.** lr 5e-5 (0.750 / 0.593) and rank 4 (0.755 / 0.565) both beat the baseline in domain. Attention-only, when it trained, had the best gold-label transfer (0.606). Each is one seed, so these are leads, not settled.
 4. **More rank does not help.** Rank 64 (fixed alpha) is no better than rank 16 on new sources.
 5. **Plain cross-entropy is the right loss.** Adding a Brier term cost about 5 points in domain and did not improve calibration after temperature scaling.
@@ -155,28 +155,37 @@ Probe on 380 development questions: the teacher scores 0.677 on trained sources 
 | D0 | label all splits with the teacher | done: [`tino-teacher-labels`](https://huggingface.co/datasets/BrandeisPatrick/tino-teacher-labels) @ `31e5bfd7`, run [`20261023-140510`](runs/20261023-140510-teacher-qwen3-4b) |
 | D1 | `tino-distil`, teacher weight 0.5, full data, 2 seeds | done: [`seed 0`](runs/20261023-153602-tino-distil), [`seed 1`](runs/20261025-014322-tino-distil-s1) |
 | D2 | teacher-weight sweep at 4k: 0.25, 0.5, 1.0 | done (RQ1 table, rows D2a–D2c) |
-| D3 | `tino-distil-a1`, teacher only (no gold labels), full data | done: [`run`](runs/20261024-222253-tino-distil-a1) |
+| D3 | `tino-distil-a1`, teacher only (no gold labels), full data, 2 seeds | done: [`seed 0`](runs/20261024-222253-tino-distil-a1), [`seed 1`](runs/20261025-083634-tino-distil-a1-s1) |
 
 The teacher itself, zero-shot and temperature-scaled, scores 0.775 on trained sources and 0.745 on new sources (test splits), at about 330 ms per question.
 
-**Answer: yes. A 0.6B decision model can learn from an autoregressive LLM, and how much weight the teacher gets sets a trade-off between in-domain and out-of-domain skill.**
+**Answer: yes. A 0.6B decision model can learn from an autoregressive LLM. What carries over reliably is calibration; extra out-of-domain accuracy does not.**
 
-Two seeds each, test splits:
+Two seeds per model, test splits (seed 0 / seed 1):
 
-| Test split | Gold labels (`tino-adapter`) | Half teacher (`tino-distil`) | Teacher only (`tino-distil-a1`, 1 seed) | Teacher |
+| Test split | Gold labels (`tino-adapter`) | Half teacher (`tino-distil`) | Teacher only (`tino-distil-a1`) | Teacher |
 |---|---|---|---|---|
-| decision-v7 (trained sources) | 0.810 / 0.818 | 0.808 / 0.820 | 0.750 | 0.775 |
-| transfer-v4 (new sources) | 0.613 / 0.651 | 0.636 / 0.626 | **0.671** | 0.745 |
-| transfer-v9 (hardest) | 0.548 / 0.568 | 0.555 / 0.548 | **0.577** | 0.672 |
-| Fitted temperature | 2.01 / 1.96 | 0.95 / 0.84 | 0.87 | 9.0 |
-| Raw ECE, transfer-v4 | 0.152 / 0.111 | 0.049 / 0.040 | 0.097 | 0.245 |
-| Brier, transfer-v4 | 0.529 / 0.485 | 0.466 / 0.474 | 0.441 | – |
+| decision-v7 (trained sources) | 0.810 / 0.818 | 0.808 / 0.820 | 0.750 / 0.766 | 0.775 |
+| transfer-v4 (new sources) | 0.613 / 0.651 | 0.636 / 0.626 | 0.671 / 0.626 | 0.745 |
+| transfer-v9 (hardest) | 0.548 / 0.568 | 0.555 / 0.548 | 0.577 / 0.543 | 0.672 |
+| Mean of the three, per model | 0.668 | 0.666 | 0.656 | – |
+| Fitted temperature | 2.01 / 1.96 | 0.95 / 0.84 | 0.87 / 0.92 | 9.0 |
+| Raw ECE, transfer-v4 | 0.152 / 0.111 | 0.049 / 0.040 | 0.097 / 0.040 | 0.245 |
+| Brier, transfer-v4 (two-seed mean) | 0.507 | 0.470 | 0.463 | – |
 
-- **Gold labels are not needed.** Trained on the teacher's probabilities alone, the student reaches 0.750 in domain and 0.671 out of domain. That is 90% of the 4B teacher's out-of-domain accuracy in a model a sixth the size, answering in about 50 ms instead of 330. It is the only tino model above Kev-0.6B (0.642) on new sources.
-- **The teacher weight is a dial.** Teacher-only gains 4 points out of domain over the gold-label mean (0.671 vs 0.632) and loses 6 in domain (0.750 vs 0.814). The in-domain loss is significant against every baseline (p < 0.0001); the out-of-domain gain is significant against one adapter seed (p = 0.0001) but not the other (p = 0.21). The same pattern showed at 4k (0.611 vs 0.559 on new-source dev).
-- **Half teacher, half gold matches gold-label accuracy everywhere** (means 0.814 / 0.631 / 0.551 vs 0.814 / 0.632 / 0.558; sign tests p ≥ 0.44) **and comes out calibrated.** Its fitted temperature is 0.84–0.95 on both seeds, so it needs no correction, while the gold-label adapter needs about 2.0. Its raw ECE out of domain is 0.04–0.05, against 0.11–0.15, and its Brier is better on both new-source sets for both seeds.
-- **What does not transfer:** the teacher's in-domain weakness on Score questions and its overconfidence (the teacher needed T = 9; distillation used its temperature-scaled probabilities).
-- One teacher-only seed only. A second seed would firm up the out-of-domain gain.
+Pooled over both seeds, against the gold-label adapter:
+
+| Teacher only vs gold labels | Accuracy gap | 95% interval | Sign test p | Brier |
+|---|---|---|---|---|
+| decision-v7 | −5.6 pts | −7.5 to −3.8 | < 0.0001 | 0.345 vs 0.280 (worse) |
+| transfer-v4 | +1.7 pts | −0.7 to +4.1 | 0.66 | 0.463 vs 0.507 (better) |
+| transfer-v9 | +0.2 pts | −1.9 to +2.1 | 1.00 | 0.544 vs 0.609 (better) |
+
+- **Half teacher, half gold is the best model.** It matches gold-label accuracy everywhere (two-seed means 0.814 / 0.631 / 0.551 vs 0.814 / 0.632 / 0.558; sign tests p ≥ 0.44) and comes out calibrated: fitted temperature 0.84–0.95, so it needs no correction, against about 2.0 for the gold-label adapter. Its raw ECE out of domain is 0.04–0.05 against 0.11–0.15, and its out-of-domain Brier is better on both seeds.
+- **Gold labels are not needed.** Trained on the teacher's probabilities alone, the student averages 0.758 in domain and 0.649 out of domain, 87% of the 4B teacher's out-of-domain accuracy in a model a sixth the size, answering in about 50 ms instead of 330.
+- **But teacher-only is a trade, not a win.** It loses 5.6 points in domain on both seeds. Its out-of-domain edge is +1.7 points on transfer-v4 and +0.2 on transfer-v9, neither significant. Seed 0's 0.671 was the high end: seed 1 scored 0.626.
+- **Calibration is the robust effect.** All four distilled runs needed a temperature of 0.84–0.95; all three gold-label models needed 1.96–2.75.
+- **Seed variation dominates accuracy comparisons out of domain.** The same recipe moved by 3.8 points (adapter) and 4.5 points (teacher-only) between seeds.
 
 ## Model objectives
 
@@ -192,8 +201,8 @@ Released models live on private Hugging Face repos; each Hub copy was downloaded
 
 Bar set at the start: trained sources ≥ 0.808 and new sources ≥ 0.642 (Kev-0.6B), calibrated ECE ≤ 0.05, training ≤ 8 GB, ≤ 100 ms per question on the M4. Every model trains in 8 GB or less and answers in under 100 ms.
 
-- No single model clears both accuracy bars. The gold-label models meet the in-domain bar; `tino-distil-a1` meets the out-of-domain bar. A second-seed adapter (not released) scored 0.818 / 0.651 and cleared both, which shows how much seed luck sits in these numbers.
-- Pick by use: `tino-distil` for calibrated probabilities with full in-domain accuracy, `tino-distil-a1` for questions unlike the training data, `tino-adapter` as the small gold-label baseline.
+- No released model clears both accuracy bars. The gold-label and half-teacher models meet the in-domain bar; `tino-distil-a1` (seed 0) meets the out-of-domain bar, but its second seed scored 0.766 / 0.626, so that is partly seed luck. A second-seed adapter (not released) scored 0.818 / 0.651 and cleared both, which again shows how much luck sits in these numbers.
+- Pick `tino-distil` by default: full in-domain accuracy and calibrated probabilities with no temperature fix. `tino-distil-a1` shows the student can learn without gold labels. `tino-adapter` is the small gold-label baseline.
 
 ## Out of scope on this machine
 

@@ -11,8 +11,8 @@ Five released models, all on the same 0.6B base family, data, and evaluation:
 | [`tino-finetuned`](https://huggingface.co/BrandeisPatrick/tino-finetuned) | Full fine-tune of every transformer layer plus a pointer head (Adafactor, embeddings frozen) | 0.810 | 0.618 |
 | [`tino-adapter`](https://huggingface.co/BrandeisPatrick/tino-adapter) | Rank-16 LoRA on a frozen base plus a pointer head (Kev's LoRA recipe) | 0.810 | 0.613 |
 | [`tino-adapter-post`](https://huggingface.co/BrandeisPatrick/tino-adapter-post) | Same adapter, starting from post-trained Qwen3-0.6B instead of the base | 0.810 | 0.615 |
-| [`tino-distil`](https://huggingface.co/BrandeisPatrick/tino-distil) | Same adapter, trained half on gold labels and half on an autoregressive Qwen3-4B teacher's option probabilities; calibrated without temperature scaling | 0.808 | 0.636 |
-| [`tino-distil-a1`](https://huggingface.co/BrandeisPatrick/tino-distil-a1) | Same adapter, trained on the Qwen3-4B teacher only, no gold labels; best out of domain | 0.750 | 0.671 |
+| [`tino-distil`](https://huggingface.co/BrandeisPatrick/tino-distil) | Same adapter, trained half on gold labels and half on an autoregressive Qwen3-4B teacher's option probabilities; calibrated without temperature scaling; the recommended model | 0.808 | 0.636 |
+| [`tino-distil-a1`](https://huggingface.co/BrandeisPatrick/tino-distil-a1) | Same adapter, trained on the Qwen3-4B teacher only, no gold labels (seed 0; seed 1 scored 0.766 / 0.626) | 0.750 | 0.671 |
 
 Test accuracy on `decision-v7` (trained sources) and `transfer-v4` (new sources). For reference, Kev-0.6B scores 0.808 / 0.642 and Jev 0.857 on new-source development data.
 
@@ -28,10 +28,10 @@ Test accuracy on `decision-v7` (trained sources) and `transfer-v4` (new sources)
 
 [RESEARCH.md](RESEARCH.md) holds the four research questions, every experiment, and the answers, with paired significance tests and two seeds where it mattered. In short:
 
-- **Recipe (RQ1):** training stability dominates at small data; keep lr ≤ 1e-4 and alpha fixed, and run 2+ seeds. Teacher soft labels are the biggest lever for transfer.
+- **Recipe (RQ1):** training stability dominates at small data; keep lr ≤ 1e-4 and alpha fixed, and run 2+ seeds. Teacher soft labels mainly improve calibration.
 - **Full fine-tune vs adapter (RQ2):** same accuracy; the adapter is 40x fewer trained weights, a 43 MB file, and 4 GB of training memory.
 - **Base vs thinking Qwen (RQ3):** thinking adds about 3 points as a zero-shot decider (not significant) at 95x the latency; the student's starting point does not matter.
-- **Distillation (RQ4):** an autoregressive Qwen3-4B teacher can be distilled into a 0.6B decision model, without gold labels, reaching 90% of the teacher's out-of-domain accuracy.
+- **Distillation (RQ4):** an autoregressive Qwen3-4B teacher can be distilled into a 0.6B decision model. Half teacher, half gold matches gold-label accuracy and comes out calibrated; teacher only works without gold labels but costs 5.6 points in domain, and its out-of-domain gain is not significant over two seeds.
 
 All runs, including the ones that failed or were stopped, are in `runs/`.
 
