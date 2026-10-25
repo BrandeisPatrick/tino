@@ -2,6 +2,17 @@
 
 **Goal.** Learn how to turn a small autoregressive decoder into a Jev-style decision model (state + typed questions in, calibrated option probabilities out, one forward pass) on a 16 GB Apple M4, and which way of doing it works best.
 
+## Answers at a glance
+
+| Question | Answer |
+|---|---|
+| **RQ1.** Which fine-tuning recipe is best? | Stability first: lr ≤ 1e-4, alpha fixed (not scaled with rank), 2+ seeds, and reject runs whose dev log-loss sits at the uniform value; 1 in 4 small-data LoRA runs collapsed by chance and lr 2e-4 always did. Then supervision: teacher soft labels transfer best. Rank above 16 and Brier loss do not help. Need well over 1,000 questions. |
+| **RQ2.** Full fine-tune or adapter? | Adapter. Same in-domain accuracy (0.814 vs 0.815, 2 seeds), a lean of about 2 points out of domain within seed noise, and 40x fewer trained weights, a 43 MB file, half the memory. Full fine-tuning is the safer pick only with very little data. |
+| **RQ3.** Base or thinking Qwen? | As a zero-shot decider, thinking adds 3 points (not significant, p = 0.41) at 95x the latency; it helps on rule-following questions. As the student's starting point, post-trained vs base makes no difference after training. |
+| **RQ4.** Can an autoregressive model be distilled into a decision model? | Yes. Teacher-only distillation from Qwen3-4B gives the best out-of-domain model (0.672, above Kev-0.6B) at a 6-point in-domain cost. A half-teacher mix matches gold-label accuracy and comes out calibrated without temperature scaling. |
+
+Seed-to-seed variation out of domain is up to about 4 points, larger than most method differences here; single-seed gaps smaller than that are treated as unproven throughout.
+
 ## Shared protocol
 
 Every experiment follows these rules, so results stay comparable.
@@ -142,45 +153,47 @@ Probe on 380 development questions: the teacher scores 0.677 on trained sources 
 | ID | Run | Status |
 |---|---|---|
 | D0 | label all splits with the teacher | done: [`tino-teacher-labels`](https://huggingface.co/datasets/BrandeisPatrick/tino-teacher-labels) @ `31e5bfd7`, run [`20261023-140510`](runs/20261023-140510-teacher-qwen3-4b) |
-| D1 | `tino-distil`, α = 0.5, full data | done: run [`20261023-153602`](runs/20261023-153602-tino-distil) |
-| D2 | α sweep at 4k: 0.25, 0.5, 1.0 (1.0 = teacher only, no gold labels) | queued |
+| D1 | `tino-distil`, teacher weight 0.5, full data, 2 seeds | done: [`seed 0`](runs/20261023-153602-tino-distil), [`seed 1`](runs/20261025-014322-tino-distil-s1) |
+| D2 | teacher-weight sweep at 4k: 0.25, 0.5, 1.0 | done (RQ1 table, rows D2a–D2c) |
+| D3 | `tino-distil-a1`, teacher only (no gold labels), full data | done: [`run`](runs/20261024-222253-tino-distil-a1) |
 
-Success means `tino-distil` beats `tino-adapter` on new sources by more than noise, without losing more than a point on trained sources.
+The teacher itself, zero-shot and temperature-scaled, scores 0.775 on trained sources and 0.745 on new sources (test splits), at about 330 ms per question.
 
-**Answer so far: yes for calibration (robust); accuracy and Brier gains are within seed variation.**
+**Answer: yes. A 0.6B decision model can learn from an autoregressive LLM, and how much weight the teacher gets sets a trade-off between in-domain and out-of-domain skill.**
 
-The teacher, zero-shot and temperature-scaled, scores 0.775 on trained sources and 0.745 on new sources (test splits). Its calibrated ECE is about 0.05.
+Two seeds each, test splits:
 
-Paired against `tino-adapter` (same student, gold labels only) on identical test questions:
+| Test split | Gold labels (`tino-adapter`) | Half teacher (`tino-distil`) | Teacher only (`tino-distil-a1`, 1 seed) | Teacher |
+|---|---|---|---|---|
+| decision-v7 (trained sources) | 0.810 / 0.818 | 0.808 / 0.820 | 0.750 | 0.775 |
+| transfer-v4 (new sources) | 0.613 / 0.651 | 0.636 / 0.626 | **0.672** | 0.745 |
+| transfer-v9 (hardest) | 0.548 / 0.568 | 0.555 / 0.548 | **0.577** | 0.672 |
+| Fitted temperature | 2.01 / 1.96 | 0.95 / 0.84 | 0.87 | 9.0 |
+| Raw ECE, transfer-v4 | 0.152 / 0.111 | 0.049 / 0.040 | 0.097 | 0.245 |
+| Brier, transfer-v4 | 0.529 / 0.485 | 0.466 / 0.474 | 0.441 | – |
 
-| Test split | tino-adapter | tino-distil | Accuracy gap | McNemar p | Brier improvement, 95% interval |
-|---|---|---|---|---|---|
-| decision-v7 (trained sources) | 0.810 | 0.808 | −0.2 pts | 0.88 | +0.005, from −0.014 to +0.026 |
-| transfer-v4 (new sources) | 0.613 | 0.636 | +2.4 pts | 0.12 | **+0.063, from +0.037 to +0.091** |
-| transfer-v9 (hardest) | 0.548 | 0.555 | +0.6 pts | 0.62 | **+0.076, from +0.055 to +0.098** |
-
-- **Calibration transfers.** The distilled student needs no temperature correction: its fitted temperature is 0.95, against 1.96–2.01 for both adapter seeds and 2.45 for the full fine-tune. Its raw ECE out of domain is about 0.05, against 0.11–0.15 for the adapter seeds.
-- **Seed caution.** A second adapter seed scored 0.651 on transfer-v4 test (Brier 0.485), 3.8 points above the first (McNemar p = 0.007). Paired tests cover test-set sampling, not training randomness, and out of domain that randomness is about 4 points. Against the better adapter seed, distillation's Brier edge shrinks to 0.02. A second distillation seed is queued; accuracy and Brier claims wait for it.
-- **Nothing is lost in domain.** Trained-source accuracy is unchanged.
-- **Out-of-domain accuracy barely moves.** The +2.4 points on transfer-v4 test is not significant (p = 0.12), and the development split shows no gain (0.596 vs 0.594). Most of the teacher's 0.745 does not come across. This matches Kev's finding that a 0.6B student is capacity-limited out of domain.
-- The α sweep (D2) tests whether more weight on the teacher moves accuracy, and whether gold labels are needed at all (α = 1.0).
+- **Gold labels are not needed.** Trained on the teacher's probabilities alone, the student reaches 0.750 in domain and 0.672 out of domain. That is 90% of the 4B teacher's out-of-domain accuracy in a model a sixth the size, answering in about 60 ms instead of 330. It is the only tino model above Kev-0.6B (0.642) on new sources.
+- **The teacher weight is a dial.** Teacher-only gains 4 points out of domain over the gold-label mean (0.672 vs 0.632) and loses 6 in domain (0.750 vs 0.814). The in-domain loss is significant against every baseline (p < 0.0001); the out-of-domain gain is significant against one adapter seed (p = 0.0001) but not the other (p = 0.21). The same pattern showed at 4k (0.611 vs 0.559 on new-source dev).
+- **Half teacher, half gold matches gold-label accuracy everywhere** (means 0.814 / 0.631 / 0.551 vs 0.814 / 0.632 / 0.558; sign tests p ≥ 0.44) **and comes out calibrated.** Its fitted temperature is 0.84–0.95 on both seeds, so it needs no correction, while the gold-label adapter needs about 2.0. Its raw ECE out of domain is 0.04–0.05, against 0.11–0.15, and its Brier is better on both new-source sets for both seeds.
+- **What does not transfer:** the teacher's in-domain weakness on Score questions and its overconfidence (the teacher needed T = 9; distillation used its temperature-scaled probabilities).
+- One teacher-only seed only. A second seed would firm up the out-of-domain gain.
 
 ## Model objectives
 
-Released models live on private Hugging Face repos. Ablation runs stay as tracked runs only.
+Released models live on private Hugging Face repos; each Hub copy was downloaded and re-scored, and reproduces its run's test accuracy exactly. Ablation runs stay as tracked runs only.
 
-| Model | Answers | Recipe | Status |
-|---|---|---|---|
-| [`tino-finetuned`](https://huggingface.co/BrandeisPatrick/tino-finetuned) | RQ2 | full fine-tune, Qwen3-0.6B-Base | done |
-| [`tino-adapter`](https://huggingface.co/BrandeisPatrick/tino-adapter) | RQ1 baseline, RQ2 | LoRA r16, Qwen3-0.6B-Base | done |
-| [`tino-distil`](https://huggingface.co/BrandeisPatrick/tino-distil) | RQ4 | LoRA r16 + Qwen3-4B-Instruct teacher | done |
-| [`tino-adapter-post`](https://huggingface.co/BrandeisPatrick/tino-adapter-post) | RQ3b | LoRA r16, Qwen3-0.6B (post-trained, thinking-capable) | done |
+| Model | Answers | Recipe | Trained sources | New sources | Calibrated ECE, new | ms per question | Meets bar |
+|---|---|---|---|---|---|---|---|
+| [`tino-finetuned`](https://huggingface.co/BrandeisPatrick/tino-finetuned) | RQ2 | full fine-tune, Qwen3-0.6B-Base, gold labels | 0.810 | 0.618 | 0.050 | 40 | misses new, ECE |
+| [`tino-adapter`](https://huggingface.co/BrandeisPatrick/tino-adapter) | RQ1 baseline, RQ2 | LoRA r16, Qwen3-0.6B-Base, gold labels | 0.810 | 0.613 | 0.055 | 52 | misses new, ECE |
+| [`tino-adapter-post`](https://huggingface.co/BrandeisPatrick/tino-adapter-post) | RQ3b | LoRA r16, Qwen3-0.6B (post-trained), gold labels | 0.810 | 0.615 | 0.070 | 51 | misses new, ECE |
+| [`tino-distil`](https://huggingface.co/BrandeisPatrick/tino-distil) | RQ4 | LoRA r16, half gold labels, half Qwen3-4B teacher | 0.808 | 0.636 | 0.046 | 51 | misses new |
+| [`tino-distil-a1`](https://huggingface.co/BrandeisPatrick/tino-distil-a1) | RQ4 | LoRA r16, Qwen3-4B teacher only, no gold labels | 0.750 | 0.671 | 0.068 | 52 | misses trained, ECE |
 
-Bar for every released model:
+Bar set at the start: trained sources ≥ 0.808 and new sources ≥ 0.642 (Kev-0.6B), calibrated ECE ≤ 0.05, training ≤ 8 GB, ≤ 100 ms per question on the M4. Every model trains in 8 GB or less and answers in under 100 ms.
 
-- Trained sources ≥ 0.808 (Kev-0.6B). New sources ≥ 0.642 (Kev-0.6B), stretch 0.70.
-- Calibrated ECE ≤ 0.05 and confident errors ≤ 3%.
-- Trains in ≤ 8 GB peak and answers in ≤ 100 ms per question on the M4.
+- No single model clears both accuracy bars. The gold-label models meet the in-domain bar; `tino-distil-a1` meets the out-of-domain bar. A second-seed adapter (not released) scored 0.818 / 0.651 and cleared both, which shows how much seed luck sits in these numbers.
+- Pick by use: `tino-distil` for calibrated probabilities with full in-domain accuracy, `tino-distil-a1` for questions unlike the training data, `tino-adapter` as the small gold-label baseline.
 
 ## Out of scope on this machine
 
