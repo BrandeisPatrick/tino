@@ -1,0 +1,3076 @@
+{
+ "summary": {
+  "generated": "2026-10-27",
+  "runs_total": 39,
+  "runs_finished_nonsmoke": 29,
+  "train_hours_nonsmoke": 43.7,
+  "published_models": [
+   "BrandeisPatrick/tino-finetuned",
+   "BrandeisPatrick/tino-adapter",
+   "BrandeisPatrick/tino-distil",
+   "BrandeisPatrick/tino-adapter-post",
+   "BrandeisPatrick/tino-distil-a1"
+  ]
+ },
+ "runs": [
+  {
+   "id": "20261022-223942-tino-finetuned-smoke",
+   "name": "tino-finetuned-smoke",
+   "started": "20261022-223942",
+   "smoke": true,
+   "dir": "runs/20261022-223942-tino-finetuned-smoke",
+   "code_commit": "e062981a",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "full_finetune",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": null,
+   "lora": null,
+   "alpha": null,
+   "backbone_lr": 1e-05,
+   "brier_weight": null,
+   "status": "stopped",
+   "stopped_reason": "Stopped by the user before training began, to add resource limits first.",
+   "metrics": {},
+   "has_predictions": false
+  },
+  {
+   "id": "20261022-224436-tino-finetuned-smoke",
+   "name": "tino-finetuned-smoke",
+   "started": "20261022-224436",
+   "smoke": true,
+   "dir": "runs/20261022-224436-tino-finetuned-smoke",
+   "code_commit": "46cfd5d9",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "full_finetune",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": null,
+   "lora": null,
+   "alpha": null,
+   "backbone_lr": 1e-05,
+   "brier_weight": null,
+   "status": "stopped",
+   "stopped_reason": "Stopped manually at step 10 of 25. Full fine-tuning with AdamW peaked at 10.1 GB of MLX memory, dropping system free memory to 19-24% on every step and tripping the guard's 25% pause line each step. Pipeline itself worked: loss fell from 3.39 to 1.77.",
+   "metrics": {},
+   "peak_gb": 10.09,
+   "min_free_pct": 22,
+   "has_predictions": false
+  },
+  {
+   "id": "20261022-224654-tino-finetuned-smoke",
+   "name": "tino-finetuned-smoke",
+   "started": "20261022-224654",
+   "smoke": true,
+   "dir": "runs/20261022-224654-tino-finetuned-smoke",
+   "code_commit": "bcd1d812",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "full_finetune",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": null,
+   "lora": null,
+   "alpha": null,
+   "backbone_lr": 1e-05,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.16,
+     "brier": 0.877,
+     "ece_raw": 0.0492,
+     "ece_cal": 0.0423,
+     "ms": 187,
+     "n": 100
+    },
+    "decision-v7/test": {
+     "acc": 0.11,
+     "brier": 0.9201,
+     "ece_raw": 0.0684,
+     "ece_cal": 0.0134,
+     "ms": 188,
+     "n": 100
+    },
+    "transfer-v4/development": {
+     "acc": 0.22,
+     "brier": 0.8038,
+     "ece_raw": 0.205,
+     "ece_cal": 0.0376,
+     "ms": 36,
+     "n": 100
+    },
+    "transfer-v4/test": {
+     "acc": 0.34,
+     "brier": 0.809,
+     "ece_raw": 0.0965,
+     "ece_cal": 0.0819,
+     "ms": 43,
+     "n": 100
+    },
+    "transfer-v9/test": {
+     "acc": 0.34,
+     "brier": 0.809,
+     "ece_raw": 0.0965,
+     "ece_cal": 0.0819,
+     "ms": 43,
+     "n": 100
+    }
+   },
+   "temperature": 8.0,
+   "best_step": 25,
+   "train_minutes": 2,
+   "trainable_params": 440992256,
+   "by_type_test": {
+    "choice": 0.0125,
+    "noul": 0.5
+   },
+   "dev_curve": [
+    [
+     12,
+     0.3
+    ],
+    [
+     24,
+     0.3083
+    ],
+    [
+     25,
+     0.325
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 7.6,
+   "min_free_pct": 36,
+   "has_predictions": false
+  },
+  {
+   "id": "20261022-225150-tino-finetuned",
+   "name": "tino-finetuned",
+   "started": "20261022-225150",
+   "smoke": false,
+   "dir": "runs/20261022-225150-tino-finetuned",
+   "code_commit": "1b0d7fa1",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "full_finetune",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": null,
+   "lora": null,
+   "alpha": null,
+   "backbone_lr": 1e-05,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.7943,
+     "brier": 0.3074,
+     "ece_raw": 0.103,
+     "ece_cal": 0.0312,
+     "ms": 66,
+     "n": 1468
+    },
+    "decision-v7/test": {
+     "acc": 0.8104,
+     "brier": 0.2947,
+     "ece_raw": 0.1049,
+     "ece_cal": 0.0375,
+     "ms": 66,
+     "n": 1440
+    },
+    "transfer-v4/development": {
+     "acc": 0.5982,
+     "brier": 0.5322,
+     "ece_raw": 0.1808,
+     "ece_cal": 0.06,
+     "ms": 40,
+     "n": 764
+    },
+    "transfer-v4/test": {
+     "acc": 0.6178,
+     "brier": 0.5255,
+     "ece_raw": 0.1692,
+     "ece_cal": 0.0504,
+     "ms": 40,
+     "n": 764
+    },
+    "transfer-v9/test": {
+     "acc": 0.5443,
+     "brier": 0.6224,
+     "ece_raw": 0.1936,
+     "ece_cal": 0.0413,
+     "ms": 48,
+     "n": 1264
+    }
+   },
+   "temperature": 2.447,
+   "best_step": 2520,
+   "train_minutes": 183,
+   "trainable_params": 440992256,
+   "by_type_test": {
+    "choice": 0.8764,
+    "noul": 0.8631,
+    "score": 0.5083
+   },
+   "dev_curve": [
+    [
+     360,
+     0.6785
+    ],
+    [
+     720,
+     0.7377
+    ],
+    [
+     1080,
+     0.7554
+    ],
+    [
+     1440,
+     0.7629
+    ],
+    [
+     1800,
+     0.7786
+    ],
+    [
+     2160,
+     0.7902
+    ],
+    [
+     2520,
+     0.7943
+    ],
+    [
+     2880,
+     0.7922
+    ],
+    [
+     2881,
+     0.7909
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 7.69,
+   "min_free_pct": 31,
+   "published": {
+    "repo": "BrandeisPatrick/tino-finetuned",
+    "revision": "d6b3c99762aa2b45a764f0440d8e70834d52214a",
+    "url": "https://huggingface.co/BrandeisPatrick/tino-finetuned/tree/d6b3c99762aa2b45a764f0440d8e70834d52214a"
+   },
+   "weights_mb": 2075,
+   "has_predictions": true
+  },
+  {
+   "id": "20261023-084135-tino-adapter-smoke",
+   "name": "tino-adapter-smoke",
+   "started": "20261023-084135",
+   "smoke": true,
+   "dir": "runs/20261023-084135-tino-adapter-smoke",
+   "code_commit": "c1b9921c",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": null,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": null,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.12,
+     "brier": 0.885,
+     "ece_raw": 0.0384,
+     "ece_cal": 0.0291,
+     "ms": 304,
+     "n": 100
+    },
+    "decision-v7/test": {
+     "acc": 0.09,
+     "brier": 0.8983,
+     "ece_raw": 0.0429,
+     "ece_cal": 0.026,
+     "ms": 305,
+     "n": 100
+    },
+    "transfer-v4/development": {
+     "acc": 0.25,
+     "brier": 0.7647,
+     "ece_raw": 0.0622,
+     "ece_cal": 0.049,
+     "ms": 60,
+     "n": 100
+    },
+    "transfer-v4/test": {
+     "acc": 0.3,
+     "brier": 0.7579,
+     "ece_raw": 0.0426,
+     "ece_cal": 0.0789,
+     "ms": 70,
+     "n": 100
+    },
+    "transfer-v9/test": {
+     "acc": 0.3,
+     "brier": 0.7579,
+     "ece_raw": 0.0426,
+     "ece_cal": 0.0789,
+     "ms": 70,
+     "n": 100
+    }
+   },
+   "temperature": 3.53,
+   "best_step": 25,
+   "train_minutes": 2,
+   "trainable_params": 10617344,
+   "by_type_test": {
+    "choice": 0.0125,
+    "noul": 0.4
+   },
+   "dev_curve": [
+    [
+     12,
+     0.275
+    ],
+    [
+     24,
+     0.2583
+    ],
+    [
+     25,
+     0.3
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 9.27,
+   "min_free_pct": 62,
+   "has_predictions": false
+  },
+  {
+   "id": "20261023-084720-tino-adapter-smoke",
+   "name": "tino-adapter-smoke",
+   "started": "20261023-084720",
+   "smoke": true,
+   "dir": "runs/20261023-084720-tino-adapter-smoke",
+   "code_commit": "5bc9bd98",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": null,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": null,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.12,
+     "brier": 0.885,
+     "ece_raw": 0.0384,
+     "ece_cal": 0.0291,
+     "ms": 306,
+     "n": 100
+    },
+    "decision-v7/test": {
+     "acc": 0.09,
+     "brier": 0.8983,
+     "ece_raw": 0.0429,
+     "ece_cal": 0.026,
+     "ms": 308,
+     "n": 100
+    },
+    "transfer-v4/development": {
+     "acc": 0.25,
+     "brier": 0.7647,
+     "ece_raw": 0.0622,
+     "ece_cal": 0.049,
+     "ms": 60,
+     "n": 100
+    },
+    "transfer-v4/test": {
+     "acc": 0.3,
+     "brier": 0.7579,
+     "ece_raw": 0.0426,
+     "ece_cal": 0.0789,
+     "ms": 70,
+     "n": 100
+    },
+    "transfer-v9/test": {
+     "acc": 0.3,
+     "brier": 0.7579,
+     "ece_raw": 0.0426,
+     "ece_cal": 0.0789,
+     "ms": 71,
+     "n": 100
+    }
+   },
+   "temperature": 3.53,
+   "best_step": 25,
+   "train_minutes": 2,
+   "trainable_params": 10617344,
+   "by_type_test": {
+    "choice": 0.0125,
+    "noul": 0.4
+   },
+   "dev_curve": [
+    [
+     12,
+     0.275
+    ],
+    [
+     24,
+     0.2583
+    ],
+    [
+     25,
+     0.3
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 9.27,
+   "min_free_pct": 65,
+   "has_predictions": false
+  },
+  {
+   "id": "20261023-085224-tino-adapter-smoke",
+   "name": "tino-adapter-smoke",
+   "started": "20261023-085224",
+   "smoke": true,
+   "dir": "runs/20261023-085224-tino-adapter-smoke",
+   "code_commit": "079ce836",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": null,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": null,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.12,
+     "brier": 0.885,
+     "ece_raw": 0.0384,
+     "ece_cal": 0.0291,
+     "ms": 307,
+     "n": 100
+    },
+    "decision-v7/test": {
+     "acc": 0.09,
+     "brier": 0.8983,
+     "ece_raw": 0.0429,
+     "ece_cal": 0.026,
+     "ms": 311,
+     "n": 100
+    },
+    "transfer-v4/development": {
+     "acc": 0.25,
+     "brier": 0.7647,
+     "ece_raw": 0.0622,
+     "ece_cal": 0.049,
+     "ms": 60,
+     "n": 100
+    },
+    "transfer-v4/test": {
+     "acc": 0.3,
+     "brier": 0.7579,
+     "ece_raw": 0.0426,
+     "ece_cal": 0.0789,
+     "ms": 71,
+     "n": 100
+    },
+    "transfer-v9/test": {
+     "acc": 0.3,
+     "brier": 0.7579,
+     "ece_raw": 0.0426,
+     "ece_cal": 0.0789,
+     "ms": 71,
+     "n": 100
+    }
+   },
+   "temperature": 3.53,
+   "best_step": 25,
+   "train_minutes": 2,
+   "trainable_params": 10617344,
+   "by_type_test": {
+    "choice": 0.0125,
+    "noul": 0.4
+   },
+   "dev_curve": [
+    [
+     12,
+     0.275
+    ],
+    [
+     24,
+     0.2583
+    ],
+    [
+     25,
+     0.3
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 3.98,
+   "min_free_pct": 71,
+   "has_predictions": false
+  },
+  {
+   "id": "20261023-085627-tino-adapter",
+   "name": "tino-adapter",
+   "started": "20261023-085627",
+   "smoke": false,
+   "dir": "runs/20261023-085627-tino-adapter",
+   "code_commit": "24edce86",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": null,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": null,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.7875,
+     "brier": 0.327,
+     "ece_raw": 0.0954,
+     "ece_cal": 0.0532,
+     "ms": 85,
+     "n": 1468
+    },
+    "decision-v7/test": {
+     "acc": 0.8104,
+     "brier": 0.2862,
+     "ece_raw": 0.0979,
+     "ece_cal": 0.0335,
+     "ms": 85,
+     "n": 1440
+    },
+    "transfer-v4/development": {
+     "acc": 0.5942,
+     "brier": 0.5486,
+     "ece_raw": 0.1787,
+     "ece_cal": 0.0728,
+     "ms": 52,
+     "n": 764
+    },
+    "transfer-v4/test": {
+     "acc": 0.6126,
+     "brier": 0.5294,
+     "ece_raw": 0.1516,
+     "ece_cal": 0.055,
+     "ms": 52,
+     "n": 764
+    },
+    "transfer-v9/test": {
+     "acc": 0.5483,
+     "brier": 0.622,
+     "ece_raw": 0.181,
+     "ece_cal": 0.0707,
+     "ms": 62,
+     "n": 1264
+    }
+   },
+   "temperature": 2.009,
+   "best_step": 2881,
+   "train_minutes": 193,
+   "trainable_params": 10617344,
+   "by_type_test": {
+    "choice": 0.8448,
+    "noul": 0.871,
+    "score": 0.5833
+   },
+   "dev_curve": [
+    [
+     360,
+     0.6928
+    ],
+    [
+     720,
+     0.7268
+    ],
+    [
+     1080,
+     0.7766
+    ],
+    [
+     1440,
+     0.7677
+    ],
+    [
+     1800,
+     0.7786
+    ],
+    [
+     2160,
+     0.78
+    ],
+    [
+     2520,
+     0.7786
+    ],
+    [
+     2880,
+     0.7868
+    ],
+    [
+     2881,
+     0.7875
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 4.04,
+   "min_free_pct": 58,
+   "published": {
+    "repo": "BrandeisPatrick/tino-adapter",
+    "revision": "792b38f5f4f27445ea71693d16be1b02e217efd9",
+    "url": "https://huggingface.co/BrandeisPatrick/tino-adapter/tree/792b38f5f4f27445ea71693d16be1b02e217efd9"
+   },
+   "weights_mb": 43,
+   "has_predictions": true
+  },
+  {
+   "id": "20261023-130843-teacher-qwen3-4b-smoke",
+   "name": "teacher-qwen3-4b-smoke",
+   "started": "20261023-130843",
+   "smoke": true,
+   "dir": "runs/20261023-130843-teacher-qwen3-4b-smoke",
+   "code_commit": "4cbdcf52",
+   "code_dirty": false,
+   "kind": "teacher labels",
+   "teacher": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+   "status": "finished",
+   "metrics": {
+    "decision-v7/calibration": {
+     "acc": 0.7586,
+     "ece_raw": 0.2437,
+     "ece_cal": 0.1503,
+     "n": 29
+    },
+    "decision-v7/development": {
+     "acc": 0.8148,
+     "ece_raw": 0.1707,
+     "ece_cal": 0.1405,
+     "n": 27
+    },
+    "decision-v7/test": {
+     "acc": 0.8148,
+     "ece_raw": 0.1709,
+     "ece_cal": 0.1834,
+     "n": 27
+    },
+    "transfer-v4/development": {
+     "acc": 0.7,
+     "ece_raw": 0.2663,
+     "ece_cal": 0.1623,
+     "n": 30
+    },
+    "transfer-v4/test": {
+     "acc": 0.7333,
+     "ece_raw": 0.2635,
+     "ece_cal": 0.1447,
+     "n": 30
+    },
+    "transfer-v9/test": {
+     "acc": 0.5667,
+     "ece_raw": 0.3788,
+     "ece_cal": 0.2683,
+     "n": 30
+    },
+    "decision-v7/train": {
+     "acc": 0.7407,
+     "ece_raw": 0.2606,
+     "ece_cal": 0.1834,
+     "n": 27
+    }
+   },
+   "teacher_temperature": 8.771914344710346,
+   "labels_revision": "48becbbf",
+   "has_predictions": false
+  },
+  {
+   "id": "20261023-131057-teacher-qwen3-4b",
+   "name": "teacher-qwen3-4b",
+   "started": "20261023-131057",
+   "smoke": false,
+   "dir": "runs/20261023-131057-teacher-qwen3-4b",
+   "code_commit": "667e7050",
+   "code_dirty": false,
+   "kind": "teacher labels",
+   "teacher": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+   "status": "stopped",
+   "stopped_reason": "swap grew 3.6 GB since start (limit 3.0 GB)",
+   "metrics": {
+    "decision-v7/calibration": {
+     "acc": 0.7399,
+     "ece_raw": 0.2381,
+     "ece_cal": 0.0474,
+     "n": 1088
+    },
+    "decision-v7/development": {
+     "acc": 0.767,
+     "ece_raw": 0.2144,
+     "ece_cal": 0.0457,
+     "n": 1352
+    },
+    "decision-v7/test": {
+     "acc": 0.7749,
+     "ece_raw": 0.2105,
+     "ece_cal": 0.054,
+     "n": 1324
+    },
+    "transfer-v4/development": {
+     "acc": 0.7042,
+     "ece_raw": 0.2777,
+     "ece_cal": 0.0744,
+     "n": 764
+    },
+    "transfer-v4/test": {
+     "acc": 0.7448,
+     "ece_raw": 0.2448,
+     "ece_cal": 0.0564,
+     "n": 764
+    },
+    "transfer-v9/test": {
+     "acc": 0.6717,
+     "ece_raw": 0.2989,
+     "ece_cal": 0.0519,
+     "n": 1264
+    }
+   },
+   "teacher_temperature": 8.987205336086184,
+   "labels_revision": "",
+   "has_predictions": false
+  },
+  {
+   "id": "20261023-134143-think-eval-smoke",
+   "name": "think-eval-smoke",
+   "started": "20261023-134143",
+   "smoke": true,
+   "dir": "runs/20261023-134143-think-eval-smoke",
+   "code_commit": "0f14a924",
+   "code_dirty": false,
+   "kind": "zero-shot eval",
+   "status": "finished",
+   "metrics": {},
+   "zero_shot": {
+    "qwen3-4b-instruct": {
+     "decision-v7/development": 1.0,
+     "transfer-v4/development": 1.0,
+     "sec_per_question": 0.99
+    },
+    "qwen3-4b-thinking": {
+     "decision-v7/development": 1.0,
+     "transfer-v4/development": 1.0,
+     "sec_per_question": 193.2
+    }
+   },
+   "has_predictions": false
+  },
+  {
+   "id": "20261023-135529-abl-brier-check-smoke",
+   "name": "abl-brier-check-smoke",
+   "started": "20261023-135529",
+   "smoke": true,
+   "dir": "runs/20261023-135529-abl-brier-check-smoke",
+   "code_commit": "24abb4f6",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": 4000,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": null,
+   "backbone_lr": 0.0001,
+   "brier_weight": 1.0,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.05,
+     "brier": 0.9582,
+     "ece_raw": 0.1112,
+     "ece_cal": 0.0784,
+     "ms": 825,
+     "n": 100
+    },
+    "transfer-v4/development": {
+     "acc": 0.3,
+     "brier": 0.7666,
+     "ece_raw": 0.1091,
+     "ece_cal": 0.1136,
+     "ms": 160,
+     "n": 100
+    }
+   },
+   "temperature": 3.015,
+   "best_step": 10,
+   "train_minutes": 6,
+   "trainable_params": 10617344,
+   "dev_curve": [
+    [
+     10,
+     0.3417
+    ],
+    [
+     20,
+     0.3167
+    ],
+    [
+     21,
+     0.3167
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 4.0,
+   "min_free_pct": 62,
+   "has_predictions": true
+  },
+  {
+   "id": "20261023-140510-teacher-qwen3-4b",
+   "name": "teacher-qwen3-4b",
+   "started": "20261023-140510",
+   "smoke": false,
+   "dir": "runs/20261023-140510-teacher-qwen3-4b",
+   "code_commit": "66e5d716",
+   "code_dirty": false,
+   "kind": "teacher labels",
+   "teacher": "mlx-community/Qwen3-4B-Instruct-2507-4bit",
+   "status": "finished",
+   "metrics": {
+    "decision-v7/calibration": {
+     "acc": 0.7399,
+     "ece_raw": 0.2381,
+     "ece_cal": 0.0474,
+     "n": 1088
+    },
+    "decision-v7/development": {
+     "acc": 0.767,
+     "ece_raw": 0.2144,
+     "ece_cal": 0.0457,
+     "n": 1352
+    },
+    "decision-v7/test": {
+     "acc": 0.7749,
+     "ece_raw": 0.2105,
+     "ece_cal": 0.054,
+     "n": 1324
+    },
+    "transfer-v4/development": {
+     "acc": 0.7042,
+     "ece_raw": 0.2777,
+     "ece_cal": 0.0744,
+     "n": 764
+    },
+    "transfer-v4/test": {
+     "acc": 0.7448,
+     "ece_raw": 0.2448,
+     "ece_cal": 0.0564,
+     "n": 764
+    },
+    "transfer-v9/test": {
+     "acc": 0.6717,
+     "ece_raw": 0.2989,
+     "ece_cal": 0.0519,
+     "n": 1264
+    },
+    "decision-v7/train": {
+     "acc": 0.7466,
+     "ece_raw": 0.2329,
+     "ece_cal": 0.0438,
+     "n": 14576
+    }
+   },
+   "teacher_temperature": 8.987205336086184,
+   "labels_revision": "31e5bfd7",
+   "has_predictions": false
+  },
+  {
+   "id": "20261023-153602-tino-distil",
+   "name": "tino-distil",
+   "started": "20261023-153602",
+   "smoke": false,
+   "dir": "runs/20261023-153602-tino-distil",
+   "code_commit": "c41ecc30",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora + distillation",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": null,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": 0.5,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.8011,
+     "brier": 0.2828,
+     "ece_raw": 0.0267,
+     "ece_cal": 0.0349,
+     "ms": 82,
+     "n": 1468
+    },
+    "decision-v7/test": {
+     "acc": 0.8083,
+     "brier": 0.281,
+     "ece_raw": 0.0355,
+     "ece_cal": 0.0442,
+     "ms": 82,
+     "n": 1440
+    },
+    "transfer-v4/development": {
+     "acc": 0.5955,
+     "brier": 0.4971,
+     "ece_raw": 0.0764,
+     "ece_cal": 0.083,
+     "ms": 50,
+     "n": 764
+    },
+    "transfer-v4/test": {
+     "acc": 0.6361,
+     "brier": 0.466,
+     "ece_raw": 0.0488,
+     "ece_cal": 0.0458,
+     "ms": 51,
+     "n": 764
+    },
+    "transfer-v9/test": {
+     "acc": 0.5546,
+     "brier": 0.5455,
+     "ece_raw": 0.053,
+     "ece_cal": 0.0629,
+     "ms": 60,
+     "n": 1264
+    }
+   },
+   "temperature": 0.951,
+   "best_step": 1800,
+   "train_minutes": 191,
+   "trainable_params": 10617344,
+   "by_type_test": {
+    "choice": 0.8578,
+    "noul": 0.869,
+    "score": 0.5375
+   },
+   "dev_curve": [
+    [
+     360,
+     0.7105
+    ],
+    [
+     720,
+     0.7561
+    ],
+    [
+     1080,
+     0.7698
+    ],
+    [
+     1440,
+     0.7936
+    ],
+    [
+     1800,
+     0.8011
+    ],
+    [
+     2160,
+     0.8004
+    ],
+    [
+     2520,
+     0.7963
+    ],
+    [
+     2880,
+     0.795
+    ],
+    [
+     2881,
+     0.795
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 4.02,
+   "min_free_pct": 55,
+   "published": {
+    "repo": "BrandeisPatrick/tino-distil",
+    "revision": "59598ad8cc52427700a7f4297d99baeef098c55a",
+    "url": "https://huggingface.co/BrandeisPatrick/tino-distil/tree/59598ad8cc52427700a7f4297d99baeef098c55a"
+   },
+   "weights_mb": 43,
+   "has_predictions": true
+  },
+  {
+   "id": "20261023-185358-think-eval",
+   "name": "think-eval",
+   "started": "20261023-185358",
+   "smoke": false,
+   "dir": "runs/20261023-185358-think-eval",
+   "code_commit": "bbc46741",
+   "code_dirty": false,
+   "kind": "zero-shot eval",
+   "status": "finished",
+   "metrics": {},
+   "zero_shot": {
+    "qwen3-4b-instruct": {
+     "decision-v7/development": 0.74,
+     "transfer-v4/development": 0.76,
+     "sec_per_question": 0.33
+    },
+    "qwen3-4b-thinking": {
+     "decision-v7/development": 0.77,
+     "transfer-v4/development": 0.79,
+     "sec_per_question": 31.59
+    }
+   },
+   "has_predictions": false
+  },
+  {
+   "id": "20261023-204028-tino-adapter-post",
+   "name": "tino-adapter-post",
+   "started": "20261023-204028",
+   "smoke": false,
+   "dir": "runs/20261023-204028-tino-adapter-post",
+   "code_commit": "8173cc3f",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora",
+   "base_model": "Qwen/Qwen3-0.6B",
+   "base_revision": "c1899de2",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": null,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": null,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.8052,
+     "brier": 0.2929,
+     "ece_raw": 0.0884,
+     "ece_cal": 0.0356,
+     "ms": 83,
+     "n": 1468
+    },
+    "decision-v7/test": {
+     "acc": 0.8104,
+     "brier": 0.29,
+     "ece_raw": 0.0921,
+     "ece_cal": 0.0387,
+     "ms": 83,
+     "n": 1440
+    },
+    "transfer-v4/development": {
+     "acc": 0.6217,
+     "brier": 0.5222,
+     "ece_raw": 0.1584,
+     "ece_cal": 0.0759,
+     "ms": 51,
+     "n": 764
+    },
+    "transfer-v4/test": {
+     "acc": 0.6152,
+     "brier": 0.5239,
+     "ece_raw": 0.1529,
+     "ece_cal": 0.07,
+     "ms": 51,
+     "n": 764
+    },
+    "transfer-v9/test": {
+     "acc": 0.5316,
+     "brier": 0.6276,
+     "ece_raw": 0.2057,
+     "ece_cal": 0.0915,
+     "ms": 61,
+     "n": 1264
+    }
+   },
+   "temperature": 1.957,
+   "best_step": 2520,
+   "train_minutes": 191,
+   "trainable_params": 10617344,
+   "by_type_test": {
+    "choice": 0.8506,
+    "noul": 0.875,
+    "score": 0.5583
+   },
+   "dev_curve": [
+    [
+     360,
+     0.7146
+    ],
+    [
+     720,
+     0.7473
+    ],
+    [
+     1080,
+     0.7847
+    ],
+    [
+     1440,
+     0.7977
+    ],
+    [
+     1800,
+     0.7997
+    ],
+    [
+     2160,
+     0.8011
+    ],
+    [
+     2520,
+     0.8052
+    ],
+    [
+     2880,
+     0.8031
+    ],
+    [
+     2881,
+     0.8045
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 4.02,
+   "min_free_pct": 63,
+   "published": {
+    "repo": "BrandeisPatrick/tino-adapter-post",
+    "revision": "d103bbebf77bbb8ea123e5ffd398ca531ddc1b9b",
+    "url": "https://huggingface.co/BrandeisPatrick/tino-adapter-post/tree/d103bbebf77bbb8ea123e5ffd398ca531ddc1b9b"
+   },
+   "weights_mb": 43,
+   "has_predictions": true
+  },
+  {
+   "id": "20261023-235901-abl-adapter-4k",
+   "name": "abl-adapter-4k",
+   "started": "20261023-235901",
+   "smoke": false,
+   "dir": "runs/20261023-235901-abl-adapter-4k",
+   "code_commit": "b56fe210",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": 4000,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": null,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.7302,
+     "brier": 0.3563,
+     "ece_raw": 0.0646,
+     "ece_cal": 0.0434,
+     "ms": 83,
+     "n": 1468
+    },
+    "transfer-v4/development": {
+     "acc": 0.5668,
+     "brier": 0.5376,
+     "ece_raw": 0.1246,
+     "ece_cal": 0.0604,
+     "ms": 51,
+     "n": 764
+    }
+   },
+   "temperature": 1.45,
+   "best_step": 744,
+   "train_minutes": 54,
+   "trainable_params": 10617344,
+   "dev_curve": [
+    [
+     186,
+     0.6335
+    ],
+    [
+     372,
+     0.6962
+    ],
+    [
+     558,
+     0.7173
+    ],
+    [
+     744,
+     0.7302
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 4.01,
+   "min_free_pct": 63,
+   "has_predictions": true
+  },
+  {
+   "id": "20261024-005557-abl-finetuned-4k",
+   "name": "abl-finetuned-4k",
+   "started": "20261024-005557",
+   "smoke": false,
+   "dir": "runs/20261024-005557-abl-finetuned-4k",
+   "code_commit": "6ceaba6c",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "full_finetune",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": 4000,
+   "lora": null,
+   "alpha": null,
+   "backbone_lr": 1e-05,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.7493,
+     "brier": 0.3563,
+     "ece_raw": 0.0732,
+     "ece_cal": 0.0494,
+     "ms": 66,
+     "n": 1468
+    },
+    "transfer-v4/development": {
+     "acc": 0.5825,
+     "brier": 0.4904,
+     "ece_raw": 0.1114,
+     "ece_cal": 0.0731,
+     "ms": 40,
+     "n": 764
+    }
+   },
+   "temperature": 1.662,
+   "best_step": 744,
+   "train_minutes": 51,
+   "trainable_params": 440992256,
+   "dev_curve": [
+    [
+     186,
+     0.6063
+    ],
+    [
+     372,
+     0.7044
+    ],
+    [
+     558,
+     0.7153
+    ],
+    [
+     744,
+     0.7493
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 6.51,
+   "min_free_pct": 26,
+   "has_predictions": true
+  },
+  {
+   "id": "20261024-014925-abl-adapter-1k",
+   "name": "abl-adapter-1k",
+   "started": "20261024-014925",
+   "smoke": false,
+   "dir": "runs/20261024-014925-abl-adapter-1k",
+   "code_commit": "2736c5f1",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": 1000,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": null,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.3481,
+     "brier": 0.6872,
+     "ece_raw": 0.0427,
+     "ece_cal": 0.0407,
+     "ms": 83,
+     "n": 1468
+    },
+    "transfer-v4/development": {
+     "acc": 0.394,
+     "brier": 0.637,
+     "ece_raw": 0.0442,
+     "ece_cal": 0.0432,
+     "ms": 51,
+     "n": 764
+    }
+   },
+   "temperature": 0.1,
+   "best_step": 138,
+   "train_minutes": 23,
+   "trainable_params": 10617344,
+   "dev_curve": [
+    [
+     46,
+     0.2677
+    ],
+    [
+     92,
+     0.2827
+    ],
+    [
+     138,
+     0.3481
+    ],
+    [
+     184,
+     0.3372
+    ],
+    [
+     185,
+     0.3372
+    ]
+   ],
+   "collapsed": true,
+   "peak_gb": 4.0,
+   "min_free_pct": 73,
+   "has_predictions": true
+  },
+  {
+   "id": "20261024-021503-abl-finetuned-1k",
+   "name": "abl-finetuned-1k",
+   "started": "20261024-021503",
+   "smoke": false,
+   "dir": "runs/20261024-021503-abl-finetuned-1k",
+   "code_commit": "c561fc03",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "full_finetune",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": 1000,
+   "lora": null,
+   "alpha": null,
+   "backbone_lr": 1e-05,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.3556,
+     "brier": 0.6801,
+     "ece_raw": 0.0327,
+     "ece_cal": 0.0384,
+     "ms": 66,
+     "n": 1468
+    },
+    "transfer-v4/development": {
+     "acc": 0.4031,
+     "brier": 0.6404,
+     "ece_raw": 0.0474,
+     "ece_cal": 0.0444,
+     "ms": 40,
+     "n": 764
+    }
+   },
+   "temperature": 1.179,
+   "best_step": 184,
+   "train_minutes": 20,
+   "trainable_params": 440992256,
+   "dev_curve": [
+    [
+     46,
+     0.2916
+    ],
+    [
+     92,
+     0.3447
+    ],
+    [
+     138,
+     0.3454
+    ],
+    [
+     184,
+     0.3556
+    ],
+    [
+     185,
+     0.3535
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 6.51,
+   "min_free_pct": 44,
+   "has_predictions": true
+  },
+  {
+   "id": "20261024-023723-abl-rank4-4k",
+   "name": "abl-rank4-4k",
+   "started": "20261024-023723",
+   "smoke": false,
+   "dir": "runs/20261024-023723-abl-rank4-4k",
+   "code_commit": "3801f502",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": 4000,
+   "lora": {
+    "rank": 4,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": null,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.7548,
+     "brier": 0.3448,
+     "ece_raw": 0.0747,
+     "ece_cal": 0.0468,
+     "ms": 83,
+     "n": 1468
+    },
+    "transfer-v4/development": {
+     "acc": 0.5654,
+     "brier": 0.5543,
+     "ece_raw": 0.1842,
+     "ece_cal": 0.1326,
+     "ms": 51,
+     "n": 764
+    }
+   },
+   "temperature": 1.361,
+   "best_step": 744,
+   "train_minutes": 54,
+   "trainable_params": 3047936,
+   "dev_curve": [
+    [
+     186,
+     0.6485
+    ],
+    [
+     372,
+     0.7207
+    ],
+    [
+     558,
+     0.7514
+    ],
+    [
+     744,
+     0.7548
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 3.89,
+   "min_free_pct": 73,
+   "has_predictions": true
+  },
+  {
+   "id": "20261024-033412-abl-rank64-4k",
+   "name": "abl-rank64-4k",
+   "started": "20261024-033412",
+   "smoke": false,
+   "dir": "runs/20261024-033412-abl-rank64-4k",
+   "code_commit": "d79ed558",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": 4000,
+   "lora": {
+    "rank": 64,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": null,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.3358,
+     "brier": 0.6874,
+     "ece_raw": 0.0285,
+     "ece_cal": 0.0282,
+     "ms": 84,
+     "n": 1468
+    },
+    "transfer-v4/development": {
+     "acc": 0.3429,
+     "brier": 0.6372,
+     "ece_raw": 0.02,
+     "ece_cal": 0.0209,
+     "ms": 52,
+     "n": 764
+    }
+   },
+   "temperature": 0.1,
+   "best_step": 558,
+   "train_minutes": 55,
+   "trainable_params": 40894976,
+   "dev_curve": [
+    [
+     186,
+     0.3215
+    ],
+    [
+     372,
+     0.314
+    ],
+    [
+     558,
+     0.3358
+    ],
+    [
+     744,
+     0.3086
+    ]
+   ],
+   "collapsed": true,
+   "peak_gb": 4.48,
+   "min_free_pct": 69,
+   "has_predictions": true
+  },
+  {
+   "id": "20261024-043220-abl-attn-only-4k",
+   "name": "abl-attn-only-4k",
+   "started": "20261024-043220",
+   "smoke": false,
+   "dir": "runs/20261024-043220-abl-attn-only-4k",
+   "code_commit": "0fd5064f",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": 4000,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05,
+    "keys": [
+     "self_attn.q_proj",
+     "self_attn.k_proj",
+     "self_attn.v_proj",
+     "self_attn.o_proj"
+    ]
+   },
+   "alpha": null,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.3467,
+     "brier": 0.6848,
+     "ece_raw": 0.0595,
+     "ece_cal": 0.0484,
+     "ms": 74,
+     "n": 1468
+    },
+    "transfer-v4/development": {
+     "acc": 0.4175,
+     "brier": 0.6362,
+     "ece_raw": 0.0452,
+     "ece_cal": 0.0472,
+     "ms": 46,
+     "n": 764
+    }
+   },
+   "temperature": 2.46,
+   "best_step": 186,
+   "train_minutes": 45,
+   "trainable_params": 5112320,
+   "dev_curve": [
+    [
+     186,
+     0.3467
+    ],
+    [
+     372,
+     0.3413
+    ],
+    [
+     558,
+     0.3433
+    ],
+    [
+     744,
+     0.3433
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 3.81,
+   "min_free_pct": 71,
+   "has_predictions": true
+  },
+  {
+   "id": "20261024-052020-abl-lr5e-5-4k",
+   "name": "abl-lr5e-5-4k",
+   "started": "20261024-052020",
+   "smoke": false,
+   "dir": "runs/20261024-052020-abl-lr5e-5-4k",
+   "code_commit": "80c80684",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": 4000,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": null,
+   "backbone_lr": 5e-05,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.75,
+     "brier": 0.3512,
+     "ece_raw": 0.0764,
+     "ece_cal": 0.0441,
+     "ms": 84,
+     "n": 1468
+    },
+    "transfer-v4/development": {
+     "acc": 0.5929,
+     "brier": 0.5194,
+     "ece_raw": 0.124,
+     "ece_cal": 0.0725,
+     "ms": 51,
+     "n": 764
+    }
+   },
+   "temperature": 1.501,
+   "best_step": 744,
+   "train_minutes": 55,
+   "trainable_params": 10617344,
+   "dev_curve": [
+    [
+     186,
+     0.6689
+    ],
+    [
+     372,
+     0.7159
+    ],
+    [
+     558,
+     0.7309
+    ],
+    [
+     744,
+     0.75
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 4.01,
+   "min_free_pct": 70,
+   "has_predictions": true
+  },
+  {
+   "id": "20261024-061741-abl-lr2e-4-4k",
+   "name": "abl-lr2e-4-4k",
+   "started": "20261024-061741",
+   "smoke": false,
+   "dir": "runs/20261024-061741-abl-lr2e-4-4k",
+   "code_commit": "d69559d3",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": 4000,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": null,
+   "backbone_lr": 0.0002,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.3386,
+     "brier": 0.6874,
+     "ece_raw": 0.0513,
+     "ece_cal": 0.0512,
+     "ms": 84,
+     "n": 1468
+    },
+    "transfer-v4/development": {
+     "acc": 0.449,
+     "brier": 0.6372,
+     "ece_raw": 0.0861,
+     "ece_cal": 0.0859,
+     "ms": 51,
+     "n": 764
+    }
+   },
+   "temperature": 0.1,
+   "best_step": 186,
+   "train_minutes": 55,
+   "trainable_params": 10617344,
+   "dev_curve": [
+    [
+     186,
+     0.3386
+    ],
+    [
+     372,
+     0.3379
+    ],
+    [
+     558,
+     0.2922
+    ],
+    [
+     744,
+     0.2718
+    ]
+   ],
+   "collapsed": true,
+   "peak_gb": 4.01,
+   "min_free_pct": 68,
+   "has_predictions": true
+  },
+  {
+   "id": "20261024-071515-abl-brier-4k",
+   "name": "abl-brier-4k",
+   "started": "20261024-071515",
+   "smoke": false,
+   "dir": "runs/20261024-071515-abl-brier-4k",
+   "code_commit": "4bf31551",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": 4000,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": null,
+   "backbone_lr": 0.0001,
+   "brier_weight": 1.0,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.6819,
+     "brier": 0.4084,
+     "ece_raw": 0.0571,
+     "ece_cal": 0.0435,
+     "ms": 84,
+     "n": 1468
+    },
+    "transfer-v4/development": {
+     "acc": 0.5524,
+     "brier": 0.5593,
+     "ece_raw": 0.0883,
+     "ece_cal": 0.0516,
+     "ms": 52,
+     "n": 764
+    }
+   },
+   "temperature": 1.437,
+   "best_step": 744,
+   "train_minutes": 55,
+   "trainable_params": 10617344,
+   "dev_curve": [
+    [
+     186,
+     0.4837
+    ],
+    [
+     372,
+     0.6308
+    ],
+    [
+     558,
+     0.6505
+    ],
+    [
+     744,
+     0.6819
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 4.01,
+   "min_free_pct": 65,
+   "has_predictions": true
+  },
+  {
+   "id": "20261024-081309-abl-distil-a025-4k",
+   "name": "abl-distil-a025-4k",
+   "started": "20261024-081309",
+   "smoke": false,
+   "dir": "runs/20261024-081309-abl-distil-a025-4k",
+   "code_commit": "3b48c397",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora + distillation",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": 4000,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": 0.25,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.7548,
+     "brier": 0.337,
+     "ece_raw": 0.047,
+     "ece_cal": 0.0468,
+     "ms": 84,
+     "n": 1468
+    },
+    "transfer-v4/development": {
+     "acc": 0.5733,
+     "brier": 0.5258,
+     "ece_raw": 0.0843,
+     "ece_cal": 0.0953,
+     "ms": 51,
+     "n": 764
+    }
+   },
+   "temperature": 0.934,
+   "best_step": 744,
+   "train_minutes": 55,
+   "trainable_params": 10617344,
+   "dev_curve": [
+    [
+     186,
+     0.6403
+    ],
+    [
+     372,
+     0.7044
+    ],
+    [
+     558,
+     0.7302
+    ],
+    [
+     744,
+     0.7548
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 4.01,
+   "min_free_pct": 66,
+   "has_predictions": true
+  },
+  {
+   "id": "20261024-091047-abl-distil-a05-4k",
+   "name": "abl-distil-a05-4k",
+   "started": "20261024-091047",
+   "smoke": false,
+   "dir": "runs/20261024-091047-abl-distil-a05-4k",
+   "code_commit": "4fecf80e",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora + distillation",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": 4000,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": 0.5,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.3413,
+     "brier": 0.6874,
+     "ece_raw": 0.0491,
+     "ece_cal": 0.0491,
+     "ms": 84,
+     "n": 1468
+    },
+    "transfer-v4/development": {
+     "acc": 0.394,
+     "brier": 0.6372,
+     "ece_raw": 0.0373,
+     "ece_cal": 0.037,
+     "ms": 51,
+     "n": 764
+    }
+   },
+   "temperature": 0.1,
+   "best_step": 186,
+   "train_minutes": 55,
+   "trainable_params": 10617344,
+   "dev_curve": [
+    [
+     186,
+     0.3413
+    ],
+    [
+     372,
+     0.2684
+    ],
+    [
+     558,
+     0.2534
+    ],
+    [
+     744,
+     0.2459
+    ]
+   ],
+   "collapsed": true,
+   "peak_gb": 4.01,
+   "min_free_pct": 65,
+   "has_predictions": true
+  },
+  {
+   "id": "20261024-100808-abl-distil-a1-4k",
+   "name": "abl-distil-a1-4k",
+   "started": "20261024-100808",
+   "smoke": false,
+   "dir": "runs/20261024-100808-abl-distil-a1-4k",
+   "code_commit": "896cb211",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora + distillation",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": 4000,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": 1.0,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.7228,
+     "brier": 0.4009,
+     "ece_raw": 0.0755,
+     "ece_cal": 0.0532,
+     "ms": 83,
+     "n": 1468
+    },
+    "transfer-v4/development": {
+     "acc": 0.6113,
+     "brier": 0.4966,
+     "ece_raw": 0.0625,
+     "ece_cal": 0.0564,
+     "ms": 51,
+     "n": 764
+    }
+   },
+   "temperature": 0.817,
+   "best_step": 744,
+   "train_minutes": 54,
+   "trainable_params": 10617344,
+   "dev_curve": [
+    [
+     186,
+     0.5892
+    ],
+    [
+     372,
+     0.6553
+    ],
+    [
+     558,
+     0.7016
+    ],
+    [
+     744,
+     0.7228
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 4.01,
+   "min_free_pct": 65,
+   "has_predictions": true
+  },
+  {
+   "id": "20261024-110527-tino-adapter-s1",
+   "name": "tino-adapter-s1",
+   "started": "20261024-110527",
+   "smoke": false,
+   "dir": "runs/20261024-110527-tino-adapter-s1",
+   "code_commit": "0dc7d076",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 1,
+   "epochs": 2,
+   "train_limit": null,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": null,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.7956,
+     "brier": 0.3137,
+     "ece_raw": 0.0924,
+     "ece_cal": 0.0474,
+     "ms": 84,
+     "n": 1468
+    },
+    "decision-v7/test": {
+     "acc": 0.8181,
+     "brier": 0.2739,
+     "ece_raw": 0.0873,
+     "ece_cal": 0.0337,
+     "ms": 84,
+     "n": 1440
+    },
+    "transfer-v4/development": {
+     "acc": 0.6191,
+     "brier": 0.5058,
+     "ece_raw": 0.1504,
+     "ece_cal": 0.0548,
+     "ms": 51,
+     "n": 764
+    },
+    "transfer-v4/test": {
+     "acc": 0.6505,
+     "brier": 0.485,
+     "ece_raw": 0.111,
+     "ece_cal": 0.0401,
+     "ms": 52,
+     "n": 764
+    },
+    "transfer-v9/test": {
+     "acc": 0.568,
+     "brier": 0.5965,
+     "ece_raw": 0.1654,
+     "ece_cal": 0.0486,
+     "ms": 61,
+     "n": 1264
+    }
+   },
+   "temperature": 1.959,
+   "best_step": 2154,
+   "train_minutes": 195,
+   "trainable_params": 10617344,
+   "by_type_test": {
+    "choice": 0.8693,
+    "noul": 0.879,
+    "score": 0.5417
+   },
+   "dev_curve": [
+    [
+     359,
+     0.7064
+    ],
+    [
+     718,
+     0.7575
+    ],
+    [
+     1077,
+     0.7684
+    ],
+    [
+     1436,
+     0.7854
+    ],
+    [
+     1795,
+     0.7861
+    ],
+    [
+     2154,
+     0.7956
+    ],
+    [
+     2513,
+     0.7943
+    ],
+    [
+     2872,
+     0.7936
+    ],
+    [
+     2878,
+     0.7929
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 4.06,
+   "min_free_pct": 51,
+   "has_predictions": true
+  },
+  {
+   "id": "20261024-142648-tino-finetuned-s1",
+   "name": "tino-finetuned-s1",
+   "started": "20261024-142648",
+   "smoke": false,
+   "dir": "runs/20261024-142648-tino-finetuned-s1",
+   "code_commit": "677b605f",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "full_finetune",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 1,
+   "epochs": 2,
+   "train_limit": null,
+   "lora": null,
+   "alpha": null,
+   "backbone_lr": 1e-05,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.7895,
+     "brier": 0.3139,
+     "ece_raw": 0.1086,
+     "ece_cal": 0.0356,
+     "ms": 66,
+     "n": 1468
+    },
+    "decision-v7/test": {
+     "acc": 0.8208,
+     "brier": 0.2836,
+     "ece_raw": 0.1028,
+     "ece_cal": 0.0277,
+     "ms": 66,
+     "n": 1440
+    },
+    "transfer-v4/development": {
+     "acc": 0.5982,
+     "brier": 0.5469,
+     "ece_raw": 0.1767,
+     "ece_cal": 0.0422,
+     "ms": 40,
+     "n": 764
+    },
+    "transfer-v4/test": {
+     "acc": 0.6073,
+     "brier": 0.5491,
+     "ece_raw": 0.1727,
+     "ece_cal": 0.0441,
+     "ms": 40,
+     "n": 764
+    },
+    "transfer-v9/test": {
+     "acc": 0.5332,
+     "brier": 0.6542,
+     "ece_raw": 0.2138,
+     "ece_cal": 0.0467,
+     "ms": 48,
+     "n": 1264
+    }
+   },
+   "temperature": 2.752,
+   "best_step": 2513,
+   "train_minutes": 183,
+   "trainable_params": 440992256,
+   "by_type_test": {
+    "choice": 0.8793,
+    "noul": 0.881,
+    "score": 0.525
+   },
+   "dev_curve": [
+    [
+     359,
+     0.6757
+    ],
+    [
+     718,
+     0.7432
+    ],
+    [
+     1077,
+     0.748
+    ],
+    [
+     1436,
+     0.7629
+    ],
+    [
+     1795,
+     0.7766
+    ],
+    [
+     2154,
+     0.7834
+    ],
+    [
+     2513,
+     0.7895
+    ],
+    [
+     2872,
+     0.7861
+    ],
+    [
+     2878,
+     0.7868
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 6.51,
+   "min_free_pct": 30,
+   "has_predictions": true
+  },
+  {
+   "id": "20261024-173603-abl-attn-only-4k-s1",
+   "name": "abl-attn-only-4k-s1",
+   "started": "20261024-173603",
+   "smoke": false,
+   "dir": "runs/20261024-173603-abl-attn-only-4k-s1",
+   "code_commit": "ca929e02",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 1,
+   "epochs": 2,
+   "train_limit": 4000,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05,
+    "keys": [
+     "self_attn.q_proj",
+     "self_attn.k_proj",
+     "self_attn.v_proj",
+     "self_attn.o_proj"
+    ]
+   },
+   "alpha": null,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.7255,
+     "brier": 0.3605,
+     "ece_raw": 0.0639,
+     "ece_cal": 0.0376,
+     "ms": 74,
+     "n": 1468
+    },
+    "transfer-v4/development": {
+     "acc": 0.606,
+     "brier": 0.4955,
+     "ece_raw": 0.0833,
+     "ece_cal": 0.035,
+     "ms": 45,
+     "n": 764
+    }
+   },
+   "temperature": 1.406,
+   "best_step": 744,
+   "train_minutes": 47,
+   "trainable_params": 5112320,
+   "dev_curve": [
+    [
+     186,
+     0.6417
+    ],
+    [
+     372,
+     0.6907
+    ],
+    [
+     558,
+     0.7132
+    ],
+    [
+     744,
+     0.7255
+    ],
+    [
+     745,
+     0.7248
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 3.83,
+   "min_free_pct": 71,
+   "has_predictions": true
+  },
+  {
+   "id": "20261024-182602-abl-rank64-a32-4k",
+   "name": "abl-rank64-a32-4k",
+   "started": "20261024-182602",
+   "smoke": false,
+   "dir": "runs/20261024-182602-abl-rank64-a32-4k",
+   "code_commit": "d8df368f",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": 4000,
+   "lora": {
+    "rank": 64,
+    "scale": 0.5,
+    "dropout": 0.05
+   },
+   "alpha": null,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.7425,
+     "brier": 0.3495,
+     "ece_raw": 0.0838,
+     "ece_cal": 0.0471,
+     "ms": 84,
+     "n": 1468
+    },
+    "transfer-v4/development": {
+     "acc": 0.5524,
+     "brier": 0.564,
+     "ece_raw": 0.1728,
+     "ece_cal": 0.0956,
+     "ms": 52,
+     "n": 764
+    }
+   },
+   "temperature": 1.555,
+   "best_step": 744,
+   "train_minutes": 56,
+   "trainable_params": 40894976,
+   "dev_curve": [
+    [
+     186,
+     0.6424
+    ],
+    [
+     372,
+     0.7091
+    ],
+    [
+     558,
+     0.7275
+    ],
+    [
+     744,
+     0.7425
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 4.48,
+   "min_free_pct": 63,
+   "has_predictions": true
+  },
+  {
+   "id": "20261024-192429-abl-adapter-4k-s1",
+   "name": "abl-adapter-4k-s1",
+   "started": "20261024-192429",
+   "smoke": false,
+   "dir": "runs/20261024-192429-abl-adapter-4k-s1",
+   "code_commit": "190937a8",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 1,
+   "epochs": 2,
+   "train_limit": 4000,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": null,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.7268,
+     "brier": 0.3728,
+     "ece_raw": 0.0574,
+     "ece_cal": 0.0556,
+     "ms": 84,
+     "n": 1468
+    },
+    "transfer-v4/development": {
+     "acc": 0.5497,
+     "brier": 0.5265,
+     "ece_raw": 0.0953,
+     "ece_cal": 0.0534,
+     "ms": 51,
+     "n": 764
+    }
+   },
+   "temperature": 1.378,
+   "best_step": 744,
+   "train_minutes": 57,
+   "trainable_params": 10617344,
+   "dev_curve": [
+    [
+     186,
+     0.549
+    ],
+    [
+     372,
+     0.6751
+    ],
+    [
+     558,
+     0.7071
+    ],
+    [
+     744,
+     0.7268
+    ],
+    [
+     745,
+     0.7268
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 4.04,
+   "min_free_pct": 68,
+   "has_predictions": true
+  },
+  {
+   "id": "20261024-202356-abl-lr2e-4-4k-s1",
+   "name": "abl-lr2e-4-4k-s1",
+   "started": "20261024-202356",
+   "smoke": false,
+   "dir": "runs/20261024-202356-abl-lr2e-4-4k-s1",
+   "code_commit": "0e287e21",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 1,
+   "epochs": 2,
+   "train_limit": 4000,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": null,
+   "backbone_lr": 0.0002,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.3413,
+     "brier": 0.6874,
+     "ece_raw": 0.0446,
+     "ece_cal": 0.0446,
+     "ms": 84,
+     "n": 1468
+    },
+    "transfer-v4/development": {
+     "acc": 0.4058,
+     "brier": 0.6372,
+     "ece_raw": 0.043,
+     "ece_cal": 0.0429,
+     "ms": 51,
+     "n": 764
+    }
+   },
+   "temperature": 0.1,
+   "best_step": 372,
+   "train_minutes": 57,
+   "trainable_params": 10617344,
+   "dev_curve": [
+    [
+     186,
+     0.2922
+    ],
+    [
+     372,
+     0.3413
+    ],
+    [
+     558,
+     0.3222
+    ],
+    [
+     744,
+     0.3215
+    ],
+    [
+     745,
+     0.3215
+    ]
+   ],
+   "collapsed": true,
+   "peak_gb": 4.01,
+   "min_free_pct": 67,
+   "has_predictions": true
+  },
+  {
+   "id": "20261024-212329-abl-distil-a05-4k-s1",
+   "name": "abl-distil-a05-4k-s1",
+   "started": "20261024-212329",
+   "smoke": false,
+   "dir": "runs/20261024-212329-abl-distil-a05-4k-s1",
+   "code_commit": "0c67f69e",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora + distillation",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 1,
+   "epochs": 2,
+   "train_limit": 4000,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": 0.5,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.6894,
+     "brier": 0.3978,
+     "ece_raw": 0.0396,
+     "ece_cal": 0.0373,
+     "ms": 84,
+     "n": 1468
+    },
+    "transfer-v4/development": {
+     "acc": 0.555,
+     "brier": 0.5275,
+     "ece_raw": 0.0626,
+     "ece_cal": 0.0728,
+     "ms": 51,
+     "n": 764
+    }
+   },
+   "temperature": 0.882,
+   "best_step": 745,
+   "train_minutes": 57,
+   "trainable_params": 10617344,
+   "dev_curve": [
+    [
+     186,
+     0.6063
+    ],
+    [
+     372,
+     0.6499
+    ],
+    [
+     558,
+     0.6853
+    ],
+    [
+     744,
+     0.6887
+    ],
+    [
+     745,
+     0.6894
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 4.03,
+   "min_free_pct": 65,
+   "has_predictions": true
+  },
+  {
+   "id": "20261024-222253-tino-distil-a1",
+   "name": "tino-distil-a1",
+   "started": "20261024-222253",
+   "smoke": false,
+   "dir": "runs/20261024-222253-tino-distil-a1",
+   "code_commit": "4365a26d",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora + distillation",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": null,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": 1.0,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.7636,
+     "brier": 0.3397,
+     "ece_raw": 0.0641,
+     "ece_cal": 0.0586,
+     "ms": 84,
+     "n": 1468
+    },
+    "decision-v7/test": {
+     "acc": 0.75,
+     "brier": 0.3543,
+     "ece_raw": 0.0727,
+     "ece_cal": 0.055,
+     "ms": 84,
+     "n": 1440
+    },
+    "transfer-v4/development": {
+     "acc": 0.6243,
+     "brier": 0.4658,
+     "ece_raw": 0.0337,
+     "ece_cal": 0.0318,
+     "ms": 51,
+     "n": 764
+    },
+    "transfer-v4/test": {
+     "acc": 0.6715,
+     "brier": 0.4407,
+     "ece_raw": 0.0969,
+     "ece_cal": 0.0679,
+     "ms": 52,
+     "n": 764
+    },
+    "transfer-v9/test": {
+     "acc": 0.5767,
+     "brier": 0.5275,
+     "ece_raw": 0.0572,
+     "ece_cal": 0.036,
+     "ms": 61,
+     "n": 1264
+    }
+   },
+   "temperature": 0.871,
+   "best_step": 1440,
+   "train_minutes": 194,
+   "trainable_params": 10617344,
+   "by_type_test": {
+    "choice": 0.783,
+    "noul": 0.8313,
+    "score": 0.4833
+   },
+   "dev_curve": [
+    [
+     360,
+     0.6989
+    ],
+    [
+     720,
+     0.7296
+    ],
+    [
+     1080,
+     0.7418
+    ],
+    [
+     1440,
+     0.7636
+    ],
+    [
+     1800,
+     0.752
+    ],
+    [
+     2160,
+     0.752
+    ],
+    [
+     2520,
+     0.7582
+    ],
+    [
+     2880,
+     0.7616
+    ],
+    [
+     2881,
+     0.7623
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 4.01,
+   "min_free_pct": 50,
+   "published": {
+    "repo": "BrandeisPatrick/tino-distil-a1",
+    "revision": "74075adc0b84949822a1e5023c4c423fa3a04d9b",
+    "url": "https://huggingface.co/BrandeisPatrick/tino-distil-a1/tree/74075adc0b84949822a1e5023c4c423fa3a04d9b"
+   },
+   "weights_mb": 43,
+   "has_predictions": true
+  },
+  {
+   "id": "20261025-014322-tino-distil-s1",
+   "name": "tino-distil-s1",
+   "started": "20261025-014322",
+   "smoke": false,
+   "dir": "runs/20261025-014322-tino-distil-s1",
+   "code_commit": "5e4cb08e",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora + distillation",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 1,
+   "epochs": 2,
+   "train_limit": null,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": 0.5,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.8031,
+     "brier": 0.2762,
+     "ece_raw": 0.0354,
+     "ece_cal": 0.0283,
+     "ms": 84,
+     "n": 1468
+    },
+    "decision-v7/test": {
+     "acc": 0.8201,
+     "brier": 0.268,
+     "ece_raw": 0.0592,
+     "ece_cal": 0.0481,
+     "ms": 84,
+     "n": 1440
+    },
+    "transfer-v4/development": {
+     "acc": 0.6204,
+     "brier": 0.4815,
+     "ece_raw": 0.0541,
+     "ece_cal": 0.0513,
+     "ms": 51,
+     "n": 764
+    },
+    "transfer-v4/test": {
+     "acc": 0.6257,
+     "brier": 0.4739,
+     "ece_raw": 0.0402,
+     "ece_cal": 0.0527,
+     "ms": 52,
+     "n": 764
+    },
+    "transfer-v9/test": {
+     "acc": 0.5483,
+     "brier": 0.5422,
+     "ece_raw": 0.0435,
+     "ece_cal": 0.0542,
+     "ms": 61,
+     "n": 1264
+    }
+   },
+   "temperature": 0.843,
+   "best_step": 2872,
+   "train_minutes": 195,
+   "trainable_params": 10617344,
+   "by_type_test": {
+    "choice": 0.875,
+    "noul": 0.8591,
+    "score": 0.5792
+   },
+   "dev_curve": [
+    [
+     359,
+     0.6962
+    ],
+    [
+     718,
+     0.748
+    ],
+    [
+     1077,
+     0.7718
+    ],
+    [
+     1436,
+     0.7738
+    ],
+    [
+     1795,
+     0.7786
+    ],
+    [
+     2154,
+     0.7997
+    ],
+    [
+     2513,
+     0.7922
+    ],
+    [
+     2872,
+     0.8031
+    ],
+    [
+     2878,
+     0.8031
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 4.06,
+   "min_free_pct": 63,
+   "has_predictions": true
+  },
+  {
+   "id": "20261025-083634-tino-distil-a1-s1",
+   "name": "tino-distil-a1-s1",
+   "started": "20261025-083634",
+   "smoke": false,
+   "dir": "runs/20261025-083634-tino-distil-a1-s1",
+   "code_commit": "087a4a31",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora + distillation",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 1,
+   "epochs": 2,
+   "train_limit": null,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": 1.0,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.7595,
+     "brier": 0.3483,
+     "ece_raw": 0.0431,
+     "ece_cal": 0.0473,
+     "ms": 83,
+     "n": 1468
+    },
+    "decision-v7/test": {
+     "acc": 0.766,
+     "brier": 0.3355,
+     "ece_raw": 0.0618,
+     "ece_cal": 0.0602,
+     "ms": 84,
+     "n": 1440
+    },
+    "transfer-v4/development": {
+     "acc": 0.572,
+     "brier": 0.5261,
+     "ece_raw": 0.095,
+     "ece_cal": 0.1032,
+     "ms": 51,
+     "n": 764
+    },
+    "transfer-v4/test": {
+     "acc": 0.6257,
+     "brier": 0.4852,
+     "ece_raw": 0.0396,
+     "ece_cal": 0.0522,
+     "ms": 51,
+     "n": 764
+    },
+    "transfer-v9/test": {
+     "acc": 0.5427,
+     "brier": 0.5605,
+     "ece_raw": 0.0437,
+     "ece_cal": 0.0551,
+     "ms": 61,
+     "n": 1264
+    }
+   },
+   "temperature": 0.92,
+   "best_step": 2154,
+   "train_minutes": 193,
+   "trainable_params": 10617344,
+   "by_type_test": {
+    "choice": 0.819,
+    "noul": 0.8155,
+    "score": 0.5083
+   },
+   "dev_curve": [
+    [
+     359,
+     0.7003
+    ],
+    [
+     718,
+     0.7173
+    ],
+    [
+     1077,
+     0.7411
+    ],
+    [
+     1436,
+     0.7486
+    ],
+    [
+     1795,
+     0.735
+    ],
+    [
+     2154,
+     0.7595
+    ],
+    [
+     2513,
+     0.7541
+    ],
+    [
+     2872,
+     0.7568
+    ],
+    [
+     2878,
+     0.7589
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 4.06,
+   "min_free_pct": 62,
+   "has_predictions": true
+  }
+ ]
+}

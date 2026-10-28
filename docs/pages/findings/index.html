@@ -1,0 +1,529 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>tino Research Findings</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: a 1040px research report column; each question is a section with a verdict, one chart, and the table behind it. Same identity as the tino plan page. */
+:root{
+  --bg:#f2f4f6; --surface:#ffffff; --surface-2:#e8ecf0; --fg:#17202b; --muted:#566475; --line:#d3dae2;
+  --accent:#0d6b75; --accent-soft:#d7eef0;
+  --ft:#4a5d8f; --adapter:#0d6b75; --distil:#c46818; --teacher:#7a4fb0; --kev:#7d8794;
+  --good:#2b7a3d; --good-soft:#dcefe0; --bad:#b3372f; --bad-soft:#f6dedb; --warn:#9a6a12; --warn-soft:#f5ead2;
+  --display:"Fraunces",Georgia,"Times New Roman",serif;
+  --body:"IBM Plex Sans","Helvetica Neue",Arial,sans-serif;
+  --mono:"IBM Plex Mono",Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0e1319; --surface:#161d26; --surface-2:#1f2833; --fg:#e4e9ef; --muted:#9aa7b6; --line:#2b3644;
+    --accent:#52c2cb; --accent-soft:#143a3f;
+    --ft:#93a6dc; --adapter:#52c2cb; --distil:#ec9a52; --teacher:#b892ea; --kev:#8e98a5;
+    --good:#5cc274; --good-soft:#173322; --bad:#ef7a70; --bad-soft:#3d1c1a; --warn:#e0b25a; --warn-soft:#3a2e15;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0e1319; --surface:#161d26; --surface-2:#1f2833; --fg:#e4e9ef; --muted:#9aa7b6; --line:#2b3644;
+  --accent:#52c2cb; --accent-soft:#143a3f;
+  --ft:#93a6dc; --adapter:#52c2cb; --distil:#ec9a52; --teacher:#b892ea; --kev:#8e98a5;
+  --good:#5cc274; --good-soft:#173322; --bad:#ef7a70; --bad-soft:#3d1c1a; --warn:#e0b25a; --warn-soft:#3a2e15;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.55;margin:0}
+.wrap{max-width:1040px;margin:0 auto;padding-block:40px 72px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-direction:column;gap:60px}
+h1,h2,h3{margin:0;text-wrap:balance}
+h1{font-family:var(--display);font-weight:500;font-size:clamp(32px,4.6vw,50px);line-height:1.06;letter-spacing:-0.01em}
+h2{font-family:var(--display);font-weight:500;font-size:clamp(23px,2.8vw,31px);line-height:1.15}
+h3{font-size:16px;font-weight:600}
+p{margin:0;max-width:68ch}
+a{color:var(--accent)}
+a:focus-visible,button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+section{display:flex;flex-direction:column;gap:20px}
+.eyebrow{font-family:var(--mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+.lede{color:var(--muted);font-size:17px;max-width:64ch}
+.muted{color:var(--muted)}
+.mono{font-family:var(--mono)}
+.note{font-size:13px;color:var(--muted);max-width:none}
+.head{display:flex;flex-direction:column;gap:8px}
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:22px}
+.stat{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px}
+.stat b{display:block;font-family:var(--display);font-weight:500;font-size:28px;line-height:1.1;font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;color:var(--muted)}
+
+/* answers */
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.ans{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:18px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.ans .q{font-family:var(--mono);font-size:12px;color:var(--muted)}
+.ans h3{font-family:var(--display);font-weight:500;font-size:19px;line-height:1.25}
+.ans p{font-size:14px}
+.verdict{align-self:flex-start;font-family:var(--mono);font-size:11.5px;padding:3px 9px;border-radius:999px;font-weight:500}
+.v-yes{background:var(--good-soft);color:var(--good)}
+.v-tie{background:var(--accent-soft);color:var(--accent)}
+.v-no{background:var(--warn-soft);color:var(--warn)}
+.ans a{font-size:13px}
+
+/* callouts */
+.callout{border-left:3px solid var(--warn);background:var(--surface);border-radius:0 6px 6px 0;padding:12px 16px;font-size:14px;max-width:none}
+.callout.info{border-left-color:var(--accent)}
+
+/* tables */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:10px 13px;border-bottom:1px solid var(--line);vertical-align:top}
+th{font-family:var(--mono);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:500;white-space:nowrap}
+tr:last-child td{border-bottom:none}
+td.n,th.n{text-align:right;font-family:var(--mono);font-variant-numeric:tabular-nums;white-space:nowrap}
+td.best{font-weight:600}
+.w560{min-width:560px}.w680{min-width:680px}.w760{min-width:760px}
+.chip{display:inline-block;font-family:var(--mono);font-size:11px;padding:2px 8px;border-radius:999px;white-space:nowrap}
+.chip.ok{background:var(--good-soft);color:var(--good)}
+.chip.bad{background:var(--bad-soft);color:var(--bad)}
+.chip.warn{background:var(--warn-soft);color:var(--warn)}
+.swatch{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:6px;vertical-align:0}
+
+/* charts */
+.figure{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:16px 16px 10px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.figure h3{font-size:15px}
+.figure .cap{font-size:13px;color:var(--muted);max-width:none}
+.chart{overflow-x:auto}
+.chart svg{display:block;width:100%;height:auto;min-width:520px}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:12.5px;color:var(--muted)}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;vertical-align:0}
+svg text{font-family:var(--mono);font-size:11px;fill:var(--muted)}
+svg .lbl{fill:var(--fg)}
+svg .axis{stroke:var(--line);stroke-width:1}
+svg .grid{stroke:var(--line);stroke-width:1;stroke-dasharray:2 3}
+svg .ref{stroke:var(--muted);stroke-width:1;stroke-dasharray:4 3}
+.c-ft{fill:var(--ft);stroke:var(--ft)} .c-adapter{fill:var(--adapter);stroke:var(--adapter)} .c-distil{fill:var(--distil);stroke:var(--distil)}
+.c-teacher{fill:var(--teacher);stroke:var(--teacher)} .c-kev{fill:var(--kev);stroke:var(--kev)} .c-bad{fill:var(--bad);stroke:var(--bad)}
+.c-good{fill:var(--good);stroke:var(--good)} .c-warn{fill:var(--warn);stroke:var(--warn)}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+ul.find{margin:0;padding-left:20px;display:flex;flex-direction:column;gap:8px;max-width:72ch}
+ul.find li{padding-left:2px}
+ol.log{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:10px;max-width:76ch}
+ol.log b{font-weight:600}
+.links{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.linkcard{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:4px;min-width:0;text-decoration:none;color:var(--fg)}
+.linkcard:hover{border-color:var(--accent)}
+.linkcard span{font-size:13px;color:var(--muted)}
+.linkcard b{font-weight:600;color:var(--accent);overflow-wrap:anywhere}
+footer{font-size:13px;color:var(--muted);border-top:1px solid var(--line);padding-top:18px}
+@media (max-width:820px){
+  .answers,.two,.links{grid-template-columns:1fr}
+  .stats{grid-template-columns:1fr 1fr}
+}
+</style>
+
+<div class="wrap">
+
+<header class="head">
+  <div class="eyebrow">tino · research summary · Oct 21–25, 2026</div>
+  <h1>Teaching a 0.6B decoder to make Jev-style decisions on a 16 GB Mac</h1>
+  <p class="lede" style="margin-top:6px">Four research questions, answered on one Apple M4 over five days: which fine-tuning recipe works, whether full fine-tuning beats an adapter, whether a thinking model helps, and whether an autoregressive LLM can be distilled into a one-pass decision model.</p>
+  <div class="stats">
+    <div class="stat"><b>4 / 4</b><span>research questions answered</span></div>
+    <div class="stat"><b id="st-runs">30</b><span>tracked runs, all on GitHub</span></div>
+    <div class="stat"><b id="st-hours">44 h</b><span>training on one M4, plus 4.5 h of teacher labeling and thinking</span></div>
+    <div class="stat"><b>5</b><span>models published, each re-verified from the Hub</span></div>
+  </div>
+</header>
+
+<section id="answers">
+  <div class="head"><div class="eyebrow">Answers at a glance</div><h2>What we found</h2></div>
+  <div class="answers">
+    <div class="ans">
+      <div class="q">RQ1 · Which fine-tuning recipe is best for a decision model?</div>
+      <span class="verdict v-no">Stability first</span>
+      <h3>Keep updates small and run two seeds; the rest is second order.</h3>
+      <p>With 4,000 questions, 5 of 15 LoRA runs failed: learning rate 2e-4 on both seeds, rank 64 with alpha scaled to rank, and 2 of the 12 sane configurations by chance. Use lr ≤ 1e-4, fixed LoRA alpha, and reject runs whose dev log-loss sits at the uniform value. Rank above 16 and Brier loss do not help; 1,000 questions is too few.</p>
+      <a href="#rq1">Ablation details</a>
+    </div>
+    <div class="ans">
+      <div class="q">RQ2 · Full fine-tuning or an adapter?</div>
+      <span class="verdict v-tie">Adapter, on cost</span>
+      <h3>Same accuracy; the adapter is 40x smaller to train and 50x smaller to ship.</h3>
+      <p>Two seeds each: 0.815 vs 0.814 in domain, and the adapter leans about 2 points ahead out of domain, inside seed noise. The adapter trains 10.6M weights in 4 GB and ships as 43 MB. With very little data, full fine-tuning is the safer pick.</p>
+      <a href="#rq2">Two-seed comparison</a>
+    </div>
+    <div class="ans">
+      <div class="q">RQ3 · Base Qwen or thinking Qwen?</div>
+      <span class="verdict v-no">Not worth it here</span>
+      <h3>Thinking adds 3 points (not significant) at 95x the latency.</h3>
+      <p>Qwen3-4B-Thinking reasons for about 1,100 tokens and scores 0.780 vs 0.750 for the instruct model (p = 0.41). It wins on rule-following records and loses on QNLI. As the student's starting point, the post-trained model ends up identical to the base.</p>
+      <a href="#rq3">Thinking vs direct answers</a>
+    </div>
+    <div class="ans">
+      <div class="q">RQ4 · Can an autoregressive model be distilled into a decision model?</div>
+      <span class="verdict v-yes">Yes</span>
+      <h3>It transfers calibration reliably; extra out-of-domain accuracy does not hold up.</h3>
+      <p>Half teacher, half gold labels matches gold-label accuracy and comes out calibrated with no correction (temperature 0.84–0.95 vs about 2.0). Teacher only works without any gold labels but costs 5.6 points in domain for a +1.7-point out-of-domain lean that is not significant.</p>
+      <a href="#rq4">Distillation results</a>
+    </div>
+  </div>
+  <p class="callout"><b>Read every comparison against this:</b> with the same recipe, changing only the training seed moved new-source accuracy by 3.8 points (adapter) and 4.6 points (teacher-only). That is larger than most method differences here, so gaps under about 4 points on one seed are treated as unproven. Paired tests on the same questions cover test-set sampling, not training randomness.</p>
+</section>
+
+<section id="setup">
+  <div class="head"><div class="eyebrow">Setup</div><h2>What a decision model is, and how every run was measured</h2></div>
+  <p>A decision model reads a state (a ticket, a document, a review) plus typed questions, and returns a probability for each option in one forward pass, with no generated text. <a href="https://openrouter.ai/blog/insights/what-is-jev/">TypeSafe's Jev</a> is the closed reference. tino attaches a pointer head to a decoder: each option's closing delimiter token is scored against a decide token, the same layout as the open <a href="https://github.com/jaredpalmer/kev">Kev</a> models.</p>
+  <div class="tablewrap"><table class="w680">
+    <tbody>
+      <tr><td class="muted">Student base</td><td><span class="mono">Qwen/Qwen3-0.6B-Base</span> pinned at <span class="mono">da87bfb6</span> (RQ3b also tries post-trained <span class="mono">Qwen3-0.6B</span>)</td></tr>
+      <tr><td class="muted">Data</td><td><a href="https://huggingface.co/datasets/jaredpalmer/kev-suites">kev-suites</a> pinned at <span class="mono">cc4bac80</span>, checksums verified. Train on decision-v7: 15,576 choice, score and yes/no questions from ten public datasets plus generated policy and rule records.</td></tr>
+      <tr><td class="muted">Selection</td><td>Best decision-v7 development accuracy; temperature fitted on the calibration split</td></tr>
+      <tr><td class="muted">Test sets</td><td>decision-v7 test (trained sources, 1,440 questions), transfer-v4 test (sources never trained on, 764), transfer-v9 test (adds MMLU-Pro, buried evidence and unknowable records, 1,264). Read once per model; ablations use development splits only.</td></tr>
+      <tr><td class="muted">Statistics</td><td>Paired McNemar or sign tests on identical questions, bootstrap 95% intervals, two seeds where a conclusion depends on it</td></tr>
+      <tr><td class="muted">Machine</td><td>Apple M4, 16 GB, MLX 0.32. A memory guard paused or stopped any run before the Mac ran low; every job ran alone at low priority.</td></tr>
+      <tr><td class="muted">Tracking</td><td>Every run's config, provenance, logs and per-question predictions pushed to <a href="https://github.com/BrandeisPatrick/tino">GitHub</a>; weights and teacher labels in private Hugging Face repos</td></tr>
+      <tr><td class="muted">References</td><td>Kev-0.6B (LoRA, same base and data): 0.808 trained sources, 0.642 new sources. Jev: 0.857 on new-source development data.</td></tr>
+    </tbody>
+  </table></div>
+</section>
+
+<section id="map">
+  <div class="head"><div class="eyebrow">The whole picture</div><h2>Where every full-data model landed</h2></div>
+  <div class="figure">
+    <h3>Test accuracy: trained sources vs new sources</h3>
+    <div class="legend" id="map-legend"></div>
+    <div class="chart" id="chart-map"></div>
+    <p class="cap">Each dot is one training run; lines join two seeds of the same recipe. Everything except teacher-only clusters at 0.81–0.82 in domain; out of domain the spread between seeds of one recipe is as wide as the spread between recipes. The Qwen3-4B teacher sits far above on new sources, and no student closes that gap.</p>
+  </div>
+</section>
+
+<section id="rq1">
+  <div class="head"><div class="eyebrow">RQ1 · Recipe ablation</div><h2>Which fine-tuning recipe is best for a decision model?</h2></div>
+  <p>One change at a time from a LoRA baseline, on a fixed 4,000-question subset for 2 epochs (about an hour per run), judged on development splits. Collapsed or stalled runs were rerun with another seed to separate a real effect from bad luck.</p>
+  <div class="figure">
+    <h3>New-source development accuracy per configuration</h3>
+    <div class="legend"><span><i class="c-good" style="background:var(--good)"></i>trained normally</span><span><i style="background:var(--bad)"></i>collapsed to uniform</span><span><i style="background:var(--warn)"></i>stalled at uniform</span><span>dashed line: baseline mean of two seeds</span></div>
+    <div class="chart" id="chart-abl"></div>
+    <p class="cap">A collapsed model gives every option the same score (spread under 0.002), so its dev log-loss is exactly 1.478, the uniform value. That fixed number is a cheap automatic check for a failed run.</p>
+  </div>
+  <div class="tablewrap"><table class="w760" id="tbl-abl"></table></div>
+  <ul class="find">
+    <li><b>Stability is the first-order effect at small data.</b> lr 2e-4 collapsed on both seeds. Rank 64 with alpha scaled to rank collapsed; with alpha fixed at 32 it trains. Attention-only and teacher weight 0.5 each failed on one seed and trained fine on the other. No LoRA run collapsed at full data (0 of 7).</li>
+    <li><b>Smaller updates help a little.</b> lr 5e-5 (0.750 / 0.593) and rank 4 (0.755 / 0.565) beat the baseline (0.729 / 0.559 mean) in domain. Each is one seed, so these are leads.</li>
+    <li><b>Attention-only adapters may transfer better.</b> When it trained, it scored 0.606 on new sources, the best gold-label 4k run. One successful seed.</li>
+    <li><b>More rank does not help, and Brier loss hurts</b> (about 5 points in domain, no calibration gain after temperature scaling).</li>
+    <li><b>Teacher soft labels raised transfer at 4k</b> (teacher only: 0.611), but at full data that gain shrank to a non-significant 1.7 points (RQ4).</li>
+    <li><b>1,000 questions is below the floor:</b> both methods stayed near uniform in about 185 steps.</li>
+  </ul>
+</section>
+
+<section id="rq2">
+  <div class="head"><div class="eyebrow">RQ2 · Full fine-tune vs adapter</div><h2>Same accuracy, very different cost</h2></div>
+  <div class="tablewrap"><table class="w680" id="tbl-rq2"></table></div>
+  <div class="two">
+    <div class="figure">
+      <h3>Accuracy vs training data (development splits)</h3>
+      <div class="legend"><span><i style="background:var(--ft)"></i>full fine-tune</span><span><i style="background:var(--adapter)"></i>adapter</span><span>solid: trained sources · dashed: new sources</span></div>
+      <div class="chart" id="chart-curve"></div>
+      <p class="cap">At 4,000 questions the full fine-tune is ahead by 1.5–2 points; at full data the two converge. At 1,000 neither leaves the uniform plateau. Full-data points are two-seed means.</p>
+    </div>
+    <div class="figure">
+      <h3>Cost per model</h3>
+      <div class="tablewrap" style="border:none"><table class="w560" id="tbl-cost"></table></div>
+      <p class="cap">The full fine-tune's first seed peaked at 7.7 GB before a bug fix (the loss was read before the gradients, which kept every activation alive); its second seed, after the fix, peaked at 6.5 GB.</p>
+    </div>
+  </div>
+  <ul class="find">
+    <li>In domain the two are identical: 0.815 vs 0.814 over two seeds each.</li>
+    <li>Out of domain the adapter averages about 2 points higher on both new-source test sets, but its own two seeds differ by 3.8 points. A consistent lean, not a proven win.</li>
+    <li>The full fine-tune is more overconfident (fitted temperature 2.45–2.75 vs about 2.0).</li>
+    <li><b>Answer:</b> use the adapter. Switch to full fine-tuning only when data is scarce.</li>
+  </ul>
+</section>
+
+<section id="rq3">
+  <div class="head"><div class="eyebrow">RQ3 · Base vs thinking Qwen</div><h2>Thinking helps on rules, costs 95x the time</h2></div>
+  <p><b>3a.</b> Qwen3-4B-Instruct-2507 answering directly vs Qwen3-4B-Thinking-2507 reasoning first, both 4-bit on the M4, on the same 200 development questions (100 trained-source, 100 new-source).</p>
+  <div class="tablewrap"><table class="w680" id="tbl-think"></table></div>
+  <div class="two">
+    <div class="figure">
+      <h3>Accuracy by source, sources with 6+ questions</h3>
+      <div class="legend"><span><i style="background:var(--kev)"></i>instruct</span><span><i style="background:var(--teacher)"></i>thinking</span></div>
+      <div class="chart" id="chart-think"></div>
+      <p class="cap">Small samples per source; read as direction only. Thinking wins most clearly on held-out deadline rules (2 of 6 to 6 of 6) and loses most on QNLI.</p>
+    </div>
+    <div class="figure">
+      <h3>3b. Learning speed: base vs post-trained start</h3>
+      <div class="legend"><span><i style="background:var(--adapter)"></i>from Qwen3-0.6B-Base</span><span><i style="background:var(--teacher)"></i>from post-trained Qwen3-0.6B</span></div>
+      <div class="chart" id="chart-post"></div>
+      <p class="cap">Trained-source development accuracy during training. The post-trained start leads through the first epoch; the base catches up by the end.</p>
+    </div>
+  </div>
+  <ul class="find">
+    <li><b>3a:</b> over all 200 questions thinking scores 0.780 vs 0.750 (95% interval −3.0 to +9.0, McNemar p = 0.41), at 31.6 s vs 0.33 s per question. 43 of 200 traces hit the 2,048-token cap, so thinking may be slightly understated.</li>
+    <li><b>3b:</b> post-trained vs base start, same adapter recipe: 0.810 vs 0.810 trained sources, 0.615 vs 0.613 new sources, 0.532 vs 0.548 hardest (all p ≥ 0.18).</li>
+    <li><b>Answer:</b> for millisecond decisions, answer directly; reserve thinking for rule-heavy cases that can afford 30 seconds. The student's starting checkpoint does not matter.</li>
+  </ul>
+</section>
+
+<section id="rq4">
+  <div class="head"><div class="eyebrow">RQ4 · Distillation</div><h2>Distilling an autoregressive teacher into a one-pass decision model</h2></div>
+  <p>The teacher is Qwen3-4B-Instruct-2507 at 4 bits. Each question becomes a lettered multiple-choice prompt, and the next-token probabilities of the letters, softened by a temperature of 9.0 fitted on the calibration split, become soft labels for all 14,576 trainable questions. The student is the adapter recipe with loss α·KL(teacher ‖ student) + (1−α)·cross-entropy on gold labels.</p>
+  <div class="tablewrap"><table class="w760" id="tbl-rq4"></table></div>
+  <div class="two">
+    <div class="figure">
+      <h3>Fitted temperature per run</h3>
+      <div class="legend"><span><i style="background:var(--ft)"></i>full fine-tune</span><span><i style="background:var(--adapter)"></i>gold-label adapter</span><span><i style="background:var(--distil)"></i>distilled</span></div>
+      <div class="chart" id="chart-temp"></div>
+      <p class="cap">A temperature near 1.0 means the raw probabilities are already calibrated. Every distilled run lands at 0.84–0.95; every gold-label run needs 1.96–2.75 to remove overconfidence.</p>
+    </div>
+    <div class="figure">
+      <h3>Teacher only vs gold labels, pooled over two seeds</h3>
+      <div class="tablewrap" style="border:none"><table class="w560">
+        <thead><tr><th>Test split</th><th class="n">Gap</th><th class="n">95% interval</th><th class="n">Sign test p</th></tr></thead>
+        <tbody>
+          <tr><td>Trained sources</td><td class="n">−5.6 pts</td><td class="n">−7.5 to −3.8</td><td class="n">&lt; 0.0001</td></tr>
+          <tr><td>New sources</td><td class="n">+1.7 pts</td><td class="n">−0.7 to +4.1</td><td class="n">0.66</td></tr>
+          <tr><td>Hardest</td><td class="n">+0.2 pts</td><td class="n">−1.9 to +2.1</td><td class="n">1.00</td></tr>
+        </tbody>
+      </table></div>
+      <p class="cap">Half teacher vs gold labels: identical accuracy everywhere (sign tests p ≥ 0.44), with better out-of-domain Brier on both seeds.</p>
+    </div>
+  </div>
+  <ul class="find">
+    <li><b>Half teacher, half gold is the recommended model.</b> It matches gold-label accuracy, needs no temperature correction, and has out-of-domain ECE of 0.04–0.05 against 0.11–0.15 for the gold-label adapter.</li>
+    <li><b>Gold labels are not required.</b> Teacher only averages 0.758 in domain and 0.649 out of domain, 87% of the teacher's out-of-domain accuracy in a model a sixth the size, at about 50 ms per question instead of 330.</li>
+    <li><b>Teacher only is a trade, not a win.</b> It loses 5.6 points in domain on both seeds. Its first seed's 0.671 out of domain looked like a breakthrough; the second seed scored 0.626.</li>
+    <li><b>What carries over is calibration;</b> the teacher's broader knowledge mostly does not fit into a 0.6B student, matching Kev's finding that capacity limits this size out of domain.</li>
+  </ul>
+</section>
+
+<section id="models">
+  <div class="head"><div class="eyebrow">Released models</div><h2>Five models on Hugging Face</h2></div>
+  <p>All private under <span class="mono">BrandeisPatrick</span>. Each Hub copy was downloaded and re-scored, and reproduces its run's test accuracy exactly. Bar set at the start: trained ≥ 0.808 and new ≥ 0.642 (Kev-0.6B), calibrated ECE ≤ 0.05, ≤ 8 GB to train, ≤ 100 ms per question.</p>
+  <div class="tablewrap"><table class="w760" id="tbl-models"></table></div>
+  <p class="note">No released model clears both accuracy bars. A second-seed adapter (not released) scored 0.818 / 0.651 and cleared both, which again shows how much seed luck sits in single numbers. Pick <span class="mono">tino-distil</span> by default.</p>
+</section>
+
+<section id="log">
+  <div class="head"><div class="eyebrow">Engineering log</div><h2>What broke, and what fixed it</h2></div>
+  <ol class="log">
+    <li><b>Full fine-tuning with AdamW peaked at 10.1 GB</b> and left the Mac 19–24% free on every step. Switching the backbone to Adafactor removed about 3.5 GB of optimizer state.</li>
+    <li><b>The first adapter run spiked to 9.2 GB.</b> Reading the loss before computing gradients ran the forward pass alone and kept every activation alive, defeating gradient checkpointing. Evaluating loss and gradients together brought training to 4.0 GB with identical results.</li>
+    <li><b>Casting the fp32-trained model to bf16 flipped 18% of decisions</b> on a smoke model, so every model is evaluated and published in the precision it was trained in.</li>
+    <li><b>The memory guard stopped a 2.6-hour teacher labeling run</b> after a check ran alongside it and swap grew 3.6 GB. Six of seven splits were already uploaded; the labeling resumed and every job since ran alone.</li>
+    <li><b>A queue waited on itself:</b> its wait loop matched its own parent shell's command line. Fixed in five minutes by waiting on a process ID.</li>
+    <li><b>LoRA collapse was found from the logs,</b> not guessed: collapsed runs had frozen dev log-loss at 1.478 and option scores within 0.002 of each other. Seed reruns then separated real failures (lr 2e-4) from chance ones.</li>
+    <li><b>A second seed reversed a headline.</b> Teacher-only distillation looked like the best out-of-domain model at 0.671; the rerun scored 0.626, and the pooled gain is not significant.</li>
+  </ol>
+</section>
+
+<section id="next">
+  <div class="head"><div class="eyebrow">Limits and next steps</div><h2>What these results do not settle</h2></div>
+  <ul class="find">
+    <li>Most ablations have one seed; the seed reruns show single runs can swing several points out of domain.</li>
+    <li>The thinking comparison used 200 questions and a 2,048-token reasoning cap.</li>
+    <li>Distilling from the thinking model would need reasoning traces for all 15,576 training questions, about 60 hours on the M4; it needs a cloud GPU.</li>
+    <li>Worth testing next: attention-only adapters with several seeds, lr 5e-5 at full data, and a larger teacher such as Qwen3.5-9B for labels.</li>
+  </ul>
+</section>
+
+<section id="links">
+  <div class="head"><div class="eyebrow">Sources</div><h2>Everything behind this page</h2></div>
+  <div class="links">
+    <a class="linkcard" href="https://github.com/BrandeisPatrick/tino"><span>Code, configs, every run</span><b>github.com/BrandeisPatrick/tino</b></a>
+    <a class="linkcard" href="https://github.com/BrandeisPatrick/tino/blob/main/RESEARCH.md"><span>Full write-up with run links</span><b>RESEARCH.md</b></a>
+    <a class="linkcard" href="https://huggingface.co/datasets/BrandeisPatrick/tino-teacher-labels"><span>Qwen teacher labels, rev 31e5bfd7</span><b>tino-teacher-labels</b></a>
+    <a class="linkcard" href="https://huggingface.co/datasets/jaredpalmer/kev-suites"><span>Training and evaluation data</span><b>kev-suites</b></a>
+    <a class="linkcard" href="https://github.com/jaredpalmer/kev"><span>Input layout and pointer head</span><b>Kev (Apache-2.0)</b></a>
+    <a class="linkcard" href="https://openrouter.ai/blog/insights/what-is-jev/"><span>The model this project imitates</span><b>Jev by TypeSafe</b></a>
+  </div>
+</section>
+
+<footer>Figures come straight from the run records in the repository. Kev-0.6B and Jev numbers are from Kev's published model card and were measured with Kev's own code, so treat those comparisons as close, not exact. Hugging Face repos are private; links open only for their owner.</footer>
+</div>
+
+<script>
+const D = {"full":{"finetuned_s0":{"run":"20261022-225150-tino-finetuned","T":2.447,"best_step":2520,"minutes":183,"trainable":440992256,"decision-v7/development":{"acc":0.7943,"brier":0.3074,"ece_raw":0.103,"ece_cal":0.0312,"ms":66},"decision-v7/test":{"acc":0.8104,"brier":0.2947,"ece_raw":0.1049,"ece_cal":0.0375,"ms":66},"transfer-v4/development":{"acc":0.5982,"brier":0.5322,"ece_raw":0.1808,"ece_cal":0.06,"ms":40},"transfer-v4/test":{"acc":0.6178,"brier":0.5255,"ece_raw":0.1692,"ece_cal":0.0504,"ms":40},"transfer-v9/test":{"acc":0.5443,"brier":0.6224,"ece_raw":0.1936,"ece_cal":0.0413,"ms":48},"hub":"BrandeisPatrick/tino-finetuned","rev":"d6b3c997","peak_gb":7.69,"min_free":31,"curve":[[360,0.6785],[720,0.7377],[1080,0.7554],[1440,0.7629],[1800,0.7786],[2160,0.7902],[2520,0.7943],[2880,0.7922],[2881,0.7909]]},"finetuned_s1":{"run":"20261024-142648-tino-finetuned-s1","T":2.752,"best_step":2513,"minutes":183,"trainable":440992256,"decision-v7/development":{"acc":0.7895,"brier":0.3139,"ece_raw":0.1086,"ece_cal":0.0356,"ms":66},"decision-v7/test":{"acc":0.8208,"brier":0.2836,"ece_raw":0.1028,"ece_cal":0.0277,"ms":66},"transfer-v4/development":{"acc":0.5982,"brier":0.5469,"ece_raw":0.1767,"ece_cal":0.0422,"ms":40},"transfer-v4/test":{"acc":0.6073,"brier":0.5491,"ece_raw":0.1727,"ece_cal":0.0441,"ms":40},"transfer-v9/test":{"acc":0.5332,"brier":0.6542,"ece_raw":0.2138,"ece_cal":0.0467,"ms":48},"hub":null,"rev":"","peak_gb":6.51,"min_free":30,"curve":[[359,0.6757],[718,0.7432],[1077,0.748],[1436,0.7629],[1795,0.7766],[2154,0.7834],[2513,0.7895],[2872,0.7861],[2878,0.7868]]},"adapter_s0":{"run":"20261023-085627-tino-adapter","T":2.009,"best_step":2881,"minutes":193,"trainable":10617344,"decision-v7/development":{"acc":0.7875,"brier":0.327,"ece_raw":0.0954,"ece_cal":0.0532,"ms":85},"decision-v7/test":{"acc":0.8104,"brier":0.2862,"ece_raw":0.0979,"ece_cal":0.0335,"ms":85},"transfer-v4/development":{"acc":0.5942,"brier":0.5486,"ece_raw":0.1787,"ece_cal":0.0728,"ms":52},"transfer-v4/test":{"acc":0.6126,"brier":0.5294,"ece_raw":0.1516,"ece_cal":0.055,"ms":52},"transfer-v9/test":{"acc":0.5483,"brier":0.622,"ece_raw":0.181,"ece_cal":0.0707,"ms":62},"hub":"BrandeisPatrick/tino-adapter","rev":"792b38f5","peak_gb":4.04,"min_free":58,"curve":[[360,0.6928],[720,0.7268],[1080,0.7766],[1440,0.7677],[1800,0.7786],[2160,0.78],[2520,0.7786],[2880,0.7868],[2881,0.7875]]},"adapter_s1":{"run":"20261024-110527-tino-adapter-s1","T":1.959,"best_step":2154,"minutes":195,"trainable":10617344,"decision-v7/development":{"acc":0.7956,"brier":0.3137,"ece_raw":0.0924,"ece_cal":0.0474,"ms":84},"decision-v7/test":{"acc":0.8181,"brier":0.2739,"ece_raw":0.0873,"ece_cal":0.0337,"ms":84},"transfer-v4/development":{"acc":0.6191,"brier":0.5058,"ece_raw":0.1504,"ece_cal":0.0548,"ms":51},"transfer-v4/test":{"acc":0.6505,"brier":0.485,"ece_raw":0.111,"ece_cal":0.0401,"ms":52},"transfer-v9/test":{"acc":0.568,"brier":0.5965,"ece_raw":0.1654,"ece_cal":0.0486,"ms":61},"hub":null,"rev":"","peak_gb":4.06,"min_free":51,"curve":[[359,0.7064],[718,0.7575],[1077,0.7684],[1436,0.7854],[1795,0.7861],[2154,0.7956],[2513,0.7943],[2872,0.7936],[2878,0.7929]]},"post_s0":{"run":"20261023-204028-tino-adapter-post","T":1.957,"best_step":2520,"minutes":191,"trainable":10617344,"decision-v7/development":{"acc":0.8052,"brier":0.2929,"ece_raw":0.0884,"ece_cal":0.0356,"ms":83},"decision-v7/test":{"acc":0.8104,"brier":0.29,"ece_raw":0.0921,"ece_cal":0.0387,"ms":83},"transfer-v4/development":{"acc":0.6217,"brier":0.5222,"ece_raw":0.1584,"ece_cal":0.0759,"ms":51},"transfer-v4/test":{"acc":0.6152,"brier":0.5239,"ece_raw":0.1529,"ece_cal":0.07,"ms":51},"transfer-v9/test":{"acc":0.5316,"brier":0.6276,"ece_raw":0.2057,"ece_cal":0.0915,"ms":61},"hub":"BrandeisPatrick/tino-adapter-post","rev":"d103bbeb","peak_gb":4.02,"min_free":63,"curve":[[360,0.7146],[720,0.7473],[1080,0.7847],[1440,0.7977],[1800,0.7997],[2160,0.8011],[2520,0.8052],[2880,0.8031],[2881,0.8045]]},"distil_s0":{"run":"20261023-153602-tino-distil","T":0.951,"best_step":1800,"minutes":191,"trainable":10617344,"decision-v7/development":{"acc":0.8011,"brier":0.2828,"ece_raw":0.0267,"ece_cal":0.0349,"ms":82},"decision-v7/test":{"acc":0.8083,"brier":0.281,"ece_raw":0.0355,"ece_cal":0.0442,"ms":82},"transfer-v4/development":{"acc":0.5955,"brier":0.4971,"ece_raw":0.0764,"ece_cal":0.083,"ms":50},"transfer-v4/test":{"acc":0.6361,"brier":0.466,"ece_raw":0.0488,"ece_cal":0.0458,"ms":51},"transfer-v9/test":{"acc":0.5546,"brier":0.5455,"ece_raw":0.053,"ece_cal":0.0629,"ms":60},"hub":"BrandeisPatrick/tino-distil","rev":"59598ad8","peak_gb":4.02,"min_free":55,"curve":[[360,0.7105],[720,0.7561],[1080,0.7698],[1440,0.7936],[1800,0.8011],[2160,0.8004],[2520,0.7963],[2880,0.795],[2881,0.795]]},"distil_s1":{"run":"20261025-014322-tino-distil-s1","T":0.843,"best_step":2872,"minutes":195,"trainable":10617344,"decision-v7/development":{"acc":0.8031,"brier":0.2762,"ece_raw":0.0354,"ece_cal":0.0283,"ms":84},"decision-v7/test":{"acc":0.8201,"brier":0.268,"ece_raw":0.0592,"ece_cal":0.0481,"ms":84},"transfer-v4/development":{"acc":0.6204,"brier":0.4815,"ece_raw":0.0541,"ece_cal":0.0513,"ms":51},"transfer-v4/test":{"acc":0.6257,"brier":0.4739,"ece_raw":0.0402,"ece_cal":0.0527,"ms":52},"transfer-v9/test":{"acc":0.5483,"brier":0.5422,"ece_raw":0.0435,"ece_cal":0.0542,"ms":61},"hub":null,"rev":"","peak_gb":4.06,"min_free":63,"curve":[[359,0.6962],[718,0.748],[1077,0.7718],[1436,0.7738],[1795,0.7786],[2154,0.7997],[2513,0.7922],[2872,0.8031],[2878,0.8031]]},"a1_s0":{"run":"20261024-222253-tino-distil-a1","T":0.871,"best_step":1440,"minutes":194,"trainable":10617344,"decision-v7/development":{"acc":0.7636,"brier":0.3397,"ece_raw":0.0641,"ece_cal":0.0586,"ms":84},"decision-v7/test":{"acc":0.75,"brier":0.3543,"ece_raw":0.0727,"ece_cal":0.055,"ms":84},"transfer-v4/development":{"acc":0.6243,"brier":0.4658,"ece_raw":0.0337,"ece_cal":0.0318,"ms":51},"transfer-v4/test":{"acc":0.6715,"brier":0.4407,"ece_raw":0.0969,"ece_cal":0.0679,"ms":52},"transfer-v9/test":{"acc":0.5767,"brier":0.5275,"ece_raw":0.0572,"ece_cal":0.036,"ms":61},"hub":"BrandeisPatrick/tino-distil-a1","rev":"74075adc","peak_gb":4.01,"min_free":50,"curve":[[360,0.6989],[720,0.7296],[1080,0.7418],[1440,0.7636],[1800,0.752],[2160,0.752],[2520,0.7582],[2880,0.7616],[2881,0.7623]]},"a1_s1":{"run":"20261025-083634-tino-distil-a1-s1","T":0.92,"best_step":2154,"minutes":193,"trainable":10617344,"decision-v7/development":{"acc":0.7595,"brier":0.3483,"ece_raw":0.0431,"ece_cal":0.0473,"ms":83},"decision-v7/test":{"acc":0.766,"brier":0.3355,"ece_raw":0.0618,"ece_cal":0.0602,"ms":84},"transfer-v4/development":{"acc":0.572,"brier":0.5261,"ece_raw":0.095,"ece_cal":0.1032,"ms":51},"transfer-v4/test":{"acc":0.6257,"brier":0.4852,"ece_raw":0.0396,"ece_cal":0.0522,"ms":51},"transfer-v9/test":{"acc":0.5427,"brier":0.5605,"ece_raw":0.0437,"ece_cal":0.0551,"ms":61},"hub":null,"rev":"","peak_gb":4.06,"min_free":62,"curve":[[359,0.7003],[718,0.7173],[1077,0.7411],[1436,0.7486],[1795,0.735],[2154,0.7595],[2513,0.7541],[2872,0.7568],[2878,0.7589]]}},"ablations":{"adapter-4k":{"run":"20261023-235901-abl-adapter-4k","trained":0.7302,"new":0.5668,"status":"ok","T":1.45,"ece_cal_new":0.0604,"minutes":54},"finetuned-4k":{"run":"20261024-005557-abl-finetuned-4k","trained":0.7493,"new":0.5825,"status":"ok","T":1.66,"ece_cal_new":0.0731,"minutes":51},"adapter-1k":{"run":"20261024-014925-abl-adapter-1k","trained":0.3481,"new":0.394,"status":"collapsed","T":0.1,"ece_cal_new":0.0432,"minutes":23},"finetuned-1k":{"run":"20261024-021503-abl-finetuned-1k","trained":0.3556,"new":0.4031,"status":"stalled","T":1.18,"ece_cal_new":0.0444,"minutes":20},"rank4-4k":{"run":"20261024-023723-abl-rank4-4k","trained":0.7548,"new":0.5654,"status":"ok","T":1.36,"ece_cal_new":0.1326,"minutes":54},"rank64-4k":{"run":"20261024-033412-abl-rank64-4k","trained":0.3358,"new":0.3429,"status":"collapsed","T":0.1,"ece_cal_new":0.0209,"minutes":55},"attn-only-4k":{"run":"20261024-043220-abl-attn-only-4k","trained":0.3467,"new":0.4175,"status":"stalled","T":2.46,"ece_cal_new":0.0472,"minutes":45},"lr5e-5-4k":{"run":"20261024-052020-abl-lr5e-5-4k","trained":0.75,"new":0.5929,"status":"ok","T":1.5,"ece_cal_new":0.0725,"minutes":55},"lr2e-4-4k":{"run":"20261024-061741-abl-lr2e-4-4k","trained":0.3386,"new":0.449,"status":"collapsed","T":0.1,"ece_cal_new":0.0859,"minutes":55},"brier-4k":{"run":"20261024-071515-abl-brier-4k","trained":0.6819,"new":0.5524,"status":"ok","T":1.44,"ece_cal_new":0.0516,"minutes":55},"distil-a025-4k":{"run":"20261024-081309-abl-distil-a025-4k","trained":0.7548,"new":0.5733,"status":"ok","T":0.93,"ece_cal_new":0.0953,"minutes":55},"distil-a05-4k":{"run":"20261024-091047-abl-distil-a05-4k","trained":0.3413,"new":0.394,"status":"collapsed","T":0.1,"ece_cal_new":0.037,"minutes":55},"distil-a1-4k":{"run":"20261024-100808-abl-distil-a1-4k","trained":0.7228,"new":0.6113,"status":"ok","T":0.82,"ece_cal_new":0.0564,"minutes":54},"attn-only-4k-s1":{"run":"20261024-173603-abl-attn-only-4k-s1","trained":0.7255,"new":0.606,"status":"ok","T":1.41,"ece_cal_new":0.035,"minutes":47},"rank64-a32-4k":{"run":"20261024-182602-abl-rank64-a32-4k","trained":0.7425,"new":0.5524,"status":"ok","T":1.55,"ece_cal_new":0.0956,"minutes":56},"adapter-4k-s1":{"run":"20261024-192429-abl-adapter-4k-s1","trained":0.7268,"new":0.5497,"status":"ok","T":1.38,"ece_cal_new":0.0534,"minutes":57},"lr2e-4-4k-s1":{"run":"20261024-202356-abl-lr2e-4-4k-s1","trained":0.3413,"new":0.4058,"status":"collapsed","T":0.1,"ece_cal_new":0.0429,"minutes":57},"distil-a05-4k-s1":{"run":"20261024-212329-abl-distil-a05-4k-s1","trained":0.6894,"new":0.555,"status":"ok","T":0.88,"ece_cal_new":0.0728,"minutes":57}},"think":{"qwen3-4b-instruct":{"sec":0.33,"tokens":0,"unclosed":0,"suites":{"decision-v7/development":{"acc":0.74,"ece":0.258,"n":100},"transfer-v4/development":{"acc":0.76,"ece":0.227,"n":100}}},"qwen3-4b-thinking":{"sec":31.59,"tokens":1137,"unclosed":43,"suites":{"decision-v7/development":{"acc":0.77,"ece":0.227,"n":100},"transfer-v4/development":{"acc":0.79,"ece":0.193,"n":100}}}},"think_by_source":[["mmlu",17,0.765,0.706],["emotion",16,0.625,0.688],["sciq",16,0.875,1.0],["agnews_yn",14,0.929,0.929],["tweet_offensive",12,0.75,0.667],["paws",12,0.667,0.75],["qnli",11,0.909,0.727],["agnews",9,0.556,0.556],["mnli",9,0.667,0.778],["dbpedia14",9,1.0,1.0],["trec",8,0.625,0.625],["boolq",7,0.857,0.857],["yelp_yn",7,1.0,1.0],["sst5",6,0.167,0.167],["yelp",6,0.833,0.667],["amazon",6,0.333,0.5],["imdb",6,0.833,0.833],["contrastive_authorization",6,1.0,1.0],["contrastive_deadline",6,0.333,1.0]],"think_run":"20261023-185358-think-eval","teacher":{"T":8.987,"labels_revision":"31e5bfd7","run":"20261023-140510-teacher-qwen3-4b","splits":{"decision-v7/calibration":{"acc":0.7399,"ece_raw":0.2381,"ece_cal":0.0474,"n":1088},"decision-v7/development":{"acc":0.767,"ece_raw":0.2144,"ece_cal":0.0457,"n":1352},"decision-v7/test":{"acc":0.7749,"ece_raw":0.2105,"ece_cal":0.054,"n":1324},"transfer-v4/development":{"acc":0.7042,"ece_raw":0.2777,"ece_cal":0.0744,"n":764},"transfer-v4/test":{"acc":0.7448,"ece_raw":0.2448,"ece_cal":0.0564,"n":764},"transfer-v9/test":{"acc":0.6717,"ece_raw":0.2989,"ece_cal":0.0519,"n":1264},"decision-v7/train":{"acc":0.7466,"ece_raw":0.2329,"ece_cal":0.0438,"n":14576}}},"totals":{"runs_dirs":39,"finished_nonsmoke":30,"train_hours":43.7}};
+const NS = "http://www.w3.org/2000/svg";
+function el(tag, attrs, parent, text){ const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); if (text != null) e.textContent = text; if (parent) parent.appendChild(e); return e; }
+function svg(id, w, h){ const host = document.getElementById(id); const s = el("svg", {viewBox:`0 0 ${w} ${h}`, role:"img"}); host.appendChild(s); return s; }
+const lin = (d0, d1, r0, r1) => v => r0 + (v - d0) / (d1 - d0) * (r1 - r0);
+const pct = v => v.toFixed(3);
+const mean = a => a.reduce((x, y) => x + y, 0) / a.length;
+const F = D.full;
+const acc = (k, sp) => F[k][sp].acc;
+const TEACHER = {tr: D.teacher.splits["decision-v7/test"].acc, nw: D.teacher.splits["transfer-v4/test"].acc, v9: D.teacher.splits["transfer-v9/test"].acc};
+const KEV = {tr: 0.808, nw: 0.642};
+
+document.getElementById("st-runs").textContent = D.totals.finished_nonsmoke;
+document.getElementById("st-hours").textContent = Math.round(D.totals.train_hours) + " h";
+
+function axes(s, x, y, X, Y, xt, yt, xl, yl, fmt){
+  const [x0, x1] = X, [y0, y1] = Y;
+  yt.forEach(v => { el("line", {x1:x(x0), x2:x(x1), y1:y(v), y2:y(v), class:"grid"}, s); el("text", {x:x(x0) - 6, y:y(v) + 4, "text-anchor":"end"}, s, fmt ? fmt(v) : v.toFixed(2)); });
+  xt.forEach(v => { el("line", {x1:x(v), x2:x(v), y1:y(y0), y2:y(y0) + 4, class:"axis"}, s); el("text", {x:x(v), y:y(y0) + 17, "text-anchor":"middle"}, s, fmt ? fmt(v) : v.toFixed(2)); });
+  el("line", {x1:x(x0), x2:x(x1), y1:y(y0), y2:y(y0), class:"axis"}, s);
+  if (xl) el("text", {x:(x(x0) + x(x1)) / 2, y:y(y0) + 34, "text-anchor":"middle", class:"lbl"}, s, xl);
+  if (yl) el("text", {x:12, y:(y(y0) + y(y1)) / 2, transform:`rotate(-90 12 ${(y(y0) + y(y1)) / 2})`, "text-anchor":"middle", class:"lbl"}, s, yl);
+}
+
+/* 1. trade-off map */
+(function(){
+  const groups = [
+    ["Full fine-tune", "c-ft", ["finetuned_s0", "finetuned_s1"]],
+    ["Adapter, gold labels", "c-adapter", ["adapter_s0", "adapter_s1"]],
+    ["Adapter, post-trained start", "c-adapter", ["post_s0"]],
+    ["Half teacher (tino-distil)", "c-distil", ["distil_s0", "distil_s1"]],
+    ["Teacher only (tino-distil-a1)", "c-distil", ["a1_s0", "a1_s1"]]];
+  const leg = document.getElementById("map-legend");
+  [["Full fine-tune","--ft"],["Adapter (gold labels; hollow = post-trained start)","--adapter"],["Distilled (filled = half teacher, ringed = teacher only)","--distil"],["Qwen3-4B teacher","--teacher"],["Kev-0.6B reference","--kev"]]
+    .forEach(([t, c]) => { const sp = document.createElement("span"); sp.innerHTML = `<i style="background:var(${c})"></i>${t}`; leg.appendChild(sp); });
+  const W = 640, H = 360, s = svg("chart-map", W, H);
+  const x = lin(0.73, 0.83, 70, W - 20), y = lin(0.59, 0.76, H - 50, 16);
+  axes(s, x, y, [0.73, 0.83], [0.59, 0.76], [0.74, 0.76, 0.78, 0.80, 0.82], [0.60, 0.64, 0.68, 0.72, 0.76], "trained sources (decision-v7 test)", "new sources (transfer-v4 test)");
+  groups.forEach(([name, cls, keys]) => {
+    const pts = keys.map(k => [acc(k, "decision-v7/test"), acc(k, "transfer-v4/test")]);
+    if (pts.length > 1) el("line", {x1:x(pts[0][0]), y1:y(pts[0][1]), x2:x(pts[1][0]), y2:y(pts[1][1]), class:cls, "stroke-width":1.5, "stroke-opacity":0.55, fill:"none"}, s);
+    pts.forEach(p => {
+      if (name.startsWith("Adapter, post")) el("circle", {cx:x(p[0]), cy:y(p[1]), r:5.5, class:cls, "fill-opacity":0, "stroke-width":2}, s);
+      else if (name.startsWith("Teacher only")) { el("circle", {cx:x(p[0]), cy:y(p[1]), r:7.5, class:cls, "fill-opacity":0, "stroke-width":1.5}, s); el("circle", {cx:x(p[0]), cy:y(p[1]), r:3.5, class:cls}, s); }
+      else el("circle", {cx:x(p[0]), cy:y(p[1]), r:5.5, class:cls, "fill-opacity":0.9}, s);
+    });
+  });
+  el("rect", {x:x(TEACHER.tr) - 6, y:y(TEACHER.nw) - 6, width:12, height:12, class:"c-teacher", transform:`rotate(45 ${x(TEACHER.tr)} ${y(TEACHER.nw)})`}, s);
+  el("text", {x:x(TEACHER.tr) + 12, y:y(TEACHER.nw) + 4, class:"lbl"}, s, `Qwen3-4B teacher (${pct(TEACHER.tr)}, ${pct(TEACHER.nw)})`);
+  el("rect", {x:x(KEV.tr) - 5, y:y(KEV.nw) - 5, width:10, height:10, class:"c-kev"}, s);
+  el("text", {x:x(KEV.tr) - 9, y:y(KEV.nw) - 9, "text-anchor":"end", class:"lbl"}, s, "Kev-0.6B");
+  const a0 = [acc("a1_s0", "decision-v7/test"), acc("a1_s0", "transfer-v4/test")], a1 = [acc("a1_s1", "decision-v7/test"), acc("a1_s1", "transfer-v4/test")];
+  el("text", {x:x(a0[0]) + 11, y:y(a0[1]) + 4}, s, "teacher only, seed 0");
+  el("text", {x:x(a1[0]) + 11, y:y(a1[1]) + 14}, s, "seed 1");
+})();
+
+/* 2. ablation dot plot */
+(function(){
+  const A = D.ablations;
+  const rows = [
+    ["Baseline: LoRA r16, lr 1e-4", ["adapter-4k", "adapter-4k-s1"]],
+    ["Full fine-tune", ["finetuned-4k"]],
+    ["LoRA rank 4", ["rank4-4k"]],
+    ["LoRA rank 64, alpha scaled", ["rank64-4k"]],
+    ["LoRA rank 64, alpha fixed", ["rank64-a32-4k"]],
+    ["Attention-only LoRA", ["attn-only-4k", "attn-only-4k-s1"]],
+    ["Learning rate 5e-5", ["lr5e-5-4k"]],
+    ["Learning rate 2e-4", ["lr2e-4-4k", "lr2e-4-4k-s1"]],
+    ["Cross-entropy + Brier", ["brier-4k"]],
+    ["Teacher weight 0.25", ["distil-a025-4k"]],
+    ["Teacher weight 0.5", ["distil-a05-4k", "distil-a05-4k-s1"]],
+    ["Teacher only (1.0)", ["distil-a1-4k"]],
+    ["1,000 questions: LoRA", ["adapter-1k"]],
+    ["1,000 questions: full FT", ["finetuned-1k"]]];
+  const W = 640, rowH = 24, H = rows.length * rowH + 50, s = svg("chart-abl", W, H);
+  const x = lin(0.32, 0.64, 200, W - 20);
+  [0.35, 0.40, 0.45, 0.50, 0.55, 0.60].forEach(v => { el("line", {x1:x(v), x2:x(v), y1:8, y2:H - 38, class:"grid"}, s); el("text", {x:x(v), y:H - 22, "text-anchor":"middle"}, s, v.toFixed(2)); });
+  el("text", {x:(x(0.32) + x(0.64)) / 2, y:H - 4, "text-anchor":"middle", class:"lbl"}, s, "new-source development accuracy (transfer-v4)");
+  const base = mean([A["adapter-4k"].new, A["adapter-4k-s1"].new]);
+  el("line", {x1:x(base), x2:x(base), y1:8, y2:H - 38, class:"ref"}, s);
+  rows.forEach(([label, keys], i) => {
+    const cy = 20 + i * rowH;
+    el("text", {x:192, y:cy + 4, "text-anchor":"end", class:"lbl"}, s, label);
+    keys.forEach((k, j) => {
+      const r = A[k]; if (!r) return;
+      const cls = r.status === "ok" ? "c-good" : r.status === "collapsed" ? "c-bad" : "c-warn";
+      if (r.status === "ok") el("circle", {cx:x(r.new), cy:cy + (keys.length > 1 ? (j ? 4 : -4) : 0), r:5.5, class:cls}, s);
+      else { const cx = x(r.new), yy = cy + (keys.length > 1 ? (j ? 4 : -4) : 0); el("line", {x1:cx - 5, y1:yy - 5, x2:cx + 5, y2:yy + 5, class:cls, "stroke-width":2.2}, s); el("line", {x1:cx - 5, y1:yy + 5, x2:cx + 5, y2:yy - 5, class:cls, "stroke-width":2.2}, s); }
+    });
+  });
+  // table
+  const t = document.getElementById("tbl-abl");
+  let h = "<thead><tr><th>Configuration</th><th class='n'>Seed 0: trained / new</th><th class='n'>Seed 1: trained / new</th><th>Outcome</th></tr></thead><tbody>";
+  const cell = r => r ? (r.status === "ok" ? `${pct(r.trained)} / ${pct(r.new)}` : `<span class="chip ${r.status === "collapsed" ? "bad" : "warn"}">${r.status}</span>`) : "–";
+  const outcome = keys => { const st = keys.map(k => A[k] && A[k].status); if (st.every(v => v === "ok")) return "<span class='chip ok'>trained</span>"; if (st.every(v => v !== "ok")) return "<span class='chip bad'>fails</span>"; return "<span class='chip warn'>fails by chance</span>"; };
+  rows.forEach(([label, keys]) => { h += `<tr><td>${label}</td><td class="n">${cell(A[keys[0]])}</td><td class="n">${cell(A[keys[1]])}</td><td>${outcome(keys)}</td></tr>`; });
+  t.innerHTML = h + "</tbody>";
+})();
+
+/* 3. RQ2 table, cost table, data-size curve */
+(function(){
+  const sp = [["Trained sources", "decision-v7/test"], ["New sources", "transfer-v4/test"], ["Hardest", "transfer-v9/test"]];
+  let h = "<thead><tr><th>Test split</th><th class='n'>Full fine-tune s0 / s1</th><th class='n'>Mean</th><th class='n'>Adapter s0 / s1</th><th class='n'>Mean</th></tr></thead><tbody>";
+  sp.forEach(([l, k]) => { const f = [acc("finetuned_s0", k), acc("finetuned_s1", k)], a = [acc("adapter_s0", k), acc("adapter_s1", k)];
+    h += `<tr><td>${l}</td><td class="n">${pct(f[0])} / ${pct(f[1])}</td><td class="n${mean(f) >= mean(a) ? " best" : ""}">${pct(mean(f))}</td><td class="n">${pct(a[0])} / ${pct(a[1])}</td><td class="n${mean(a) >= mean(f) ? " best" : ""}">${pct(mean(a))}</td></tr>`; });
+  document.getElementById("tbl-rq2").innerHTML = h + "</tbody>";
+  const c = [["Trainable weights", "441M", "10.6M"], ["Published size", "2.1 GB", "43 MB"],
+    ["Peak training memory", `${F.finetuned_s1.peak_gb.toFixed(1)} GB (after fix)`, `${F.adapter_s0.peak_gb.toFixed(1)} GB`],
+    ["Lowest system free memory", `${Math.min(F.finetuned_s0.min_free, F.finetuned_s1.min_free)}%`, `${Math.min(F.adapter_s0.min_free, F.adapter_s1.min_free)}%`],
+    ["Training time, 2 epochs", `${F.finetuned_s0.minutes} min`, `${F.adapter_s0.minutes} min`],
+    ["Fitted temperature", `${F.finetuned_s0.T.toFixed(2)}, ${F.finetuned_s1.T.toFixed(2)}`, `${F.adapter_s0.T.toFixed(2)}, ${F.adapter_s1.T.toFixed(2)}`],
+    ["Answer time", `${F.finetuned_s0["transfer-v4/test"].ms} ms`, `${F.adapter_s0["transfer-v4/test"].ms} ms`]];
+  document.getElementById("tbl-cost").innerHTML = "<thead><tr><th></th><th>Full fine-tune</th><th>Adapter</th></tr></thead><tbody>" + c.map(r => `<tr><td>${r[0]}</td><td class="n">${r[1]}</td><td class="n">${r[2]}</td></tr>`).join("") + "</tbody>";
+  const A = D.ablations, dv = "decision-v7/development", nv = "transfer-v4/development";
+  const ft = {tr: [A["finetuned-1k"].trained, A["finetuned-4k"].trained, mean([F.finetuned_s0[dv].acc, F.finetuned_s1[dv].acc])],
+              nw: [A["finetuned-1k"].new, A["finetuned-4k"].new, mean([F.finetuned_s0[nv].acc, F.finetuned_s1[nv].acc])]};
+  const ad = {tr: [A["adapter-1k"].trained, mean([A["adapter-4k"].trained, A["adapter-4k-s1"].trained]), mean([F.adapter_s0[dv].acc, F.adapter_s1[dv].acc])],
+              nw: [A["adapter-1k"].new, mean([A["adapter-4k"].new, A["adapter-4k-s1"].new]), mean([F.adapter_s0[nv].acc, F.adapter_s1[nv].acc])]};
+  const W = 520, H = 300, s = svg("chart-curve", W, H);
+  const xs = [1000, 4000, 15576], x = lin(Math.log10(800), Math.log10(20000), 60, W - 20), y = lin(0.30, 0.85, H - 50, 14);
+  [0.3, 0.4, 0.5, 0.6, 0.7, 0.8].forEach(v => { el("line", {x1:60, x2:W - 20, y1:y(v), y2:y(v), class:"grid"}, s); el("text", {x:54, y:y(v) + 4, "text-anchor":"end"}, s, v.toFixed(1)); });
+  xs.forEach((v, i) => el("text", {x:x(Math.log10(v)), y:H - 32, "text-anchor":"middle"}, s, ["1k", "4k", "15.6k"][i]));
+  el("text", {x:(60 + W - 20) / 2, y:H - 12, "text-anchor":"middle", class:"lbl"}, s, "training questions (log scale)");
+  const line = (vals, cls, dash) => { const d = vals.map((v, i) => `${i ? "L" : "M"}${x(Math.log10(xs[i]))},${y(v)}`).join(" ");
+    el("path", {d, class:cls, fill:"none", "stroke-width":2, "stroke-dasharray":dash ? "5 4" : "none"}, s);
+    vals.forEach((v, i) => el("circle", {cx:x(Math.log10(xs[i])), cy:y(v), r:3.5, class:cls}, s)); };
+  line(ft.tr, "c-ft"); line(ad.tr, "c-adapter"); line(ft.nw, "c-ft", true); line(ad.nw, "c-adapter", true);
+})();
+
+/* 4. RQ3a table + per-source dumbbell; 3b learning curves */
+(function(){
+  const T = D.think, I = T["qwen3-4b-instruct"], K = T["qwen3-4b-thinking"];
+  const s1 = "decision-v7/development", s2 = "transfer-v4/development";
+  const all = m => (m.suites[s1].acc * m.suites[s1].n + m.suites[s2].acc * m.suites[s2].n) / (m.suites[s1].n + m.suites[s2].n);
+  document.getElementById("tbl-think").innerHTML = "<thead><tr><th>Model</th><th class='n'>Trained sources</th><th class='n'>New sources</th><th class='n'>All 200</th><th class='n'>Raw ECE</th><th class='n'>Seconds / question</th><th class='n'>Reasoning tokens</th></tr></thead><tbody>" +
+    [["Qwen3-4B-Instruct-2507 (direct)", I], ["Qwen3-4B-Thinking-2507 (reasons first)", K]].map(([n, m]) => `<tr><td>${n}</td><td class="n">${pct(m.suites[s1].acc)}</td><td class="n">${pct(m.suites[s2].acc)}</td><td class="n">${pct(all(m))}</td><td class="n">${m.suites[s1].ece.toFixed(2)}–${m.suites[s2].ece.toFixed(2)}</td><td class="n">${m.sec.toFixed(2)}</td><td class="n">${m.tokens ? m.tokens.toLocaleString() : "0"}</td></tr>`).join("") + "</tbody>";
+  const rows = D.think_by_source.slice().sort((a, b) => (b[3] - b[2]) - (a[3] - a[2]));
+  const W = 520, rowH = 20, H = rows.length * rowH + 44, s = svg("chart-think", W, H);
+  const x = lin(0, 1, 190, W - 20);
+  [0, 0.25, 0.5, 0.75, 1].forEach(v => { el("line", {x1:x(v), x2:x(v), y1:6, y2:H - 32, class:"grid"}, s); el("text", {x:x(v), y:H - 16, "text-anchor":"middle"}, s, v.toFixed(2)); });
+  rows.forEach(([src, n, ia, ta], i) => { const cy = 16 + i * rowH;
+    el("text", {x:182, y:cy + 4, "text-anchor":"end", class:"lbl"}, s, `${src.replace(/_/g, " ")} (${n})`);
+    el("line", {x1:x(ia), x2:x(ta), y1:cy, y2:cy, class:ta > ia ? "c-good" : ta < ia ? "c-bad" : "c-kev", "stroke-width":2}, s);
+    el("circle", {cx:x(ia), cy, r:4.5, class:"c-kev"}, s); el("circle", {cx:x(ta), cy, r:4.5, class:"c-teacher"}, s); });
+  const W2 = 520, H2 = 280, s2v = svg("chart-post", W2, H2);
+  const xx = lin(0, 2900, 56, W2 - 20), yy = lin(0.66, 0.82, H2 - 46, 14);
+  axes(s2v, xx, yy, [0, 2900], [0.66, 0.82], [0, 720, 1440, 2160, 2880], [0.68, 0.72, 0.76, 0.80], "training step (1,440 steps = 1 epoch)", null, v => Number.isInteger(v) ? String(v) : v.toFixed(2));
+  [["adapter_s0", "c-adapter"], ["post_s0", "c-teacher"]].forEach(([k, cls]) => { const c = F[k].curve;
+    el("path", {d:c.map((p, i) => `${i ? "L" : "M"}${xx(p[0])},${yy(p[1])}`).join(" "), class:cls, fill:"none", "stroke-width":2}, s2v);
+    c.forEach(p => el("circle", {cx:xx(p[0]), cy:yy(p[1]), r:3, class:cls}, s2v)); });
+})();
+
+/* 5. RQ4 table + temperature chart */
+(function(){
+  const sp = [["Trained sources", "decision-v7/test"], ["New sources", "transfer-v4/test"], ["Hardest", "transfer-v9/test"]];
+  const cols = [["Gold labels (tino-adapter)", "adapter"], ["Half teacher (tino-distil)", "distil"], ["Teacher only (tino-distil-a1)", "a1"]];
+  let h = "<thead><tr><th></th>" + cols.map(c => `<th class='n'>${c[0]}<br>seed 0 / seed 1</th>`).join("") + "<th class='n'>Teacher</th></tr></thead><tbody>";
+  const tv = {"decision-v7/test": TEACHER.tr, "transfer-v4/test": TEACHER.nw, "transfer-v9/test": TEACHER.v9};
+  sp.forEach(([l, k]) => { h += `<tr><td>${l}</td>` + cols.map(([, p]) => `<td class="n">${pct(acc(p + "_s0", k))} / ${pct(acc(p + "_s1", k))}</td>`).join("") + `<td class="n">${pct(tv[k])}</td></tr>`; });
+  h += "<tr><td>Fitted temperature</td>" + cols.map(([, p]) => `<td class="n">${F[p + "_s0"].T.toFixed(2)} / ${F[p + "_s1"].T.toFixed(2)}</td>`).join("") + `<td class="n">${D.teacher.T.toFixed(1)}</td></tr>`;
+  h += "<tr><td>Raw ECE, new sources</td>" + cols.map(([, p]) => `<td class="n">${F[p + "_s0"]["transfer-v4/test"].ece_raw.toFixed(3)} / ${F[p + "_s1"]["transfer-v4/test"].ece_raw.toFixed(3)}</td>`).join("") + `<td class="n">${D.teacher.splits["transfer-v4/test"].ece_raw.toFixed(3)}</td></tr>`;
+  h += "<tr><td>Brier, new sources</td>" + cols.map(([, p]) => `<td class="n">${F[p + "_s0"]["transfer-v4/test"].brier.toFixed(3)} / ${F[p + "_s1"]["transfer-v4/test"].brier.toFixed(3)}</td>`).join("") + "<td class='n'>–</td></tr>";
+  document.getElementById("tbl-rq4").innerHTML = h + "</tbody>";
+  const runs = [["Full fine-tune s0", "finetuned_s0", "c-ft"], ["Full fine-tune s1", "finetuned_s1", "c-ft"], ["Adapter s0", "adapter_s0", "c-adapter"], ["Adapter s1", "adapter_s1", "c-adapter"],
+    ["Adapter, post-trained", "post_s0", "c-adapter"], ["Half teacher s0", "distil_s0", "c-distil"], ["Half teacher s1", "distil_s1", "c-distil"], ["Teacher only s0", "a1_s0", "c-distil"], ["Teacher only s1", "a1_s1", "c-distil"]];
+  const W = 520, rowH = 24, H = runs.length * rowH + 46, s = svg("chart-temp", W, H);
+  const x = lin(0, 3, 160, W - 30);
+  [0, 0.5, 1, 1.5, 2, 2.5, 3].forEach(v => { el("line", {x1:x(v), x2:x(v), y1:6, y2:H - 34, class:"grid"}, s); el("text", {x:x(v), y:H - 18, "text-anchor":"middle"}, s, v.toFixed(1)); });
+  el("line", {x1:x(1), x2:x(1), y1:6, y2:H - 34, class:"ref"}, s);
+  el("text", {x:x(1) + 4, y:H - 2, class:"lbl"}, s, "1.0 = already calibrated");
+  runs.forEach(([l, k, cls], i) => { const cy = 16 + i * rowH, T = F[k].T;
+    el("text", {x:152, y:cy + 4, "text-anchor":"end", class:"lbl"}, s, l);
+    el("rect", {x:x(0), y:cy - 7, width:x(T) - x(0), height:14, rx:2, class:cls, "fill-opacity":0.85}, s);
+    el("text", {x:x(T) + 6, y:cy + 4}, s, T.toFixed(2)); });
+})();
+
+/* 6. models table */
+(function(){
+  const M = [["tino-finetuned", "finetuned_s0", "Full fine-tune, gold labels"], ["tino-adapter", "adapter_s0", "LoRA r16, gold labels"], ["tino-adapter-post", "post_s0", "LoRA r16 from post-trained Qwen3-0.6B"],
+             ["tino-distil", "distil_s0", "LoRA r16, half teacher (recommended)"], ["tino-distil-a1", "a1_s0", "LoRA r16, teacher only, no gold labels"]];
+  let h = "<thead><tr><th>Model</th><th>Recipe</th><th class='n'>Trained</th><th class='n'>New</th><th class='n'>Calibrated ECE</th><th class='n'>ms / q</th><th class='n'>Hub revision</th><th>Bar</th></tr></thead><tbody>";
+  M.forEach(([n, k, r]) => { const f = F[k], tr = f["decision-v7/test"].acc, nw = f["transfer-v4/test"].acc, e = f["transfer-v4/test"].ece_cal, ms = f["transfer-v4/test"].ms;
+    const miss = []; if (tr < 0.808) miss.push("trained"); if (nw < 0.642) miss.push("new"); if (e > 0.05) miss.push("ECE");
+    h += `<tr><td><a href="https://huggingface.co/${f.hub}">${n}</a></td><td>${r}</td><td class="n${tr >= 0.808 ? " best" : ""}">${pct(tr)}</td><td class="n${nw >= 0.642 ? " best" : ""}">${pct(nw)}</td><td class="n">${e.toFixed(3)}</td><td class="n">${ms}</td><td class="n">${f.rev}</td><td>${miss.length ? `<span class="chip warn">misses ${miss.join(", ")}</span>` : "<span class='chip ok'>meets</span>"}</td></tr>`; });
+  document.getElementById("tbl-models").innerHTML = h + "</tbody>";
+})();
+</script>
+
+</body></html>
