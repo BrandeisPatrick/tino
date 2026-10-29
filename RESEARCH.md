@@ -13,6 +13,8 @@
 
 Seed-to-seed variation out of domain is up to about 4 points, larger than most method differences here; single-seed gaps smaller than that are treated as unproven throughout.
 
+These answers rest on one student size, one teacher and two seeds. The plan to make them hold up, with hypotheses recorded before the runs and every run priced in hours, is [docs/PHASE2.md](docs/PHASE2.md).
+
 ## Shared protocol
 
 Every experiment follows these rules, so results stay comparable.

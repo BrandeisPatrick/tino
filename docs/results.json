@@ -1,7 +1,7 @@
 {
  "summary": {
-  "generated": "2026-10-28",
-  "runs_total": 39,
+  "generated": "2026-10-29",
+  "runs_total": 40,
   "runs_finished_nonsmoke": 29,
   "train_hours_nonsmoke": 43.7,
   "published_models": [
@@ -11,7 +11,7 @@
    "BrandeisPatrick/tino-adapter-post",
    "BrandeisPatrick/tino-distil-a1"
   ],
-  "timeline_events": 78
+  "timeline_events": 81
  },
  "runs": [
   {
@@ -3072,6 +3072,50 @@
    "peak_gb": 4.06,
    "min_free_pct": 62,
    "has_predictions": true
+  },
+  {
+   "id": "20261029-170321-tino-adapter-1.7b-smoke",
+   "name": "tino-adapter-1.7b-smoke",
+   "started": "20261029-170321",
+   "smoke": true,
+   "dir": "runs/20261029-170321-tino-adapter-1.7b-smoke",
+   "code_commit": "7abf0595",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora",
+   "base_model": "Qwen/Qwen3-1.7B-Base",
+   "base_revision": "ea980cb0",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": null,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": null,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "incomplete",
+   "metrics": {},
+   "dev_curve": [
+    [
+     12,
+     0.2917
+    ],
+    [
+     24,
+     0.3167
+    ],
+    [
+     25,
+     0.325
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 4.87,
+   "min_free_pct": 57,
+   "has_predictions": false
   }
  ]
 }

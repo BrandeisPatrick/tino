@@ -10,6 +10,7 @@ The research questions and their answers are in [RESEARCH.md](RESEARCH.md); the 
 |---|---|
 | [RESEARCH.md](RESEARCH.md) | The four research questions, the protocol, every experiment, and the answers with paired significance tests |
 | [LESSONS.md](LESSONS.md) | The nine lessons, each with the table behind it |
+| [docs/PHASE2.md](docs/PHASE2.md) | The Phase 2 plan: gaps a reviewer would raise, pre-registered hypotheses, and every planned run priced in hours |
 | [paper/article.md](paper/article.md) | The research article draft: short text, nine figures rendered from the tracked runs by `scripts/figures.py` |
 | [docs/TIMELINE.md](docs/TIMELINE.md) | Day-by-day narrative of the project, plus a generated event log of every run start and commit |
 | [runs/INDEX.md](runs/INDEX.md) | Every run: kind, how it ended, key numbers, where its weights are. One directory per run under `runs/` with config, provenance, logs, evals, final results and per-question predictions |
