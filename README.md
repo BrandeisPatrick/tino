@@ -10,12 +10,13 @@ The research questions and their answers are in [RESEARCH.md](RESEARCH.md); the 
 |---|---|
 | [RESEARCH.md](RESEARCH.md) | The four research questions, the protocol, every experiment, and the answers with paired significance tests |
 | [LESSONS.md](LESSONS.md) | The nine lessons, each with the table behind it |
+| [paper/article.md](paper/article.md) | The research article draft: short text, nine figures rendered from the tracked runs by `scripts/figures.py` |
 | [docs/TIMELINE.md](docs/TIMELINE.md) | Day-by-day narrative of the project, plus a generated event log of every run start and commit |
 | [runs/INDEX.md](runs/INDEX.md) | Every run: kind, how it ended, key numbers, where its weights are. One directory per run under `runs/` with config, provenance, logs, evals, final results and per-question predictions |
 | [docs/MODELS.md](docs/MODELS.md) | Registry of the published models and datasets, with Hub revisions and how to load them |
 | [docs/TRACKING.md](docs/TRACKING.md) | How the repository is organized, what each run file means, where everything lives, and how to add an experiment |
 | [docs/ENGINEERING.md](docs/ENGINEERING.md) | What broke, the symptom, the fix, and the commit |
-| [docs/pages/](docs/pages/) | The three published summary pages (plan, findings, lessons) as self-contained HTML |
+| [docs/pages/](docs/pages/) | The four published pages (plan, findings, lessons, article) as self-contained HTML |
 | [docs/results.json](docs/results.json) | Every run's parsed config, provenance and metrics, for scripts and pages |
 | `configs/`, `scripts/`, `tino/` | Recipes, the training and evaluation scripts and queues that ran, and the library |
 

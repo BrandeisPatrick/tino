@@ -1,0 +1,142 @@
+{
+ "Adapter vs full fine-tune  (RQ2) | decision-v7/test": {
+  "n": 2880,
+  "mean": -0.001388888888888889,
+  "lo": -0.0125,
+  "hi": 0.009375,
+  "wins": 130,
+  "losses": 134,
+  "p": 0.8535579832810389,
+  "seeds": 2
+ },
+ "Adapter vs full fine-tune  (RQ2) | transfer-v4/test": {
+  "n": 1528,
+  "mean": 0.018979057591623036,
+  "lo": -0.001979712041884811,
+  "hi": 0.03992146596858639,
+  "wins": 156,
+  "losses": 127,
+  "p": 0.09585370343342689,
+  "seeds": 2
+ },
+ "Adapter vs full fine-tune  (RQ2) | transfer-v9/test": {
+  "n": 2528,
+  "mean": 0.019382911392405063,
+  "lo": 0.002768987341772152,
+  "hi": 0.03639240506329114,
+  "wins": 251,
+  "losses": 202,
+  "p": 0.02401194559394285,
+  "seeds": 2
+ },
+ "Half-teacher distillation vs gold-label adapter  (RQ4) | decision-v7/test": {
+  "n": 2880,
+  "mean": 0.0,
+  "lo": -0.0125,
+  "hi": 0.0125,
+  "wins": 167,
+  "losses": 167,
+  "p": 1.0,
+  "seeds": 2
+ },
+ "Half-teacher distillation vs gold-label adapter  (RQ4) | transfer-v4/test": {
+  "n": 1528,
+  "mean": -0.0006544502617801048,
+  "lo": -0.020942408376963352,
+  "hi": 0.01963350785340314,
+  "wins": 127,
+  "losses": 128,
+  "p": 1.0,
+  "seeds": 2
+ },
+ "Half-teacher distillation vs gold-label adapter  (RQ4) | transfer-v9/test": {
+  "n": 2528,
+  "mean": -0.006724683544303798,
+  "lo": -0.022943037974683545,
+  "hi": 0.00949367088607595,
+  "wins": 209,
+  "losses": 226,
+  "p": 0.44303376067885586,
+  "seeds": 2
+ },
+ "Teacher-only distillation vs gold-label adapter  (RQ4) | decision-v7/test": {
+  "n": 2880,
+  "mean": -0.05625,
+  "lo": -0.07152777777777777,
+  "hi": -0.04096354166666664,
+  "wins": 178,
+  "losses": 340,
+  "p": 9.907329898064745e-13,
+  "seeds": 2
+ },
+ "Teacher-only distillation vs gold-label adapter  (RQ4) | transfer-v4/test": {
+  "n": 1528,
+  "mean": 0.017015706806282723,
+  "lo": -0.004581151832460733,
+  "hi": 0.03861256544502618,
+  "wins": 155,
+  "losses": 129,
+  "p": 0.13780907674155213,
+  "seeds": 2
+ },
+ "Teacher-only distillation vs gold-label adapter  (RQ4) | transfer-v9/test": {
+  "n": 2528,
+  "mean": 0.0015822784810126582,
+  "lo": -0.015427215189873418,
+  "hi": 0.01977848101265823,
+  "wins": 254,
+  "losses": 250,
+  "p": 0.8937118793983185,
+  "seeds": 2
+ },
+ "Post-trained start vs base start, one seed  (RQ3b) | decision-v7/test": {
+  "n": 1440,
+  "mean": 0.0,
+  "lo": -0.017361111111111112,
+  "hi": 0.01668402777777784,
+  "wins": 78,
+  "losses": 78,
+  "p": 1.0,
+  "seeds": 1
+ },
+ "Post-trained start vs base start, one seed  (RQ3b) | transfer-v4/test": {
+  "n": 764,
+  "mean": 0.002617801047120419,
+  "lo": -0.02617801047120419,
+  "hi": 0.031413612565445025,
+  "wins": 67,
+  "losses": 65,
+  "p": 0.9306844655255777,
+  "seeds": 1
+ },
+ "Post-trained start vs base start, one seed  (RQ3b) | transfer-v9/test": {
+  "n": 1264,
+  "mean": -0.01661392405063291,
+  "lo": -0.040348101265822785,
+  "hi": 0.005537974683544304,
+  "wins": 103,
+  "losses": 124,
+  "p": 0.1842387525737659,
+  "seeds": 1
+ },
+ "Thinking vs direct | decision-v7/development": {
+  "n": 100,
+  "mean": 0.03,
+  "lo": -0.030249999999999912,
+  "hi": 0.09,
+  "wins": 7,
+  "losses": 4,
+  "p": 0.548828125,
+  "seeds": 1
+ },
+ "Thinking vs direct | transfer-v4/development": {
+  "n": 100,
+  "mean": 0.03,
+  "lo": -0.07,
+  "hi": 0.13,
+  "wins": 14,
+  "losses": 11,
+  "p": 0.6900379657745361,
+  "seeds": 1
+ }
+}

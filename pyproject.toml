@@ -15,3 +15,9 @@ wandb = ["wandb>=0.21"]
 
 [tool.uv]
 package = false
+
+[dependency-groups]
+figures = [
+    "markdown>=3.11.2",
+    "matplotlib>=3.11.2",
+]

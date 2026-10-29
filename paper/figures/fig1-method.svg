@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 980 352" font-family="Helvetica Neue, Helvetica, Arial, sans-serif">
+<defs><marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse"><path d="M 0 0 L 10 5 L 0 10 z" fill="#5c5b57"/></marker></defs>
+<text x="20" y="16" font-size="9.5" fill="#5c5b57" font-weight="normal" text-anchor="start" letter-spacing="1">INPUT · ONE CAUSAL ROW PER QUESTION</text>
+<rect x="20" y="24" width="600" height="26" rx="5" fill="#f3f2ee" stroke="#c4c3bb"/>
+<text x="29" y="41.0" font-size="11.5" fill="#1b1b1b">⟨state⟩  order placed 9 days ago · delivered 2 days later · returns accepted within 14 days of delivery</text>
+<rect x="20" y="58" width="300" height="26" rx="5" fill="#f3f2ee" stroke="#c4c3bb"/>
+<text x="29" y="75.0" font-size="11.5" fill="#1b1b1b">⟨question⟩  Can this order still be returned?</text>
+<rect x="20" y="92" width="112" height="26" rx="5" fill="#f3f2ee" stroke="#c4c3bb"/>
+<text x="29" y="109.0" font-size="11.5" fill="#1b1b1b">⟨opt⟩ yes ⟨/opt⟩</text>
+<rect x="142" y="92" width="106" height="26" rx="5" fill="#f3f2ee" stroke="#c4c3bb"/>
+<text x="151" y="109.0" font-size="11.5" fill="#1b1b1b">⟨opt⟩ no ⟨/opt⟩</text>
+<rect x="258" y="92" width="184" height="26" rx="5" fill="#f3f2ee" stroke="#c4c3bb"/>
+<text x="267" y="109.0" font-size="11.5" fill="#1b1b1b">⟨opt⟩ needs review ⟨/opt⟩</text>
+<rect x="452" y="92" width="86" height="26" rx="5" fill="#ffffff" stroke="#5c5b57"/>
+<text x="461" y="109.0" font-size="11.5" fill="#1b1b1b">⟨decide⟩</text>
+<line x1="76" y1="120" x2="76" y2="138" stroke="#5c5b57" stroke-width="1" marker-end="url(#arrow)"/>
+<line x1="195" y1="120" x2="195" y2="138" stroke="#5c5b57" stroke-width="1" marker-end="url(#arrow)"/>
+<line x1="350" y1="120" x2="350" y2="138" stroke="#5c5b57" stroke-width="1" marker-end="url(#arrow)"/>
+<line x1="495" y1="120" x2="495" y2="138" stroke="#5c5b57" stroke-width="1" marker-end="url(#arrow)"/>
+<rect x="20" y="140" width="600" height="40" rx="6" fill="#ffffff" stroke="#5c5b57"/>
+<text x="32" y="157" font-size="12" font-weight="bold" fill="#1b1b1b">Qwen3-0.6B-Base</text>
+<text x="32" y="172" font-size="10.5" fill="#5c5b57">28 layers · hidden size 1,024 · a single forward pass, no generated text</text>
+<line x1="76" y1="180" x2="76" y2="198" stroke="#5c5b57" stroke-width="1"/>
+<circle cx="76" cy="204" r="6" fill="#ffffff" stroke="#5c5b57" stroke-width="1.2"/>
+<text x="76" y="223" font-size="9.5" fill="#5c5b57" text-anchor="middle">h(⟨/opt⟩₁)</text>
+<line x1="76" y1="226" x2="76" y2="238" stroke="#5c5b57" stroke-width="1"/>
+<line x1="195" y1="180" x2="195" y2="198" stroke="#5c5b57" stroke-width="1"/>
+<circle cx="195" cy="204" r="6" fill="#ffffff" stroke="#5c5b57" stroke-width="1.2"/>
+<text x="195" y="223" font-size="9.5" fill="#5c5b57" text-anchor="middle">h(⟨/opt⟩₂)</text>
+<line x1="195" y1="226" x2="195" y2="238" stroke="#5c5b57" stroke-width="1"/>
+<line x1="350" y1="180" x2="350" y2="198" stroke="#5c5b57" stroke-width="1"/>
+<circle cx="350" cy="204" r="6" fill="#ffffff" stroke="#5c5b57" stroke-width="1.2"/>
+<text x="350" y="223" font-size="9.5" fill="#5c5b57" text-anchor="middle">h(⟨/opt⟩₃)</text>
+<line x1="350" y1="226" x2="350" y2="238" stroke="#5c5b57" stroke-width="1"/>
+<line x1="495" y1="180" x2="495" y2="198" stroke="#5c5b57" stroke-width="1"/>
+<circle cx="495" cy="204" r="6" fill="#ffffff" stroke="#5c5b57" stroke-width="1.2"/>
+<text x="495" y="223" font-size="9.5" fill="#5c5b57" text-anchor="middle">h(⟨decide⟩)</text>
+<line x1="495" y1="226" x2="495" y2="238" stroke="#5c5b57" stroke-width="1"/>
+<rect x="20" y="240" width="600" height="40" rx="6" fill="#ffffff" stroke="#5c5b57"/>
+<text x="32" y="257" font-size="12" font-weight="bold" fill="#1b1b1b">Pointer head, trained from scratch</text>
+<text x="32" y="272" font-size="10.5" fill="#5c5b57">scoreᵢ = ⟨ W<tspan font-size="8">k</tspan> h(⟨/opt⟩ᵢ) , W<tspan font-size="8">q</tspan> h(⟨decide⟩) ⟩ / √256 for each option, then softmax over the options</text>
+<line x1="320" y1="280" x2="320" y2="298" stroke="#5c5b57" stroke-width="1" marker-end="url(#arrow)"/>
+<text x="20" y="312" font-size="9.5" fill="#5c5b57" font-weight="normal" text-anchor="start" letter-spacing="1">OUTPUT · ONE PROBABILITY PER OPTION, TEMPERATURE-SCALED</text>
+<text x="20" y="334" font-size="11" fill="#1b1b1b">yes</text>
+<rect x="104" y="325" width="81" height="11" rx="2" fill="#2a78d6"/>
+<text x="191" y="334" font-size="10.5" fill="#5c5b57">0.81</text>
+<text x="225" y="334" font-size="11" fill="#1b1b1b">no</text>
+<rect x="309" y="325" width="12" height="11" rx="2" fill="#2a78d6"/>
+<text x="327" y="334" font-size="10.5" fill="#5c5b57">0.12</text>
+<text x="430" y="334" font-size="11" fill="#1b1b1b">needs review</text>
+<rect x="514" y="325" width="7" height="11" rx="2" fill="#2a78d6"/>
+<text x="527" y="334" font-size="10.5" fill="#5c5b57">0.07</text>
+<text x="650" y="16" font-size="9.5" fill="#5c5b57" font-weight="normal" text-anchor="start" letter-spacing="1">THREE WAYS TO TRAIN IT</text>
+<rect x="650" y="24" width="310" height="92" rx="6" fill="none" stroke="#c4c3bb"/>
+<rect x="660" y="34" width="9" height="9" rx="2" fill="#eb6834"/>
+<text x="676" y="43" font-size="12" font-weight="bold" fill="#1b1b1b">Full fine-tune → tino-finetuned</text>
+<text x="662" y="60" font-size="10.5" fill="#5c5b57">every backbone weight and the head: 441M parameters</text>
+<text x="662" y="74" font-size="10.5" fill="#5c5b57">Adafactor for the backbone (lr 1e-5), AdamW for the head</text>
+<text x="662" y="88" font-size="10.5" fill="#5c5b57">2 epochs · 2,048 padded tokens per batch · 6.5–7.7 GB peak</text>
+<text x="662" y="102" font-size="10.5" fill="#5c5b57">gold labels, cross-entropy</text>
+<rect x="650" y="128" width="310" height="92" rx="6" fill="none" stroke="#c4c3bb"/>
+<rect x="660" y="138" width="9" height="9" rx="2" fill="#2a78d6"/>
+<text x="676" y="147" font-size="12" font-weight="bold" fill="#1b1b1b">Adapter → tino-adapter</text>
+<text x="662" y="164" font-size="10.5" fill="#5c5b57">backbone frozen; LoRA rank 16 on q, k, v, o, gate, up, down</text>
+<text x="662" y="178" font-size="10.5" fill="#5c5b57">10.6M trained parameters · a 43 MB file</text>
+<text x="662" y="192" font-size="10.5" fill="#5c5b57">AdamW (lr 1e-4) · same schedule · 4.0 GB peak</text>
+<text x="662" y="206" font-size="10.5" fill="#5c5b57">gold labels, cross-entropy</text>
+<rect x="650" y="232" width="310" height="106" rx="6" fill="none" stroke="#c4c3bb"/>
+<rect x="660" y="242" width="9" height="9" rx="2" fill="#1baf7a"/>
+<text x="676" y="251" font-size="12" font-weight="bold" fill="#1b1b1b">Distillation → tino-distil, tino-distil-a1</text>
+<text x="662" y="268" font-size="10.5" fill="#5c5b57">adapter recipe; the teacher is Qwen3-4B-Instruct-2507 (4-bit)</text>
+<text x="662" y="282" font-size="10.5" fill="#5c5b57">it reads the same question as lettered multiple choice;</text>
+<text x="662" y="296" font-size="10.5" fill="#5c5b57">its letter probabilities, softened at T = 9, are soft labels</text>
+<text x="662" y="310" font-size="10.5" fill="#5c5b57">loss = α · KL(teacher ‖ student) + (1 − α) · CE(gold)</text>
+<text x="662" y="324" font-size="10.5" fill="#5c5b57">α = 0.5 (tino-distil) or 1, no gold labels at all (tino-distil-a1)</text>
+</svg>
