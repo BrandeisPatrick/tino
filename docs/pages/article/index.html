@@ -6,85 +6,149 @@
 <title>Small Decoders as Decision Models</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;1,8..60,400&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,500;0,8..60,600;1,8..60,400&family=Instrument+Sans:ital,wght@0,400;0,500;0,600;1,400&family=IBM+Plex+Mono:wght@400&display=swap">
 <style>
-/* Layout: one centred reading column of about 65 characters; figures run wider on the same axis. */
+/* Layout: a research-lab article. Masthead on top, a sticky contents rail at the left on wide
+   screens, one reading column of about 65 characters, figures running wider on the same axis. */
 :root{
-  --bg:#ffffff; --fg:#1b1b1b; --fg2:#5c5b57; --accent:#1c5cab; --rule:#dcdbd5;
-  --ink:#1b1b1b; --ink2:#5c5b57; --muted:#8a8882; --grid:#e3e2dc; --axis:#c4c3bb; --surface:#ffffff;
-  --tint:#f3f2ee; --teacher:#6f6d67;
+  --bg:#faf9f6; --fg:#1c1a17; --fg2:#5e5a53; --muted:#8b867d; --rule:#e6e2da; --accent:#c4613a;
+  --accent-ink:#a84e2d; --tint:#f1efe9;
+  --ink:#1c1a17; --ink2:#5e5a53; --grid:#e6e2da; --axis:#c9c4ba; --surface:#faf9f6; --teacher:#6f6d67;
   --c-adapter:#2a78d6; --c-finetuned:#eb6834; --c-distil:#1baf7a; --c-distil-a1:#eda100;
   --c-adapter-post:#e87ba4; --c-thinking:#6250d6; --ord1:#86b6ef; --ord2:#256abf; --ord3:#104281;
   --serif:"Source Serif 4", Georgia, "Times New Roman", serif;
-  --sans:"Source Sans 3", "Helvetica Neue", Helvetica, Arial, sans-serif;
+  --sans:"Instrument Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
   --figfont:"Helvetica Neue", Helvetica, Arial, sans-serif;
-  --mono:ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --mono:"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --col:42rem; --wide:62rem; --rail:13rem; --gutter:3.5rem;
 }
 @media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
-  --bg:#17181b; --fg:#e6e5e1; --fg2:#b4b3ad; --accent:#86b6ef; --rule:#2e2f34;
-  --ink:#e6e5e1; --ink2:#b4b3ad; --muted:#8e8d88; --grid:#2c2d31; --axis:#44454a; --surface:#17181b;
-  --tint:#202126; --teacher:#a09e97;
+  --bg:#1b1a18; --fg:#ece9e2; --fg2:#b5b0a6; --muted:#8b867d; --rule:#34322d; --accent:#e08a64;
+  --accent-ink:#e9a083; --tint:#262420;
+  --ink:#ece9e2; --ink2:#b5b0a6; --grid:#33312c; --axis:#4a4842; --surface:#1b1a18; --teacher:#a09e97;
   --c-adapter:#3987e5; --c-finetuned:#d95926; --c-distil:#199e70; --c-distil-a1:#c98500;
   --c-adapter-post:#d55181; --c-thinking:#9085e9; --ord1:#b7d3f6; --ord2:#6da7ec; --ord3:#2a78d6;
   color-scheme:dark;
 }}
 :root[data-theme="dark"]{
-  --bg:#17181b; --fg:#e6e5e1; --fg2:#b4b3ad; --accent:#86b6ef; --rule:#2e2f34;
-  --ink:#e6e5e1; --ink2:#b4b3ad; --muted:#8e8d88; --grid:#2c2d31; --axis:#44454a; --surface:#17181b;
-  --tint:#202126; --teacher:#a09e97;
+  --bg:#1b1a18; --fg:#ece9e2; --fg2:#b5b0a6; --muted:#8b867d; --rule:#34322d; --accent:#e08a64;
+  --accent-ink:#e9a083; --tint:#262420;
+  --ink:#ece9e2; --ink2:#b5b0a6; --grid:#33312c; --axis:#4a4842; --surface:#1b1a18; --teacher:#a09e97;
   --c-adapter:#3987e5; --c-finetuned:#d95926; --c-distil:#199e70; --c-distil-a1:#c98500;
   --c-adapter-post:#d55181; --c-thinking:#9085e9; --ord1:#b7d3f6; --ord2:#6da7ec; --ord3:#2a78d6;
   color-scheme:dark;
 }
-body{background:var(--bg);color:var(--fg);font-family:var(--serif);font-size:17px;line-height:1.55;
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}}
+body{background:var(--bg);color:var(--fg);font-family:var(--serif);font-size:18px;line-height:1.6;
   -webkit-font-smoothing:antialiased}
-.page{max-width:64rem;margin:0 auto;padding-block:2.5rem 4rem;
+.topbar{border-bottom:1px solid var(--rule)}
+.topbar-inner,.page{max-width:84rem;margin:0 auto;
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
-.page>*{max-width:41rem;margin-inline:auto;min-width:0}
-.page>figure,.page>.table{max-width:none}
-header.title{max-width:54rem;margin-bottom:2rem}
-h1{font-family:var(--sans);font-weight:700;font-size:clamp(1.55rem,3.2vw,2.25rem);line-height:1.15;
-  letter-spacing:-0.012em;text-wrap:balance;margin:0 0 .8rem}
-.byline{font-family:var(--sans);color:var(--fg2);font-size:.95rem;margin:0}
-.abstract{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:1.1rem 0;margin-bottom:2.2rem}
-.abstract h2{font-family:var(--sans);font-size:.76rem;letter-spacing:.12em;text-transform:uppercase;
-  color:var(--fg2);margin:0 0 .5rem;font-weight:600}
-.abstract p{margin:0;font-size:1.02rem}
-h2{font-family:var(--sans);font-weight:600;font-size:1.35rem;line-height:1.2;margin:2.6rem auto .7rem;text-wrap:balance}
-h3{font-family:var(--sans);font-weight:600;font-size:1.05rem;margin:1.8rem auto .4rem}
-p{margin:0 auto .95rem}
-a{color:var(--accent);text-decoration-thickness:1px;text-underline-offset:2px}
-ul,ol{padding-left:1.3rem;margin:0 auto 1rem} li{margin-bottom:.35rem}
-code{font-family:var(--mono);font-size:.84em;background:var(--tint);padding:.1em .3em;border-radius:3px}
-figure{margin:2.4rem auto 2.6rem}
+.topbar-inner{display:flex;justify-content:space-between;align-items:baseline;gap:1rem;padding-block:.85rem;
+  font-family:var(--sans);font-size:.9rem}
+.brand{font-weight:600;letter-spacing:.01em;color:var(--fg);text-decoration:none}
+.brand small{font-weight:400;color:var(--fg2);margin-left:.6rem;font-size:.9rem}
+.topbar-inner .kind{color:var(--fg2)}
+.page{padding-block:3rem 5rem}
+.masthead,.layout{display:grid;grid-template-columns:minmax(0,1fr);column-gap:var(--gutter)}
+.masthead{margin-bottom:2.8rem;row-gap:0}
+.masthead>*{min-width:0;max-width:56rem}
+.eyebrow{font-family:var(--sans);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;color:var(--fg2);margin:0 0 1.2rem}
+h1{font-family:var(--serif);font-weight:500;font-size:clamp(2rem,4.2vw,3.15rem);line-height:1.1;letter-spacing:-0.018em;
+  text-wrap:balance;margin:0 0 1.3rem}
+.authors{font-family:var(--sans);font-size:1.02rem;font-weight:500;margin:0 0 .4rem}
+.meta{font-family:var(--sans);font-size:.9rem;color:var(--fg2);margin:0}
+.meta a{color:var(--fg2)}
+.toc{font-family:var(--sans);font-size:.86rem;line-height:1.4;min-width:0}
+.toc-title{font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 .7rem}
+.toc ol{list-style:none;margin:0;padding:0}
+.toc ol ol{padding-left:.9rem;margin:.25rem 0 .45rem}
+.toc li{margin:0 0 .4rem}
+.toc a{color:var(--fg2);text-decoration:none;display:inline-block;border-left:2px solid transparent;padding-left:.6rem;margin-left:-.7rem}
+.toc a:hover{color:var(--fg)}
+.toc a.active{color:var(--fg);border-left-color:var(--accent)}
+.body{min-width:0}
+.body>*{max-width:var(--col);min-width:0}
+.body>figure,.body>.table{max-width:var(--wide)}
+@media (min-width:1100px){
+  .masthead,.layout{grid-template-columns:var(--rail) minmax(0,var(--wide))}
+  .masthead>*{grid-column:2}
+  .toc{position:sticky;top:1.5rem;align-self:start;max-height:calc(100vh - 3rem);overflow:auto;padding-right:.5rem}
+}
+@media (max-width:1099px){
+  .toc{border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:1rem 0 .6rem;margin-bottom:2rem}
+  .toc ol{columns:2;column-gap:2rem}
+  .toc ol ol{display:none}
+  .toc li{break-inside:avoid}
+}
+.abstract{margin:0 0 2.6rem;padding-bottom:1.8rem;border-bottom:1px solid var(--rule)}
+.abstract .label{font-family:var(--sans);font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 .7rem}
+.abstract p{font-size:1.1rem;line-height:1.55;margin:0}
+h2{font-family:var(--sans);font-weight:600;font-size:1.45rem;line-height:1.2;letter-spacing:-0.012em;margin:3.2rem 0 .9rem;text-wrap:balance}
+h3{font-family:var(--sans);font-weight:600;font-size:1.08rem;margin:2.1rem 0 .5rem}
+p{margin:0 0 1.1rem}
+a{color:var(--accent-ink);text-decoration-thickness:1px;text-underline-offset:3px;
+  text-decoration-color:color-mix(in srgb,var(--accent) 45%,transparent)}
+a:hover{text-decoration-color:var(--accent)}
+ul,ol{padding-left:1.4rem;margin:0 0 1.1rem}
+li{margin-bottom:.45rem}
+strong{font-weight:600}
+code{font-family:var(--mono);font-size:.8em;background:var(--tint);padding:.1em .35em;border-radius:3px}
+pre{font-family:var(--mono);font-size:.78rem;line-height:1.55;background:var(--tint);padding:1rem 1.1rem;border-radius:6px;
+  overflow-x:auto;margin:0 0 1.1rem;color:var(--fg)}
+pre code{background:none;padding:0;font-size:inherit}
+figure{margin:2.6rem 0 2.9rem}
 .fig{overflow-x:auto;padding-block:.2rem}
 .fig svg{display:block;width:100%;height:auto;min-width:640px}
 .fig svg text{font-family:var(--figfont) !important}
-figcaption{font-family:var(--sans);font-size:.9rem;line-height:1.45;color:var(--fg2);max-width:41rem;margin:.7rem auto 0}
+figcaption{font-family:var(--sans);font-size:.9rem;line-height:1.5;color:var(--fg2);max-width:var(--col);margin:.85rem 0 0}
 figcaption b{color:var(--fg);font-weight:600}
-.table{overflow-x:auto;margin:1.4rem auto 1.8rem}
-table{border-collapse:collapse;font-family:var(--sans);font-size:.88rem;line-height:1.35;min-width:100%;
-  font-variant-numeric:tabular-nums}
-th,td{text-align:left;padding:.45rem .6rem;border-bottom:1px solid var(--rule);vertical-align:top}
+.table{overflow-x:auto;margin:1.4rem 0 1.8rem}
+table{border-collapse:collapse;font-family:var(--sans);font-size:.88rem;line-height:1.4;min-width:100%;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:.5rem .65rem;border-bottom:1px solid var(--rule);vertical-align:top}
 th{font-weight:600;color:var(--fg2);border-bottom:1px solid var(--fg2)}
-hr{border:0;border-top:1px solid var(--rule);margin:2rem auto}
-footer{font-family:var(--sans);font-size:.85rem;color:var(--fg2);border-top:1px solid var(--rule);
-  padding-top:1rem;margin-top:3rem}
+.table + p em,.caption{font-family:var(--sans);font-size:.9rem;color:var(--fg2);font-style:normal}
+sup{vertical-align:baseline;position:relative;top:-.3em;font-size:.72em;line-height:0}
+a.footnote-ref{color:var(--accent-ink);text-decoration:none;font-family:var(--sans);font-weight:500}
+a.footnote-ref::before{content:"["}
+a.footnote-ref::after{content:"]"}
+.refs ol{padding-left:1.7rem;font-family:var(--sans);font-size:.88rem;line-height:1.5;color:var(--fg2)}
+.refs li{margin-bottom:.65rem;padding-left:.25rem}
+.refs li p{margin:0}
+.refs li:target{color:var(--fg)}
+.refs a{color:var(--fg2)}
+.bib{position:relative}
+.bib button{position:absolute;top:.6rem;right:.6rem;font:500 .74rem var(--sans);color:var(--fg2);background:var(--bg);
+  border:1px solid var(--rule);border-radius:4px;padding:.32rem .6rem;cursor:pointer}
+.bib button:hover{color:var(--fg)}
+footer{font-family:var(--sans);font-size:.85rem;color:var(--fg2);border-top:1px solid var(--rule);padding-top:1.2rem;margin-top:3.5rem}
 :focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-@media (max-width:640px){ body{font-size:16px} .fig svg{min-width:600px} }
+@media (max-width:640px){body{font-size:17px} .fig svg{min-width:600px} .page{padding-block:2rem 4rem} h2{margin-top:2.6rem}}
 </style>
 </head>
 <body>
+<div class="topbar"><div class="topbar-inner"><a class="brand" href="https://github.com/BrandeisPatrick/tino">tino<small>decision models on a laptop</small></a><span class="kind">Research</span></div></div>
 <main class="page">
-<header class="title"><h1>Small decoders as decision models: full fine-tuning, adapters and distillation from an autoregressive teacher on a 16 GB laptop</h1><p class="byline">Patrick Li · Draft of 28 October 2026 · Code, runs, predictions and figures: <a href="https://github.com/BrandeisPatrick/tino">github.com/BrandeisPatrick/tino</a></p></header>
+<header class="masthead"><p class="eyebrow">Research · Decision models · <time datetime="2026-10-28">October 28, 2026</time></p><h1>Small decoders as decision models: full fine-tuning, adapters and distillation from an autoregressive teacher on a 16 GB laptop</h1><p class="authors">Patrick Li</p><p class="meta">Draft v0.1 · October 28, 2026 · <a href="https://github.com/BrandeisPatrick/tino">Code, runs and per-question predictions</a> · <a href="https://github.com/BrandeisPatrick/tino/blob/main/RESEARCH.md">Research log</a> · <a href="https://github.com/BrandeisPatrick/tino/blob/main/docs/MODELS.md">Model registry</a></p></header>
+<div class="layout"><nav class="toc" aria-label="Contents"><p class="toc-title">Contents</p><ol><li><a href="#findings-at-a-glance">Findings at a glance</a></li><li><a href="#1-introduction">1 Introduction</a></li><li><a href="#2-setup">2 Setup</a></li><li><a href="#3-results">3 Results</a><ol><li><a href="#31-accuracy">3.1 Accuracy</a></li><li><a href="#32-which-differences-are-real">3.2 Which differences are real</a></li><li><a href="#33-calibration">3.3 Calibration</a></li><li><a href="#34-rq1-which-recipe">3.4 RQ1: which recipe</a></li><li><a href="#35-rq2-full-fine-tune-or-adapter">3.5 RQ2: full fine-tune or adapter</a></li><li><a href="#36-rq3-thinking-as-the-decider-and-as-the-starting-point">3.6 RQ3: thinking, as the decider and as the starting point</a></li><li><a href="#37-rq4-how-much-of-the-teacher">3.7 RQ4: how much of the teacher</a></li><li><a href="#38-training-dynamics">3.8 Training dynamics</a></li></ol></li><li><a href="#4-what-we-learned">4 What we learned</a></li><li><a href="#5-limitations">5 Limitations</a></li><li><a href="#6-reproducibility">6 Reproducibility</a></li><li><a href="#acknowledgements">Acknowledgements</a></li><li><a href="#citation">Citation</a></li><li><a href="#references-h">References</a></li></ol></nav>
+<article class="body">
 
-<section class="abstract"><h2>Abstract</h2><p>A decision model answers a typed question about a state with one probability per option in a single forward pass, with no generated text. We ask whether a small autoregressive decoder, Qwen3-0.6B-Base, can be turned into one on a 16 GB Apple M4, and which of three routes works best: full fine-tuning, a LoRA adapter, or distillation from a 4B instruction-tuned teacher. Across 27 tracked training runs (44 hours, two seeds for every claim that matters) the routes tie on trained sources (accuracy 0.81) and differ by less than seed noise on new sources (0.61 to 0.65). The adapter trains 41 times fewer weights in half the memory. The teacher's soft labels change calibration far more than accuracy: every distilled student comes out calibrated as trained (fitted temperature 0.84 to 0.95), while every gold-label student is over-confident (2.0 to 2.75). At small data, training stability is the first-order effect: 5 of 15 adapter runs on 4,000 questions collapsed to a uniform guess. A thinking teacher adds 3 points, not significant, at 95 times the latency. Every run's configuration, logs and per-question predictions are in the repository.</p>
-</section><h2 id="1-introduction">1 Introduction</h2>
-<p>Jev, TypeSafe's "System One" model, is a decision model: it takes a state and typed questions (a choice among options, a score on a scale, a yes-or-no) and returns calibrated probabilities from one forward pass, without generating text. Open re-creations such as Kev showed that the format works on small open backbones. We wanted to know, on one laptop, which of the usual ways of adapting a decoder is best for this job, and whether the probabilities of an ordinary autoregressive model can be distilled into one. Four questions organise the work:</p>
+<section class="abstract"><p class="label">Abstract</p><p>A decision model answers a typed question about a state with one probability per option in a single forward pass, with no generated text. We ask whether a small autoregressive decoder, Qwen3-0.6B-Base, can be turned into one on a 16 GB Apple M4, and which of three routes works best: full fine-tuning, a LoRA adapter, or distillation from a 4B instruction-tuned teacher. Across 27 tracked training runs (44 hours, two seeds for every claim that matters) the routes tie on trained sources (accuracy 0.81) and differ by less than seed noise on new sources (0.61 to 0.65). The adapter trains 41 times fewer weights in half the memory. The teacher&rsquo;s soft labels change calibration far more than accuracy: every distilled student comes out calibrated as trained (fitted temperature 0.84 to 0.95), while every gold-label student is over-confident (2.0 to 2.75). At small data, training stability is the first-order effect: 5 of 15 adapter runs on 4,000 questions collapsed to a uniform guess. A thinking teacher adds 3 points, not significant, at 95 times the latency. Every run&rsquo;s configuration, logs and per-question predictions are in the repository.</p>
+</section><h2 id="findings-at-a-glance">Findings at a glance</h2>
+<ul>
+<li><strong>Recipe (RQ1).</strong> At small data the first-order effect is whether training works at all: 5 of 15 adapter runs on 4,000 questions collapsed to a uniform guess. Learning rate at or below 1e-4, alpha fixed rather than scaled with rank, two seeds, and rejecting runs whose development log-loss sits at the uniform value matter more than any other knob. Rank above 16 and a Brier term do not help.</li>
+<li><strong>Full fine-tune or adapter (RQ2).</strong> They tie on trained sources (0.815 vs 0.814) and the adapter leans ahead on new sources by about 2 points, inside seed noise. The adapter trains 41 times fewer weights in half the memory and publishes a 43 MB file. Full fine-tuning is the safer choice only with a few thousand questions.</li>
+<li><strong>Thinking (RQ3).</strong> Reasoning before answering adds 3 points as a zero-shot decider, not significant, at 95 times the latency. A thinking-capable starting point for the student makes no difference once the decision head is trained.</li>
+<li><strong>Distillation (RQ4).</strong> A student trained half on gold labels and half on the teacher&rsquo;s probabilities matches gold-label accuracy and comes out calibrated without a temperature. Trained on the teacher alone it still works, but gives up 5.6 points on trained sources for an out-of-domain gain that two seeds did not confirm. Calibration, not accuracy, is what distillation transfers.</li>
+</ul>
+<h2 id="1-introduction">1 Introduction</h2>
+<p>Jev, TypeSafe&rsquo;s &ldquo;System One&rdquo; model, is a decision model<sup id="fnref:jev"><a class="footnote-ref" href="#fn:jev">1</a></sup>: it takes a state and typed questions (a choice among options, a score on a scale, a yes-or-no) and returns calibrated probabilities from one forward pass, without generating text. Open re-creations such as Kev<sup id="fnref:kev"><a class="footnote-ref" href="#fn:kev">2</a></sup> showed that the format works on small open backbones: a decoder reads the state, the question and the options in one row, and a small head scores each option. The appeal is operational. A decision model answers in milliseconds, its output is a probability rather than text to parse, and that probability can be checked for calibration.</p>
+<p>We wanted to know, on one laptop, which of the usual ways of adapting a decoder is best for this job, and whether the probabilities of an ordinary autoregressive model can be distilled into one. The candidate recipes are the standard ones: full fine-tuning with a memory-light optimizer<sup id="fnref:adafactor"><a class="footnote-ref" href="#fn:adafactor">3</a></sup>, low-rank adapters<sup id="fnref:lora"><a class="footnote-ref" href="#fn:lora">4</a></sup>, and knowledge distillation from a larger model&rsquo;s soft labels<sup id="fnref:hinton"><a class="footnote-ref" href="#fn:hinton">5</a></sup>. The backbone is Qwen3-0.6B-Base<sup id="fnref:qwen3"><a class="footnote-ref" href="#fn:qwen3">6</a></sup>, and the teacher, where there is one, is its 4B instruction-tuned sibling read as a multiple-choice scorer<sup id="fnref:robinson"><a class="footnote-ref" href="#fn:robinson">7</a></sup>. Four questions organise the work:</p>
 <ul>
 <li><strong>RQ1.</strong> Which fine-tuning recipe is best for a decision model?</li>
 <li><strong>RQ2.</strong> Full fine-tuning or an adapter?</li>
-<li><strong>RQ3.</strong> Does a thinking model help, as the decider or as the student's starting point?</li>
+<li><strong>RQ3.</strong> Does a thinking model help, as the decider or as the student&rsquo;s starting point?</li>
 <li><strong>RQ4.</strong> Can an autoregressive model be distilled into a decision model?</li>
 </ul>
 <h2 id="2-setup">2 Setup</h2>
@@ -163,7 +227,7 @@ footer{font-family:var(--sans);font-size:.85rem;color:var(--fg2);border-top:1px 
 <text x="662" y="296" font-size="10.5" fill="var(--ink2)">its letter probabilities, softened at T = 9, are soft labels</text>
 <text x="662" y="310" font-size="10.5" fill="var(--ink2)">loss = α · KL(teacher ‖ student) + (1 − α) · CE(gold)</text>
 <text x="662" y="324" font-size="10.5" fill="var(--ink2)">α = 0.5 (tino-distil) or 1, no gold labels at all (tino-distil-a1)</text>
-</svg></div><figcaption><b>Figure 1.</b> The tino decision model and the three ways it was trained. A record's state, question and options are laid out in one causal row, with Qwen's reserved special tokens as delimiters (⟨state⟩ is <code>&lt;|fim_prefix|&gt;</code>, ⟨question⟩ <code>&lt;|fim_middle|&gt;</code>, ⟨opt⟩…⟨/opt⟩ <code>&lt;|box_start|&gt;</code>…<code>&lt;|box_end|&gt;</code>, ⟨decide⟩ <code>&lt;|fim_suffix|&gt;</code>), so no vocabulary is added. The backbone runs once; a pointer head scores each option's closing-delimiter state against the decide state, and a softmax over the options gives the answer. Full fine-tuning, the adapter and distillation differ only in what is trained and what the loss is.</figcaption></figure>
+</svg></div><figcaption><b>Figure 1.</b> The tino decision model and the three ways it was trained. A record&rsquo;s state, question and options are laid out in one causal row, with Qwen&rsquo;s reserved special tokens as delimiters (⟨state⟩ is <code>&lt;|fim_prefix|&gt;</code>, ⟨question⟩ <code>&lt;|fim_middle|&gt;</code>, ⟨opt⟩…⟨/opt⟩ <code>&lt;|box_start|&gt;</code>…<code>&lt;|box_end|&gt;</code>, ⟨decide⟩ <code>&lt;|fim_suffix|&gt;</code>), so no vocabulary is added. The backbone runs once; a pointer head scores each option&rsquo;s closing-delimiter state against the decide state, and a softmax over the options gives the answer. Full fine-tuning, the adapter and distillation differ only in what is trained and what the loss is.</figcaption></figure>
 <p>Every experiment follows one protocol, so the numbers in every figure are comparable.</p>
 <div class="table"><table>
 <thead>
@@ -175,19 +239,27 @@ footer{font-family:var(--sans);font-size:.85rem;color:var(--fg2);border-top:1px 
 <tbody>
 <tr>
 <td>Student base</td>
-<td><code>Qwen/Qwen3-0.6B-Base</code>, revision <code>da87bfb6</code></td>
+<td><code>Qwen/Qwen3-0.6B-Base</code><sup id="fnref2:qwen3"><a class="footnote-ref" href="#fn:qwen3">6</a></sup>, revision <code>da87bfb6</code></td>
 </tr>
 <tr>
 <td>Data</td>
-<td><code>jaredpalmer/kev-suites</code>, revision <code>cc4bac80</code>, checksums verified. Train on <code>decision-v7/train</code>: 15,576 questions from 24 sources. Test on <code>decision-v7/test</code> (trained sources, 1,440), <code>transfer-v4/test</code> (9 new sources, 764) and <code>transfer-v9/test</code> (hardest, 1,264)</td>
+<td><code>jaredpalmer/kev-suites</code><sup id="fnref2:kev"><a class="footnote-ref" href="#fn:kev">2</a></sup>, revision <code>cc4bac80</code>, checksums verified. Train on <code>decision-v7/train</code>: 15,576 questions from 24 sources. Test on <code>decision-v7/test</code> (trained sources, 1,440), <code>transfer-v4/test</code> (9 new sources, 764) and <code>transfer-v9/test</code> (hardest, 1,264)</td>
 </tr>
 <tr>
 <td>Teacher</td>
-<td><code>Qwen3-4B-Instruct-2507</code>, 4-bit, read zero-shot as lettered multiple choice; its letter probabilities, softened at a fitted temperature of 9.0, are the soft labels</td>
+<td><code>Qwen3-4B-Instruct-2507</code>, 4-bit, read zero-shot as lettered multiple choice<sup id="fnref2:robinson"><a class="footnote-ref" href="#fn:robinson">7</a></sup>; its letter probabilities, softened at a fitted temperature of 9.0, are the soft labels<sup id="fnref2:hinton"><a class="footnote-ref" href="#fn:hinton">5</a></sup></td>
 </tr>
 <tr>
 <td>Selection</td>
-<td>best development accuracy; temperature fitted on the calibration split; test splits read once per released model; ablations judged on development splits only</td>
+<td>best development accuracy; temperature scaling<sup id="fnref:guo"><a class="footnote-ref" href="#fn:guo">8</a></sup> fitted on the calibration split; test splits read once per released model; ablations judged on development splits only</td>
+</tr>
+<tr>
+<td>Metrics</td>
+<td>accuracy; Brier score<sup id="fnref:brier"><a class="footnote-ref" href="#fn:brier">9</a></sup>; expected calibration error over 15 bins<sup id="fnref:naeini"><a class="footnote-ref" href="#fn:naeini">10</a></sup>, raw and after temperature scaling; the fitted temperature itself as a measure of over-confidence</td>
+</tr>
+<tr>
+<td>Statistics</td>
+<td>comparisons are paired on the same questions: percentile bootstrap intervals<sup id="fnref:efron"><a class="footnote-ref" href="#fn:efron">11</a></sup> and the exact McNemar test, a sign test on the discordant pairs<sup id="fnref:mcnemar"><a class="footnote-ref" href="#fn:mcnemar">12</a></sup></td>
 </tr>
 <tr>
 <td>Noise</td>
@@ -195,11 +267,11 @@ footer{font-family:var(--sans);font-size:.85rem;color:var(--fg2);border-top:1px 
 </tr>
 <tr>
 <td>Machine</td>
-<td>Apple M4 with 16 GB, MLX; a memory guard pauses a run under 25% free memory and stops it under 12%</td>
+<td>Apple M4 with 16 GB, MLX<sup id="fnref:mlx"><a class="footnote-ref" href="#fn:mlx">13</a></sup> with gradient checkpointing<sup id="fnref:chen"><a class="footnote-ref" href="#fn:chen">14</a></sup>; a memory guard pauses a run under 25% free memory and stops it under 12%</td>
 </tr>
 <tr>
 <td>Tracking</td>
-<td>39 runs; each run's configuration, git provenance, logs, resource trace and per-question predictions are committed in <code>runs/</code>; weights on the Hugging Face Hub with pinned revisions</td>
+<td>39 runs; each run&rsquo;s configuration, git provenance, logs, resource trace and per-question predictions are committed in <code>runs/</code>; weights on the Hugging Face Hub with pinned revisions</td>
 </tr>
 </tbody>
 </table></div>
@@ -1360,7 +1432,7 @@ z
   </clipPath>
  </defs>
 </svg>
-</div><figcaption><b>Figure 3.</b> The comparison behind each research question as a paired difference on the same questions, pooled over both seeds where two exist, with a 95% bootstrap interval and a two-sided sign test. One effect is clearly non-zero: training on the teacher's probabilities alone costs 5.6 points on trained sources. The adapter's lean over full fine-tuning out of domain (+1.9 points on both new-source splits) reaches p = 0.02 on the hardest split, but it is smaller than the 3.8-point gap between the adapter's own two seeds, so we report it as a lean. Everything else is within noise, including reasoning before answering.</figcaption></figure>
+</div><figcaption><b>Figure 3.</b> The comparison behind each research question as a paired difference on the same questions, pooled over both seeds where two exist, with a 95% bootstrap interval and a two-sided sign test. One effect is clearly non-zero: training on the teacher&rsquo;s probabilities alone costs 5.6 points on trained sources. The adapter&rsquo;s lean over full fine-tuning out of domain (+1.9 points on both new-source splits) reaches p = 0.02 on the hardest split, but it is smaller than the 3.8-point gap between the adapter&rsquo;s own two seeds, so we report it as a lean. Everything else is within noise, including reasoning before answering.</figcaption></figure>
 <h3 id="33-calibration">3.3 Calibration</h3>
 <figure id="fig4"><div class="fig"><svg role="img" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 652.627207 271.006" xmlns="http://www.w3.org/2000/svg" version="1.1">
  <defs>
@@ -4193,7 +4265,7 @@ L 542.708203 251.8145
   </clipPath>
  </defs>
 </svg>
-</div><figcaption><b>Figure 7.</b> Thinking in two places. (a) Zero-shot on 200 development questions (100 per suite): Qwen3-4B-Thinking-2507 against Qwen3-4B-Instruct-2507, by source with at least six questions. Reasoning first helps on rule-following records (held-out deadline rules go from 2 of 6 to 6 of 6) and hurts on QNLI and MMLU, for +3.0 points overall, not significant (Figure 3), at 31.6 s per question against 0.33 s. 43 of the 200 reasoning traces hit the 2,048-token cap, so thinking may be slightly understated. (b) As the student's starting point, the post-trained, thinking-capable Qwen3-0.6B learns faster for an epoch and ends where the base model ends; the two are indistinguishable on every test split.</figcaption></figure>
+</div><figcaption><b>Figure 7.</b> Thinking in two places. (a) Zero-shot on 200 development questions (100 per suite): Qwen3-4B-Thinking-2507 against Qwen3-4B-Instruct-2507, by source with at least six questions. Reasoning first helps on rule-following records (held-out deadline rules go from 2 of 6 to 6 of 6) and hurts on QNLI and MMLU, for +3.0 points overall, not significant (Figure 3), at 31.6 s per question against 0.33 s. 43 of the 200 reasoning traces hit the 2,048-token cap, so thinking may be slightly understated. (b) As the student&rsquo;s starting point, the post-trained, thinking-capable Qwen3-0.6B learns faster for an epoch and ends where the base model ends; the two are indistinguishable on every test split.</figcaption></figure>
 <h3 id="37-rq4-how-much-of-the-teacher">3.7 RQ4: how much of the teacher</h3>
 <figure id="fig8"><div class="fig"><svg role="img" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 634.644141 273.1035" xmlns="http://www.w3.org/2000/svg" version="1.1">
  <defs>
@@ -4767,7 +4839,7 @@ L 630.324141 219.1665
   </clipPath>
  </defs>
 </svg>
-</div><figcaption><b>Figure 8.</b> What the teacher's share of the loss buys. (a) Accuracy on the three test splits as the loss moves from gold labels only (tino-adapter) through half teacher (tino-distil) to teacher only (tino-distil-a1), two seeds per point; diamonds are the 4B teacher itself. On trained sources the teacher-only student drops to the teacher's own level; on new sources it gains at most a point or two and stays well below the teacher. (b) Brier score on the same splits: the teacher's probabilities improve probability quality out of domain even where accuracy is flat.</figcaption></figure>
+</div><figcaption><b>Figure 8.</b> What the teacher&rsquo;s share of the loss buys. (a) Accuracy on the three test splits as the loss moves from gold labels only (tino-adapter) through half teacher (tino-distil) to teacher only (tino-distil-a1), two seeds per point; diamonds are the 4B teacher itself. On trained sources the teacher-only student drops to the teacher&rsquo;s own level; on new sources it gains at most a point or two and stays well below the teacher. (b) Brier score on the same splits: the teacher&rsquo;s probabilities improve probability quality out of domain even where accuracy is flat.</figcaption></figure>
 <h3 id="38-training-dynamics">3.8 Training dynamics</h3>
 <figure id="fig9"><div class="fig"><svg role="img" xmlns:xlink="http://www.w3.org/1999/xlink" viewBox="0 0 642.581306 244.6555" xmlns="http://www.w3.org/2000/svg" version="1.1">
  <defs>
@@ -5450,15 +5522,15 @@ L 571.826641 197.744
 <ol>
 <li><strong>Stability first.</strong> At small data the biggest effect is whether training works at all: learning rate at or below 1e-4, alpha fixed rather than scaled with rank, at least two seeds, and reject any run whose development log-loss sits at the uniform value.</li>
 <li><strong>The adapter is the default.</strong> Same accuracy as full fine-tuning on trained sources, a lean ahead on new sources, 41 times fewer trained weights and half the memory. Full fine-tuning is the safer choice only with a few thousand questions, where it led by 1.5 to 2 points and never collapsed.</li>
-<li><strong>Distillation transfers calibration, not accuracy.</strong> Half teacher, half gold labels matches gold-label accuracy everywhere and comes out calibrated without a temperature. Teacher-only training works, at 87% of the teacher's out-of-domain accuracy in a model a sixth of its size and seven times faster, but costs 5.6 points in domain for an out-of-domain gain that two seeds did not confirm.</li>
+<li><strong>Distillation transfers calibration, not accuracy.</strong> Half teacher, half gold labels matches gold-label accuracy everywhere and comes out calibrated without a temperature. Teacher-only training works, at 87% of the teacher&rsquo;s out-of-domain accuracy in a model a sixth of its size and seven times faster, but costs 5.6 points in domain for an out-of-domain gain that two seeds did not confirm.</li>
 <li><strong>Thinking is not worth 95 times the latency here</strong>, and a thinking-capable starting point makes no difference once the decision head is trained.</li>
 <li><strong>Seed noise is larger than most method differences out of domain.</strong> Two seeds per claim, paired tests on the same questions, and no claim from a single-seed gap under about 4 points.</li>
 <li><strong>Plain cross-entropy, rank 16, all projections</strong> is the right default; more rank and a Brier term did not help.</li>
 </ol>
 <h2 id="5-limitations">5 Limitations</h2>
 <ul>
-<li>One backbone size (0.6B) and one data family (kev-suites). Whether the ordering holds at 1.7B or 4B, or on a user's own records, is untested.</li>
-<li>The teacher's own probabilities are badly over-confident (it needs a temperature of 9.0 before they are usable), so the distillation target is as much the fitted temperature as the teacher.</li>
+<li>One backbone size (0.6B) and one data family (kev-suites). Whether the ordering holds at 1.7B or 4B, or on a user&rsquo;s own records, is untested.</li>
+<li>The teacher&rsquo;s own probabilities are badly over-confident (it needs a temperature of 9.0 before they are usable), so the distillation target is as much the fitted temperature as the teacher.</li>
 <li>Most ablation cells have one seed; only the baseline and the three configurations that collapsed were rerun.</li>
 <li>Distilling from the thinking teacher was out of reach on this machine (about 60 hours of generation for the training set), so RQ3 measures the thinking model as a decider, not as a teacher.</li>
 </ul>
@@ -5525,6 +5597,97 @@ L 571.826641 197.744
 </tbody>
 </table></div>
 <p><em>Table 1. The released models (seed 0 of each recipe) on the three test splits, with the temperature each needs and the size of the published weights. Second seeds are tracked runs; their numbers are the second dots in Figure 2.</em></p>
+<h2 id="acknowledgements">Acknowledgements</h2>
+<p>This work builds on Jared Palmer&rsquo;s Kev and the kev-suites data, and on the Qwen3 model family. Training and evaluation ran with MLX and mlx-lm on a single Apple M4. The experiments, figures and this draft were produced with Claude (Anthropic) as a research assistant, with every run tracked in the repository.</p>
+<h2 id="citation">Citation</h2>
+<p>Please cite this work as:</p>
+<blockquote>
+<p>Li, P. (2026). <em>Small decoders as decision models: full fine-tuning, adapters and distillation from an autoregressive teacher on a 16 GB laptop.</em> Draft. https://github.com/BrandeisPatrick/tino</p>
+</blockquote>
+<div class="bib"><button type="button" id="copy-bibtex">Copy BibTeX</button><pre id="bibtex"><code>@misc{li2026tino,
+  title        = {Small decoders as decision models: full fine-tuning, adapters and
+                  distillation from an autoregressive teacher on a 16 GB laptop},
+  author       = {Li, Patrick},
+  year         = {2026},
+  month        = oct,
+  howpublished = {\url{https://github.com/BrandeisPatrick/tino}},
+  note         = {Draft v0.1}
+}
+</code></pre></div>
+<section class="refs" id="references"><h2 id="references-h">References</h2>
+
+<ol>
+<li id="fn:jev">
+<p>TypeSafe AI. <em>Jev</em>, the &ldquo;System One&rdquo; typed decision model: a state and typed questions in, calibrated option probabilities out of one forward pass. 2026. Overview: <a href="https://openrouter.ai/blog/insights/what-is-jev/">openrouter.ai/blog/insights/what-is-jev</a>.</p>
+</li>
+<li id="fn:kev">
+<p>Palmer, J. <em>Kev</em>, an open Jev-style decision model, with the <code>kev-suites</code> data and the <code>kev-0.6b</code> reference model. 2026. <a href="https://github.com/jaredpalmer/kev">github.com/jaredpalmer/kev</a>; <a href="https://huggingface.co/datasets/jaredpalmer/kev-suites">huggingface.co/datasets/jaredpalmer/kev-suites</a>; <a href="https://huggingface.co/jaredpalmer/kev-0.6b">huggingface.co/jaredpalmer/kev-0.6b</a>.</p>
+</li>
+<li id="fn:adafactor">
+<p>Shazeer, N. and Stern, M. Adafactor: Adaptive learning rates with sublinear memory cost. <em>ICML 2018.</em> <a href="https://arxiv.org/abs/1804.04235">arXiv:1804.04235</a>.</p>
+</li>
+<li id="fn:lora">
+<p>Hu, E. J., Shen, Y., Wallis, P., Allen-Zhu, Z., Li, Y., Wang, S., Wang, L., and Chen, W. LoRA: Low-rank adaptation of large language models. <em>ICLR 2022.</em> <a href="https://arxiv.org/abs/2106.09685">arXiv:2106.09685</a>.</p>
+</li>
+<li id="fn:hinton">
+<p>Hinton, G., Vinyals, O., and Dean, J. Distilling the knowledge in a neural network. <em>NIPS 2014 Deep Learning Workshop.</em> <a href="https://arxiv.org/abs/1503.02531">arXiv:1503.02531</a>.</p>
+</li>
+<li id="fn:qwen3">
+<p>Qwen Team. Qwen3 technical report. 2025. <a href="https://arxiv.org/abs/2505.09388">arXiv:2505.09388</a>.</p>
+</li>
+<li id="fn:robinson">
+<p>Robinson, J., Rytting, C. M., and Wingate, D. Leveraging large language models for multiple choice question answering. <em>ICLR 2023.</em> <a href="https://arxiv.org/abs/2210.12353">arXiv:2210.12353</a>.</p>
+</li>
+<li id="fn:guo">
+<p>Guo, C., Pleiss, G., Sun, Y., and Weinberger, K. Q. On calibration of modern neural networks. <em>ICML 2017.</em> <a href="https://arxiv.org/abs/1706.04599">arXiv:1706.04599</a>.</p>
+</li>
+<li id="fn:brier">
+<p>Brier, G. W. Verification of forecasts expressed in terms of probability. <em>Monthly Weather Review</em> 78(1):1–3, 1950.</p>
+</li>
+<li id="fn:naeini">
+<p>Naeini, M. P., Cooper, G. F., and Hauskrecht, M. Obtaining well calibrated probabilities using Bayesian binning. <em>AAAI 2015.</em></p>
+</li>
+<li id="fn:efron">
+<p>Efron, B. Bootstrap methods: Another look at the jackknife. <em>The Annals of Statistics</em> 7(1):1–26, 1979.</p>
+</li>
+<li id="fn:mcnemar">
+<p>McNemar, Q. Note on the sampling error of the difference between correlated proportions or percentages. <em>Psychometrika</em> 12(2):153–157, 1947.</p>
+</li>
+<li id="fn:mlx">
+<p>Hannun, A., Digani, J., Katharopoulos, A., and Collobert, R. MLX: Efficient and flexible machine learning on Apple silicon. 2023. <a href="https://github.com/ml-explore/mlx">github.com/ml-explore/mlx</a>.</p>
+</li>
+<li id="fn:chen">
+<p>Chen, T., Xu, B., Zhang, C., and Guestrin, C. Training deep nets with sublinear memory cost. 2016. <a href="https://arxiv.org/abs/1604.06174">arXiv:1604.06174</a>.</p>
+</li>
+</ol>
+</section>
+
+</article></div>
+<footer>Draft. Every number on this page is read from the tracked runs in <a href="https://github.com/BrandeisPatrick/tino">the repository</a>; the figures regenerate with <code>scripts/figures.py</code> and this page with <code>scripts/build_article.py</code>.</footer>
 </main>
+<script>
+(function(){
+  var links=[].slice.call(document.querySelectorAll('.toc a[href^="#"]'));
+  var heads=[].slice.call(document.querySelectorAll('.body h2[id], .body h3[id]'));
+  function update(){
+    var act=null;
+    for(var i=0;i<heads.length;i++){ if(heads[i].getBoundingClientRect().top<=130) act=heads[i].id; }
+    links.forEach(function(a){ a.classList.toggle('active', a.getAttribute('href')==='#'+act); });
+  }
+  var ticking=false;
+  window.addEventListener('scroll',function(){ if(!ticking){ ticking=true; requestAnimationFrame(function(){ update(); ticking=false; }); } },{passive:true});
+  update();
+  [].slice.call(document.querySelectorAll('.bib button')).forEach(function(b){
+    var pre=b.parentNode.querySelector('pre');
+    function select(){ var r=document.createRange(); r.selectNodeContents(pre); var s=window.getSelection(); s.removeAllRanges(); s.addRange(r); }
+    function done(ok){ b.textContent=ok?'Copied':'Selected, press copy'; setTimeout(function(){ b.textContent='Copy BibTeX'; },1800); }
+    b.addEventListener('click',function(){
+      var t=pre.textContent;
+      if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(function(){ done(true); },function(){ select(); done(false); }); }
+      else { select(); done(false); }
+    });
+  });
+})();
+</script>
 </body>
 </html>

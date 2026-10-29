@@ -1,14 +1,25 @@
 # Small decoders as decision models: full fine-tuning, adapters and distillation from an autoregressive teacher on a 16 GB laptop
 
-Patrick Li · Draft of 28 October 2026 · Code, runs, predictions and figures: [github.com/BrandeisPatrick/tino](https://github.com/BrandeisPatrick/tino)
+Patrick Li
+
+Draft v0.1 · October 28, 2026 · [Code, runs and per-question predictions](https://github.com/BrandeisPatrick/tino) · [Research log](https://github.com/BrandeisPatrick/tino/blob/main/RESEARCH.md) · [Model registry](https://github.com/BrandeisPatrick/tino/blob/main/docs/MODELS.md)
 
 ## Abstract
 
 A decision model answers a typed question about a state with one probability per option in a single forward pass, with no generated text. We ask whether a small autoregressive decoder, Qwen3-0.6B-Base, can be turned into one on a 16 GB Apple M4, and which of three routes works best: full fine-tuning, a LoRA adapter, or distillation from a 4B instruction-tuned teacher. Across 27 tracked training runs (44 hours, two seeds for every claim that matters) the routes tie on trained sources (accuracy 0.81) and differ by less than seed noise on new sources (0.61 to 0.65). The adapter trains 41 times fewer weights in half the memory. The teacher's soft labels change calibration far more than accuracy: every distilled student comes out calibrated as trained (fitted temperature 0.84 to 0.95), while every gold-label student is over-confident (2.0 to 2.75). At small data, training stability is the first-order effect: 5 of 15 adapter runs on 4,000 questions collapsed to a uniform guess. A thinking teacher adds 3 points, not significant, at 95 times the latency. Every run's configuration, logs and per-question predictions are in the repository.
 
+## Findings at a glance
+
+- **Recipe (RQ1).** At small data the first-order effect is whether training works at all: 5 of 15 adapter runs on 4,000 questions collapsed to a uniform guess. Learning rate at or below 1e-4, alpha fixed rather than scaled with rank, two seeds, and rejecting runs whose development log-loss sits at the uniform value matter more than any other knob. Rank above 16 and a Brier term do not help.
+- **Full fine-tune or adapter (RQ2).** They tie on trained sources (0.815 vs 0.814) and the adapter leans ahead on new sources by about 2 points, inside seed noise. The adapter trains 41 times fewer weights in half the memory and publishes a 43 MB file. Full fine-tuning is the safer choice only with a few thousand questions.
+- **Thinking (RQ3).** Reasoning before answering adds 3 points as a zero-shot decider, not significant, at 95 times the latency. A thinking-capable starting point for the student makes no difference once the decision head is trained.
+- **Distillation (RQ4).** A student trained half on gold labels and half on the teacher's probabilities matches gold-label accuracy and comes out calibrated without a temperature. Trained on the teacher alone it still works, but gives up 5.6 points on trained sources for an out-of-domain gain that two seeds did not confirm. Calibration, not accuracy, is what distillation transfers.
+
 ## 1 Introduction
 
-Jev, TypeSafe's "System One" model, is a decision model: it takes a state and typed questions (a choice among options, a score on a scale, a yes-or-no) and returns calibrated probabilities from one forward pass, without generating text. Open re-creations such as Kev showed that the format works on small open backbones. We wanted to know, on one laptop, which of the usual ways of adapting a decoder is best for this job, and whether the probabilities of an ordinary autoregressive model can be distilled into one. Four questions organise the work:
+Jev, TypeSafe's "System One" model, is a decision model[^jev]: it takes a state and typed questions (a choice among options, a score on a scale, a yes-or-no) and returns calibrated probabilities from one forward pass, without generating text. Open re-creations such as Kev[^kev] showed that the format works on small open backbones: a decoder reads the state, the question and the options in one row, and a small head scores each option. The appeal is operational. A decision model answers in milliseconds, its output is a probability rather than text to parse, and that probability can be checked for calibration.
+
+We wanted to know, on one laptop, which of the usual ways of adapting a decoder is best for this job, and whether the probabilities of an ordinary autoregressive model can be distilled into one. The candidate recipes are the standard ones: full fine-tuning with a memory-light optimizer[^adafactor], low-rank adapters[^lora], and knowledge distillation from a larger model's soft labels[^hinton]. The backbone is Qwen3-0.6B-Base[^qwen3], and the teacher, where there is one, is its 4B instruction-tuned sibling read as a multiple-choice scorer[^robinson]. Four questions organise the work:
 
 - **RQ1.** Which fine-tuning recipe is best for a decision model?
 - **RQ2.** Full fine-tuning or an adapter?
@@ -25,12 +36,14 @@ Every experiment follows one protocol, so the numbers in every figure are compar
 
 | | |
 |---|---|
-| Student base | `Qwen/Qwen3-0.6B-Base`, revision `da87bfb6` |
-| Data | `jaredpalmer/kev-suites`, revision `cc4bac80`, checksums verified. Train on `decision-v7/train`: 15,576 questions from 24 sources. Test on `decision-v7/test` (trained sources, 1,440), `transfer-v4/test` (9 new sources, 764) and `transfer-v9/test` (hardest, 1,264) |
-| Teacher | `Qwen3-4B-Instruct-2507`, 4-bit, read zero-shot as lettered multiple choice; its letter probabilities, softened at a fitted temperature of 9.0, are the soft labels |
-| Selection | best development accuracy; temperature fitted on the calibration split; test splits read once per released model; ablations judged on development splits only |
+| Student base | `Qwen/Qwen3-0.6B-Base`[^qwen3], revision `da87bfb6` |
+| Data | `jaredpalmer/kev-suites`[^kev], revision `cc4bac80`, checksums verified. Train on `decision-v7/train`: 15,576 questions from 24 sources. Test on `decision-v7/test` (trained sources, 1,440), `transfer-v4/test` (9 new sources, 764) and `transfer-v9/test` (hardest, 1,264) |
+| Teacher | `Qwen3-4B-Instruct-2507`, 4-bit, read zero-shot as lettered multiple choice[^robinson]; its letter probabilities, softened at a fitted temperature of 9.0, are the soft labels[^hinton] |
+| Selection | best development accuracy; temperature scaling[^guo] fitted on the calibration split; test splits read once per released model; ablations judged on development splits only |
+| Metrics | accuracy; Brier score[^brier]; expected calibration error over 15 bins[^naeini], raw and after temperature scaling; the fitted temperature itself as a measure of over-confidence |
+| Statistics | comparisons are paired on the same questions: percentile bootstrap intervals[^efron] and the exact McNemar test, a sign test on the discordant pairs[^mcnemar] |
 | Noise | 95% half-width about ±2.1 points on trained sources and ±3.5 on new sources; the same recipe moved by up to 4.6 points on new sources between seeds, so single-seed gaps under 4 points are not claimed |
-| Machine | Apple M4 with 16 GB, MLX; a memory guard pauses a run under 25% free memory and stops it under 12% |
+| Machine | Apple M4 with 16 GB, MLX[^mlx] with gradient checkpointing[^chen]; a memory guard pauses a run under 25% free memory and stops it under 12% |
 | Tracking | 39 runs; each run's configuration, git provenance, logs, resource trace and per-question predictions are committed in `runs/`; weights on the Hugging Face Hub with pinned revisions |
 
 ## 3 Results
@@ -112,3 +125,40 @@ Every number in this draft is read from the repository: `docs/results.json` (one
 | [tino-distil-a1](https://huggingface.co/BrandeisPatrick/tino-distil-a1) | LoRA r16, teacher only | 0.750 | 0.671 | 0.577 | 0.87 | 43 MB |
 
 *Table 1. The released models (seed 0 of each recipe) on the three test splits, with the temperature each needs and the size of the published weights. Second seeds are tracked runs; their numbers are the second dots in Figure 2.*
+
+## Acknowledgements
+
+This work builds on Jared Palmer's Kev and the kev-suites data, and on the Qwen3 model family. Training and evaluation ran with MLX and mlx-lm on a single Apple M4. The experiments, figures and this draft were produced with Claude (Anthropic) as a research assistant, with every run tracked in the repository.
+
+## Citation
+
+Please cite this work as:
+
+> Li, P. (2026). *Small decoders as decision models: full fine-tuning, adapters and distillation from an autoregressive teacher on a 16 GB laptop.* Draft. https://github.com/BrandeisPatrick/tino
+
+```bibtex
+@misc{li2026tino,
+  title        = {Small decoders as decision models: full fine-tuning, adapters and
+                  distillation from an autoregressive teacher on a 16 GB laptop},
+  author       = {Li, Patrick},
+  year         = {2026},
+  month        = oct,
+  howpublished = {\url{https://github.com/BrandeisPatrick/tino}},
+  note         = {Draft v0.1}
+}
+```
+
+[^jev]: TypeSafe AI. *Jev*, the "System One" typed decision model: a state and typed questions in, calibrated option probabilities out of one forward pass. 2026. Overview: [openrouter.ai/blog/insights/what-is-jev](https://openrouter.ai/blog/insights/what-is-jev/).
+[^kev]: Palmer, J. *Kev*, an open Jev-style decision model, with the `kev-suites` data and the `kev-0.6b` reference model. 2026. [github.com/jaredpalmer/kev](https://github.com/jaredpalmer/kev); [huggingface.co/datasets/jaredpalmer/kev-suites](https://huggingface.co/datasets/jaredpalmer/kev-suites); [huggingface.co/jaredpalmer/kev-0.6b](https://huggingface.co/jaredpalmer/kev-0.6b).
+[^adafactor]: Shazeer, N. and Stern, M. Adafactor: Adaptive learning rates with sublinear memory cost. *ICML 2018.* [arXiv:1804.04235](https://arxiv.org/abs/1804.04235).
+[^lora]: Hu, E. J., Shen, Y., Wallis, P., Allen-Zhu, Z., Li, Y., Wang, S., Wang, L., and Chen, W. LoRA: Low-rank adaptation of large language models. *ICLR 2022.* [arXiv:2106.09685](https://arxiv.org/abs/2106.09685).
+[^hinton]: Hinton, G., Vinyals, O., and Dean, J. Distilling the knowledge in a neural network. *NIPS 2014 Deep Learning Workshop.* [arXiv:1503.02531](https://arxiv.org/abs/1503.02531).
+[^qwen3]: Qwen Team. Qwen3 technical report. 2025. [arXiv:2505.09388](https://arxiv.org/abs/2505.09388).
+[^robinson]: Robinson, J., Rytting, C. M., and Wingate, D. Leveraging large language models for multiple choice question answering. *ICLR 2023.* [arXiv:2210.12353](https://arxiv.org/abs/2210.12353).
+[^guo]: Guo, C., Pleiss, G., Sun, Y., and Weinberger, K. Q. On calibration of modern neural networks. *ICML 2017.* [arXiv:1706.04599](https://arxiv.org/abs/1706.04599).
+[^brier]: Brier, G. W. Verification of forecasts expressed in terms of probability. *Monthly Weather Review* 78(1):1–3, 1950.
+[^naeini]: Naeini, M. P., Cooper, G. F., and Hauskrecht, M. Obtaining well calibrated probabilities using Bayesian binning. *AAAI 2015.*
+[^efron]: Efron, B. Bootstrap methods: Another look at the jackknife. *The Annals of Statistics* 7(1):1–26, 1979.
+[^mcnemar]: McNemar, Q. Note on the sampling error of the difference between correlated proportions or percentages. *Psychometrika* 12(2):153–157, 1947.
+[^mlx]: Hannun, A., Digani, J., Katharopoulos, A., and Collobert, R. MLX: Efficient and flexible machine learning on Apple silicon. 2023. [github.com/ml-explore/mlx](https://github.com/ml-explore/mlx).
+[^chen]: Chen, T., Xu, B., Zhang, C., and Guestrin, C. Training deep nets with sublinear memory cost. 2016. [arXiv:1604.06174](https://arxiv.org/abs/1604.06174).
