@@ -1,9 +1,9 @@
 {
  "summary": {
-  "generated": "2026-10-29",
+  "generated": "2026-10-30",
   "runs_total": 44,
-  "runs_finished_nonsmoke": 30,
-  "train_hours_nonsmoke": 43.7,
+  "runs_finished_nonsmoke": 31,
+  "train_hours_nonsmoke": 47.2,
   "published_models": [
    "BrandeisPatrick/tino-finetuned",
    "BrandeisPatrick/tino-adapter",
@@ -11,7 +11,7 @@
    "BrandeisPatrick/tino-adapter-post",
    "BrandeisPatrick/tino-distil-a1"
   ],
-  "timeline_events": 91
+  "timeline_events": 93
  },
  "runs": [
   {
@@ -3814,11 +3814,96 @@
    "alpha": 0.5,
    "backbone_lr": 0.0001,
    "brier_weight": null,
-   "status": "incomplete",
-   "metrics": {},
-   "peak_gb": 4.0,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.7997,
+     "brier": 0.2825,
+     "ece_raw": 0.032,
+     "ece_cal": 0.0293,
+     "ms": 82,
+     "n": 1468
+    },
+    "decision-v7/test": {
+     "acc": 0.8007,
+     "brier": 0.2789,
+     "ece_raw": 0.0404,
+     "ece_cal": 0.04,
+     "ms": 83,
+     "n": 1440
+    },
+    "transfer-v4/development": {
+     "acc": 0.6008,
+     "brier": 0.4942,
+     "ece_raw": 0.0428,
+     "ece_cal": 0.0727,
+     "ms": 51,
+     "n": 764
+    },
+    "transfer-v4/test": {
+     "acc": 0.6099,
+     "brier": 0.48,
+     "ece_raw": 0.0463,
+     "ece_cal": 0.0586,
+     "ms": 51,
+     "n": 764
+    },
+    "transfer-v9/test": {
+     "acc": 0.5435,
+     "brier": 0.549,
+     "ece_raw": 0.0441,
+     "ece_cal": 0.0741,
+     "ms": 60,
+     "n": 1264
+    }
+   },
+   "temperature": 0.818,
+   "best_step": 2880,
+   "train_minutes": 208,
+   "trainable_params": 10617344,
+   "by_type_test": {
+    "choice": 0.8563,
+    "noul": 0.8413,
+    "score": 0.5542
+   },
+   "dev_curve": [
+    [
+     360,
+     0.705
+    ],
+    [
+     720,
+     0.7398
+    ],
+    [
+     1080,
+     0.7704
+    ],
+    [
+     1440,
+     0.7834
+    ],
+    [
+     1800,
+     0.7827
+    ],
+    [
+     2160,
+     0.7895
+    ],
+    [
+     2520,
+     0.799
+    ],
+    [
+     2880,
+     0.7997
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 4.03,
    "min_free_pct": 33,
-   "has_predictions": false
+   "has_predictions": true
   }
  ]
 }
