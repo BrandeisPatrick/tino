@@ -7,6 +7,8 @@
 # Before each job the runner waits until the Mac has memory to spare: the guard's free-memory level
 # (kern.memorystatus_level) at or above QUEUE_MIN_FREE_PCT (default 35) for three checks a minute apart, and no
 # Ollama model server running. A crowded machine then delays the queue instead of aborting job after job.
+# To pause the queue at the next job boundary, create queue/hold (its first line is shown in the log) and remove it
+# to continue; the running job is not affected.
 cd "$(dirname "$0")/.." || exit 1
 mkdir -p queue
 PENDING=queue/pending.txt; DONE=queue/done.txt; LOG=queue/log.txt
@@ -18,7 +20,8 @@ wait_for_memory() {
   while [ "$ok" -lt 3 ]; do
     free=$(sysctl -n kern.memorystatus_level)
     why=""
-    if pgrep -x llama-server >/dev/null 2>&1; then why="an Ollama model is loaded"; fi
+    if [ -e queue/hold ]; then why="hold file queue/hold present ($(head -c 80 queue/hold 2>/dev/null | tr -d '\n'))"; fi
+    if pgrep -x llama-server >/dev/null 2>&1; then why="${why:+$why, }an Ollama model is loaded"; fi
     if [ "${free:-0}" -lt "$MIN_FREE" ]; then why="${why:+$why, }${free}% free, need ${MIN_FREE}%"; fi
     if [ -z "$why" ]; then
       ok=$((ok+1))
