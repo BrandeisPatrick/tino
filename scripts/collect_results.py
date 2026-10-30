@@ -72,7 +72,26 @@ def parse_run(d):
         r["teacher_temperature"] = fin.get("temperature"); r["labels_revision"] = (fin.get("labels_revision") or "")[:8]
         for sp, v in fin["splits"].items():
             if "raw" in v: r["metrics"][sp] = {"acc": round(v["raw"]["accuracy"], 4), "ece_raw": round(v["raw"]["ece"], 4), "ece_cal": round(v["calibrated"]["ece"], 4), "n": v["raw"]["n"]}
-    if fin and fin.get("models"):
+    if fin and fin.get("models") and r["kind"] == "suite eval":
+        r["suite_eval"] = {}
+        for m, x in fin["models"].items():
+            if "suites" not in x:
+                r["suite_eval"][m] = {"skipped": x.get("skipped")}
+                continue
+            e = {sp: {"acc": round(v["raw"]["accuracy"], 4), "ece_raw": round(v["raw"]["ece"], 4), "ece_cal": round(v["calibrated"]["ece"], 4), "n": v["raw"]["n"]}
+                 for sp, v in x["suites"].items()}
+            e["temperature"] = round(x.get("temperature", 1.0), 3)
+            pr = x.get("probes") or {}
+            if pr.get("permutation"):
+                e["permutation_same_answer"] = {sp: round(v["same_answer"], 4) for sp, v in pr["permutation"].items() if "same_answer" in v}
+            if pr.get("no_state"):
+                e["no_state"] = {sp: [round(v["accuracy_with_state"], 4), round(v["accuracy_without_state"], 4)] for sp, v in pr["no_state"].items()}
+            sm = (x["suites"].get("semif-v1/development") or {}).get("semif")
+            if sm:
+                e["semif"] = {"clean_balanced": round(sm["clean_balanced_accuracy"], 4), "perturbed_balanced": round(sm["perturbed_balanced_accuracy"], 4),
+                              "bases_all_perturbations_right": sm["bases"].get("perturbed_all_correct")}
+            r["suite_eval"][m] = e
+    elif fin and fin.get("models"):
         r["zero_shot"] = {m: {sp: round(v["accuracy"], 3) for sp, v in x["suites"].items()} | {"sec_per_question": round(x["sec_per_question"], 2)} for m, x in fin["models"].items()}
     ev = os.path.join(d, "evals.jsonl")
     if os.path.exists(ev):
