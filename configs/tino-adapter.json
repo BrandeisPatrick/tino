@@ -60,7 +60,7 @@
     "cache_gb": 1.0,
     "pause_free_pct": 25,
     "abort_free_pct": 12,
-    "max_swap_growth_gb": 3.0,
+    "max_swap_growth_gb": 6.0,
     "max_pause_min": 30
   },
   "weight_decay": 0.01,

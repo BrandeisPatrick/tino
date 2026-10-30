@@ -2,32 +2,109 @@
   "name": "suite-eval",
   "kind": "suite-eval",
   "models": [
-    {"name": "tino-finetuned", "run": "runs/20261022-225150-tino-finetuned"},
-    {"name": "tino-adapter", "run": "runs/20261023-085627-tino-adapter"},
-    {"name": "tino-adapter-post", "run": "runs/20261023-204028-tino-adapter-post"},
-    {"name": "tino-distil", "run": "runs/20261023-153602-tino-distil"},
-    {"name": "tino-distil-a1", "run": "runs/20261024-222253-tino-distil-a1"},
-    {"name": "tino-adapter-s1", "run": "runs/20261024-110527-tino-adapter-s1"},
-    {"name": "tino-finetuned-s1", "run": "runs/20261024-142648-tino-finetuned-s1"},
-    {"name": "tino-distil-s1", "run": "runs/20261025-014322-tino-distil-s1"},
-    {"name": "tino-distil-a1-s1", "run": "runs/20261025-083634-tino-distil-a1-s1"},
-    {"name": "kev-0.6b", "path": "checkpoints/kev-0.6b", "fit_temperature": true}
+    {
+      "name": "tino-finetuned",
+      "run": "runs/20261022-225150-tino-finetuned"
+    },
+    {
+      "name": "tino-adapter",
+      "run": "runs/20261023-085627-tino-adapter"
+    },
+    {
+      "name": "tino-adapter-post",
+      "run": "runs/20261023-204028-tino-adapter-post"
+    },
+    {
+      "name": "tino-distil",
+      "run": "runs/20261023-153602-tino-distil"
+    },
+    {
+      "name": "tino-distil-a1",
+      "run": "runs/20261024-222253-tino-distil-a1"
+    },
+    {
+      "name": "tino-adapter-s1",
+      "run": "runs/20261024-110527-tino-adapter-s1"
+    },
+    {
+      "name": "tino-finetuned-s1",
+      "run": "runs/20261024-142648-tino-finetuned-s1"
+    },
+    {
+      "name": "tino-distil-s1",
+      "run": "runs/20261025-014322-tino-distil-s1"
+    },
+    {
+      "name": "tino-distil-a1-s1",
+      "run": "runs/20261025-083634-tino-distil-a1-s1"
+    },
+    {
+      "name": "kev-0.6b",
+      "path": "checkpoints/kev-0.6b",
+      "fit_temperature": true
+    }
   ],
   "suites": [
     "semif-v1/development",
     "scienthoon-v1/development",
     "binding-v1/all",
-    {"suite": "public-pool-v6/test", "sources": ["arc", "openbookqa", "csqa"], "name": "public-trio"},
+    {
+      "suite": "public-pool-v6/test",
+      "sources": [
+        "arc",
+        "openbookqa",
+        "csqa"
+      ],
+      "name": "public-trio"
+    },
     "transfer-r3/test",
-    {"suite": "decision-v4/development", "name": "kev-check-decision-v4", "models": ["kev-0.6b"]},
-    {"suite": "transfer-v4/development", "name": "kev-check-transfer-v4", "models": ["kev-0.6b"]}
+    {
+      "suite": "decision-v4/development",
+      "name": "kev-check-decision-v4",
+      "models": [
+        "kev-0.6b"
+      ]
+    },
+    {
+      "suite": "transfer-v4/development",
+      "name": "kev-check-transfer-v4",
+      "models": [
+        "kev-0.6b"
+      ]
+    }
   ],
   "probes": {
-    "permutation": ["transfer-v4/development", "semif-v1/development", "binding-v1/all",
-                    {"suite": "public-pool-v6/test", "sources": ["arc", "openbookqa", "csqa"], "name": "public-trio"}],
-    "no_state": ["transfer-v4/development", "binding-v1/all", "semif-v1/development"]
+    "permutation": [
+      "transfer-v4/development",
+      "semif-v1/development",
+      "binding-v1/all",
+      {
+        "suite": "public-pool-v6/test",
+        "sources": [
+          "arc",
+          "openbookqa",
+          "csqa"
+        ],
+        "name": "public-trio"
+      }
+    ],
+    "no_state": [
+      "transfer-v4/development",
+      "binding-v1/all",
+      "semif-v1/development"
+    ]
   },
-  "calibration": ["decision-v7", "calibration"],
+  "calibration": [
+    "decision-v7",
+    "calibration"
+  ],
   "token_budget": 4096,
-  "guard": {"mlx_cap_gb": 10.0, "cache_gb": 1.0, "pause_free_pct": 25, "abort_free_pct": 12, "max_swap_growth_gb": 3.0, "max_pause_min": 30}
+  "guard": {
+    "mlx_cap_gb": 10.0,
+    "cache_gb": 1.0,
+    "pause_free_pct": 25,
+    "abort_free_pct": 12,
+    "max_swap_growth_gb": 6.0,
+    "max_pause_min": 30
+  }
 }

@@ -5,9 +5,47 @@
   "teacher_source_model": "Qwen/Qwen3-4B-Instruct-2507",
   "labels_repo": "BrandeisPatrick/tino-teacher-labels",
   "labels_prefix": "qwen3-4b-instruct-2507",
-  "splits": [["decision-v7", "calibration"], ["decision-v7", "development"], ["decision-v7", "test"],
-             ["transfer-v4", "development"], ["transfer-v4", "test"], ["transfer-v9", "test"], ["decision-v7", "train"]],
-  "calibration": ["decision-v7", "calibration"],
+  "splits": [
+    [
+      "decision-v7",
+      "calibration"
+    ],
+    [
+      "decision-v7",
+      "development"
+    ],
+    [
+      "decision-v7",
+      "test"
+    ],
+    [
+      "transfer-v4",
+      "development"
+    ],
+    [
+      "transfer-v4",
+      "test"
+    ],
+    [
+      "transfer-v9",
+      "test"
+    ],
+    [
+      "decision-v7",
+      "train"
+    ]
+  ],
+  "calibration": [
+    "decision-v7",
+    "calibration"
+  ],
   "token_budget": 4096,
-  "guard": {"mlx_cap_gb": 10.0, "cache_gb": 1.0, "pause_free_pct": 25, "abort_free_pct": 12, "max_swap_growth_gb": 3.0, "max_pause_min": 30}
+  "guard": {
+    "mlx_cap_gb": 10.0,
+    "cache_gb": 1.0,
+    "pause_free_pct": 25,
+    "abort_free_pct": 12,
+    "max_swap_growth_gb": 6.0,
+    "max_pause_min": 30
+  }
 }
