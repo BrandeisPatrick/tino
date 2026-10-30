@@ -74,4 +74,4 @@ The training script commits and pushes the run directory at every evaluation, so
 
 ## Machine safety
 
-`tino/guard.py` runs before every optimizer step and evaluation batch. It caps MLX memory at 10 GB, pauses when the Mac's free memory drops under 25%, and aborts the run (keeping the best checkpoint and pushing the record) under 12% free, if swap grows by more than 3 GB, or after 30 minutes paused. Every run's limits are in its `config.json` under `guard`.
+`tino/guard.py` runs before every optimizer step and evaluation batch. It caps MLX memory at 10 GB, pauses when the Mac's free memory drops under 25%, and aborts the run (keeping the best checkpoint and pushing the record) under 12% free, if swap grows by more than 6 GB (3 GB until October 29), or after 30 minutes paused. Every run's limits are in its `config.json` under `guard`.

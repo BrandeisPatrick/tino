@@ -89,3 +89,36 @@ Adapter recipe on `Qwen/Qwen3-1.7B-Base` (revision `ea980cb0`), bf16 backbone, 2
 ## Total
 
 Tier 1 about 50 h, Tier 2 about 28 h, Tier 3 about 43 h without M3 and M4: about five days of continuous compute, one job at a time, with the laptop usable but slower throughout. Tier 1 alone is about two days; Tiers 1 and 2 about three.
+
+## Progress
+
+### October 29, evening
+
+- **Queue.** Started 20:59 with the Tier 1 jobs. The first, `tino-adapter-s2`, was stopped by the guard at step 680 of 2,881 when system swap grew past the 3 GB rule while the machine was busy with other work (run [`20261029-205913`](../runs/20261029-205913-tino-adapter-s2); [engineering log](ENGINEERING.md)). The rule is now 6 GB in every config, and the job restarted at 23:07 as run `20261029-230744`. 34 jobs follow it.
+- **B1 and the Kev port, done.** Run [`20261029-214858-suite-eval`](../runs/20261029-214858-suite-eval) scored the nine Phase 1 models and Kev-0.6B on the never-seen suites and the two probes (79 minutes, 0.04 s per question). The port is validated: on the two development splits Kev's card reports, it scores 0.809 on decision-v4 (card 0.801) and 0.631 on transfer-v4 (card 0.620), within a point of both, with a fitted temperature of 1.74.
+
+Accuracy on suites no run was selected on (raw, one pass each):
+
+| Model | SemIf (252) | Scienthoon (873) | Binding (560) | Public trio (348) | transfer-r3 (1,260) |
+|---|---|---|---|---|---|
+| tino-finetuned | 0.623 | 0.450 | 0.562 | 0.500 | 0.642 |
+| tino-finetuned-s1 | 0.615 | 0.424 | 0.573 | 0.514 | 0.620 |
+| tino-adapter | 0.591 | 0.564 | 0.639 | 0.532 | 0.644 |
+| tino-adapter-s1 | 0.587 | 0.477 | 0.636 | 0.540 | 0.675 |
+| tino-adapter-post | 0.667 | 0.507 | 0.677 | 0.489 | 0.643 |
+| tino-distil | 0.639 | 0.494 | 0.677 | 0.543 | 0.653 |
+| tino-distil-s1 | 0.619 | 0.481 | 0.662 | 0.540 | 0.664 |
+| tino-distil-a1 | 0.690 | 0.515 | 0.648 | 0.543 | 0.658 |
+| tino-distil-a1-s1 | 0.635 | 0.532 | 0.646 | 0.489 | 0.642 |
+| kev-0.6b | 0.599 | 0.392 | 0.652 | 0.537 | 0.636 |
+
+First reading, before any test (two seeds per recipe, so differences under about 4 points are noise, as in Phase 1):
+
+- The full fine-tune is the weakest recipe on the binding diagnostic (0.56–0.57 against 0.64–0.68 for every adapter-based model) and on transfer-r3 (0.62–0.64 against 0.64–0.68): the same direction as its Phase 1 out-of-domain gap.
+- The distilled students sit at or above the gold-label models on every suite except Scienthoon, and their raw calibration is better on every suite (ECE 0.04–0.20 against 0.11–0.35 for the gold-label models), as H6 predicts.
+- Scienthoon splits by question type: the queue choice is answered at 0.71–0.87 by the tino models and 0.53 by Kev; the priority score sits at 0.16–0.31 for every model; the anger question at 0.40–0.56.
+- Kev-0.6B lands with the tino adapters on binding, the public trio and transfer-r3, and below them on SemIf and Scienthoon.
+- SemIf's own protocol (family-balanced accuracy, the `semif` entry of each model): 0.60–0.72 on the 144 authored rows, where SemIf reports 0.813 for Qwen3.5-4B's direct logits, and 0.54–0.71 on the 108 perturbed rows (reference 0.723). On the 36 perturbation bases, the share where all three perturbations (option reversal, criterion wrapper, irrelevant context) are answered right is 0.39–0.61; `tino-adapter-post` reaches 0.61, so H6's 60% line is not settled on 36 bases. The base is right but a perturbation wrong on 3–17% of bases.
+- Option-order probe: reversing the options leaves the answer unchanged on 0.59–0.97 of choice questions, by model and suite. `tino-distil` (0.84 on transfer-v4, 0.91 on SemIf, 0.88 on binding) and Kev-0.6B (0.85, 0.83, 0.91) are the steadiest; the teacher-only students the least (0.68–0.80 on the same suites); the public trio is the least stable for everyone (0.63–0.78).
+- State-removal probe: with the state blanked, accuracy drops by 15–27 points on transfer-v4 development, 5–19 on binding and 27–40 on SemIf. Every model reads the state.
+- One defect surfaced and was fixed: the SemIf perturbation groups came out empty because perturbed rows point at their base through `_meta.parent_id`, not the group id. `scripts/eval_suites.py` now follows `parent_id` and reports SemIf's family-balanced accuracy; `--rescore` recomputed this run from its saved predictions, so no model was re-run.

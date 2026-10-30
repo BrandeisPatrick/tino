@@ -81,8 +81,45 @@
        }
       }
      },
-     "groups": {
-      "groups": 0
+     "semif": {
+      "n": 252,
+      "clean_balanced_accuracy": 0.657228037413796,
+      "clean_balanced_by_family": {
+       "candidate_selection": 0.5454936360509116,
+       "evidence_interpretation": 0.7785714285714286,
+       "rule_application": 0.6476190476190476
+      },
+      "perturbed_balanced_accuracy": 0.5747795414462081,
+      "perturbed_balanced_by_family": {
+       "candidate_selection": 0.5761904761904761,
+       "evidence_interpretation": 0.7777777777777778,
+       "rule_application": 0.37037037037037035
+      },
+      "by_variant": {
+       "clean": {
+        "n": 144,
+        "accuracy": 0.6388888888888888
+       },
+       "criterion_wrapper": {
+        "n": 36,
+        "accuracy": 0.6388888888888888
+       },
+       "irrelevant_context": {
+        "n": 36,
+        "accuracy": 0.5555555555555556
+       },
+       "option_reversal": {
+        "n": 36,
+        "accuracy": 0.6111111111111112
+       }
+      },
+      "bases": {
+       "n": 36,
+       "base_correct": 0.6111111111111112,
+       "perturbed_all_correct": 0.4722222222222222,
+       "both_correct": 0.4722222222222222,
+       "base_right_any_perturbed_wrong": 0.1388888888888889
+      }
      }
     },
     "scienthoon-v1/development": {
@@ -977,8 +1014,45 @@
        }
       }
      },
-     "groups": {
-      "groups": 0
+     "semif": {
+      "n": 252,
+      "clean_balanced_accuracy": 0.6317837076351008,
+      "clean_balanced_by_family": {
+       "candidate_selection": 0.6413828689370485,
+       "evidence_interpretation": 0.7047619047619048,
+       "rule_application": 0.5492063492063491
+      },
+      "perturbed_balanced_accuracy": 0.5439153439153439,
+      "perturbed_balanced_by_family": {
+       "candidate_selection": 0.7428571428571429,
+       "evidence_interpretation": 0.6111111111111112,
+       "rule_application": 0.2777777777777778
+      },
+      "by_variant": {
+       "clean": {
+        "n": 144,
+        "accuracy": 0.6180555555555556
+       },
+       "criterion_wrapper": {
+        "n": 36,
+        "accuracy": 0.6111111111111112
+       },
+       "irrelevant_context": {
+        "n": 36,
+        "accuracy": 0.5
+       },
+       "option_reversal": {
+        "n": 36,
+        "accuracy": 0.5555555555555556
+       }
+      },
+      "bases": {
+       "n": 36,
+       "base_correct": 0.5,
+       "perturbed_all_correct": 0.3888888888888889,
+       "both_correct": 0.3333333333333333,
+       "base_right_any_perturbed_wrong": 0.16666666666666666
+      }
      }
     },
     "scienthoon-v1/development": {
@@ -1873,8 +1947,45 @@
        }
       }
      },
-     "groups": {
-      "groups": 0
+     "semif": {
+      "n": 252,
+      "clean_balanced_accuracy": 0.649160482906613,
+      "clean_balanced_by_family": {
+       "candidate_selection": 0.5609735122119023,
+       "evidence_interpretation": 0.7952380952380952,
+       "rule_application": 0.5912698412698413
+      },
+      "perturbed_balanced_accuracy": 0.7072310405643739,
+      "perturbed_balanced_by_family": {
+       "candidate_selection": 0.7142857142857142,
+       "evidence_interpretation": 0.8703703703703703,
+       "rule_application": 0.537037037037037
+      },
+      "by_variant": {
+       "clean": {
+        "n": 144,
+        "accuracy": 0.6388888888888888
+       },
+       "criterion_wrapper": {
+        "n": 36,
+        "accuracy": 0.7222222222222222
+       },
+       "irrelevant_context": {
+        "n": 36,
+        "accuracy": 0.6944444444444444
+       },
+       "option_reversal": {
+        "n": 36,
+        "accuracy": 0.6944444444444444
+       }
+      },
+      "bases": {
+       "n": 36,
+       "base_correct": 0.7222222222222222,
+       "perturbed_all_correct": 0.6111111111111112,
+       "both_correct": 0.6111111111111112,
+       "base_right_any_perturbed_wrong": 0.1111111111111111
+      }
      }
     },
     "scienthoon-v1/development": {
@@ -2769,8 +2880,45 @@
        }
       }
      },
-     "groups": {
-      "groups": 0
+     "semif": {
+      "n": 252,
+      "clean_balanced_accuracy": 0.6891419725785051,
+      "clean_balanced_by_family": {
+       "candidate_selection": 0.7166322669418644,
+       "evidence_interpretation": 0.7476190476190476,
+       "rule_application": 0.6031746031746031
+      },
+      "perturbed_balanced_accuracy": 0.5617283950617283,
+      "perturbed_balanced_by_family": {
+       "candidate_selection": 0.6666666666666666,
+       "evidence_interpretation": 0.8333333333333333,
+       "rule_application": 0.18518518518518517
+      },
+      "by_variant": {
+       "clean": {
+        "n": 144,
+        "accuracy": 0.6805555555555556
+       },
+       "criterion_wrapper": {
+        "n": 36,
+        "accuracy": 0.6388888888888888
+       },
+       "irrelevant_context": {
+        "n": 36,
+        "accuracy": 0.5277777777777778
+       },
+       "option_reversal": {
+        "n": 36,
+        "accuracy": 0.5833333333333334
+       }
+      },
+      "bases": {
+       "n": 36,
+       "base_correct": 0.5277777777777778,
+       "perturbed_all_correct": 0.5,
+       "both_correct": 0.5,
+       "base_right_any_perturbed_wrong": 0.027777777777777776
+      }
      }
     },
     "scienthoon-v1/development": {
@@ -3665,8 +3813,45 @@
        }
       }
      },
-     "groups": {
-      "groups": 0
+     "semif": {
+      "n": 252,
+      "clean_balanced_accuracy": 0.7163906498271824,
+      "clean_balanced_by_family": {
+       "candidate_selection": 0.6610767113863089,
+       "evidence_interpretation": 0.8142857142857144,
+       "rule_application": 0.6738095238095237
+      },
+      "perturbed_balanced_accuracy": 0.6329805996472663,
+      "perturbed_balanced_by_family": {
+       "candidate_selection": 0.6952380952380952,
+       "evidence_interpretation": 0.9074074074074074,
+       "rule_application": 0.2962962962962963
+      },
+      "by_variant": {
+       "clean": {
+        "n": 144,
+        "accuracy": 0.7152777777777778
+       },
+       "criterion_wrapper": {
+        "n": 36,
+        "accuracy": 0.6944444444444444
+       },
+       "irrelevant_context": {
+        "n": 36,
+        "accuracy": 0.6944444444444444
+       },
+       "option_reversal": {
+        "n": 36,
+        "accuracy": 0.5833333333333334
+       }
+      },
+      "bases": {
+       "n": 36,
+       "base_correct": 0.6666666666666666,
+       "perturbed_all_correct": 0.5,
+       "both_correct": 0.5,
+       "base_right_any_perturbed_wrong": 0.16666666666666666
+      }
      }
     },
     "scienthoon-v1/development": {
@@ -4561,8 +4746,45 @@
        }
       }
      },
-     "groups": {
-      "groups": 0
+     "semif": {
+      "n": 252,
+      "clean_balanced_accuracy": 0.6032319360492736,
+      "clean_balanced_by_family": {
+       "candidate_selection": 0.5279497764017889,
+       "evidence_interpretation": 0.6785714285714285,
+       "rule_application": 0.6031746031746031
+      },
+      "perturbed_balanced_accuracy": 0.5532627865961199,
+      "perturbed_balanced_by_family": {
+       "candidate_selection": 0.7523809523809524,
+       "evidence_interpretation": 0.6481481481481481,
+       "rule_application": 0.25925925925925924
+      },
+      "by_variant": {
+       "clean": {
+        "n": 144,
+        "accuracy": 0.5902777777777778
+       },
+       "criterion_wrapper": {
+        "n": 36,
+        "accuracy": 0.5833333333333334
+       },
+       "irrelevant_context": {
+        "n": 36,
+        "accuracy": 0.5555555555555556
+       },
+       "option_reversal": {
+        "n": 36,
+        "accuracy": 0.6111111111111112
+       }
+      },
+      "bases": {
+       "n": 36,
+       "base_correct": 0.5277777777777778,
+       "perturbed_all_correct": 0.4444444444444444,
+       "both_correct": 0.4444444444444444,
+       "base_right_any_perturbed_wrong": 0.08333333333333333
+      }
      }
     },
     "scienthoon-v1/development": {
@@ -5457,8 +5679,45 @@
        }
       }
      },
-     "groups": {
-      "groups": 0
+     "semif": {
+      "n": 252,
+      "clean_balanced_accuracy": 0.6449588022343439,
+      "clean_balanced_by_family": {
+       "candidate_selection": 0.5642414860681114,
+       "evidence_interpretation": 0.6817460317460317,
+       "rule_application": 0.6888888888888888
+      },
+      "perturbed_balanced_accuracy": 0.62663139329806,
+      "perturbed_balanced_by_family": {
+       "candidate_selection": 0.6761904761904762,
+       "evidence_interpretation": 0.7407407407407407,
+       "rule_application": 0.46296296296296297
+      },
+      "by_variant": {
+       "clean": {
+        "n": 144,
+        "accuracy": 0.6527777777777778
+       },
+       "criterion_wrapper": {
+        "n": 36,
+        "accuracy": 0.5277777777777778
+       },
+       "irrelevant_context": {
+        "n": 36,
+        "accuracy": 0.5555555555555556
+       },
+       "option_reversal": {
+        "n": 36,
+        "accuracy": 0.6111111111111112
+       }
+      },
+      "bases": {
+       "n": 36,
+       "base_correct": 0.5555555555555556,
+       "perturbed_all_correct": 0.4166666666666667,
+       "both_correct": 0.4166666666666667,
+       "base_right_any_perturbed_wrong": 0.1388888888888889
+      }
      }
     },
     "scienthoon-v1/development": {
@@ -6353,8 +6612,45 @@
        }
       }
      },
-     "groups": {
-      "groups": 0
+     "semif": {
+      "n": 252,
+      "clean_balanced_accuracy": 0.6268072141137156,
+      "clean_balanced_by_family": {
+       "candidate_selection": 0.6042311661506709,
+       "evidence_interpretation": 0.6912698412698411,
+       "rule_application": 0.584920634920635
+      },
+      "perturbed_balanced_accuracy": 0.6622574955908289,
+      "perturbed_balanced_by_family": {
+       "candidate_selection": 0.8571428571428572,
+       "evidence_interpretation": 0.7407407407407407,
+       "rule_application": 0.3888888888888889
+      },
+      "by_variant": {
+       "clean": {
+        "n": 144,
+        "accuracy": 0.6319444444444444
+       },
+       "criterion_wrapper": {
+        "n": 36,
+        "accuracy": 0.6111111111111112
+       },
+       "irrelevant_context": {
+        "n": 36,
+        "accuracy": 0.5833333333333334
+       },
+       "option_reversal": {
+        "n": 36,
+        "accuracy": 0.6111111111111112
+       }
+      },
+      "bases": {
+       "n": 36,
+       "base_correct": 0.4722222222222222,
+       "perturbed_all_correct": 0.4166666666666667,
+       "both_correct": 0.3888888888888889,
+       "base_right_any_perturbed_wrong": 0.08333333333333333
+      }
      }
     },
     "scienthoon-v1/development": {
@@ -7249,8 +7545,45 @@
        }
       }
      },
-     "groups": {
-      "groups": 0
+     "semif": {
+      "n": 252,
+      "clean_balanced_accuracy": 0.6632127704883123,
+      "clean_balanced_by_family": {
+       "candidate_selection": 0.6475748194014448,
+       "evidence_interpretation": 0.7031746031746032,
+       "rule_application": 0.6388888888888888
+      },
+      "perturbed_balanced_accuracy": 0.6169312169312169,
+      "perturbed_balanced_by_family": {
+       "candidate_selection": 0.7952380952380952,
+       "evidence_interpretation": 0.6111111111111112,
+       "rule_application": 0.4444444444444444
+      },
+      "by_variant": {
+       "clean": {
+        "n": 144,
+        "accuracy": 0.6666666666666666
+       },
+       "criterion_wrapper": {
+        "n": 36,
+        "accuracy": 0.6388888888888888
+       },
+       "irrelevant_context": {
+        "n": 36,
+        "accuracy": 0.5555555555555556
+       },
+       "option_reversal": {
+        "n": 36,
+        "accuracy": 0.5833333333333334
+       }
+      },
+      "bases": {
+       "n": 36,
+       "base_correct": 0.5277777777777778,
+       "perturbed_all_correct": 0.4444444444444444,
+       "both_correct": 0.4166666666666667,
+       "base_right_any_perturbed_wrong": 0.1111111111111111
+      }
      }
     },
     "scienthoon-v1/development": {
@@ -8145,8 +8478,45 @@
        }
       }
      },
-     "groups": {
-      "groups": 0
+     "semif": {
+      "n": 252,
+      "clean_balanced_accuracy": 0.626692548364375,
+      "clean_balanced_by_family": {
+       "candidate_selection": 0.49277605779153766,
+       "evidence_interpretation": 0.6761904761904761,
+       "rule_application": 0.7111111111111111
+      },
+      "perturbed_balanced_accuracy": 0.5652557319223986,
+      "perturbed_balanced_by_family": {
+       "candidate_selection": 0.5476190476190476,
+       "evidence_interpretation": 0.7222222222222222,
+       "rule_application": 0.42592592592592593
+      },
+      "by_variant": {
+       "clean": {
+        "n": 144,
+        "accuracy": 0.625
+       },
+       "criterion_wrapper": {
+        "n": 36,
+        "accuracy": 0.5555555555555556
+       },
+       "irrelevant_context": {
+        "n": 36,
+        "accuracy": 0.5555555555555556
+       },
+       "option_reversal": {
+        "n": 36,
+        "accuracy": 0.5833333333333334
+       }
+      },
+      "bases": {
+       "n": 36,
+       "base_correct": 0.5277777777777778,
+       "perturbed_all_correct": 0.4166666666666667,
+       "both_correct": 0.4166666666666667,
+       "base_right_any_perturbed_wrong": 0.1111111111111111
+      }
      }
     },
     "scienthoon-v1/development": {

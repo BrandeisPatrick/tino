@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 """Score models on evaluation suites that no run was selected on, with two probes, and record it all as a run.
 
-The suites come from the pinned kev-suites revision: SemIf (authored evidence judgements plus perturbed siblings),
+The suites come from the pinned kev-suites revision: SemIf (authored evidence judgements plus perturbed siblings,
+scored with SemIf's own protocol: family-balanced accuracy, and stability over each base's three perturbations),
 Scienthoon (support tickets with queue, priority and anger questions), the binding diagnostic (policy fields that
 must be bound to the right case fields), Kev's public pool restricted to ARC, OpenBookQA and CommonsenseQA (never
 in any training set here), transfer-r3, and the two development splits Kev's model card reports, used only to
@@ -11,10 +12,12 @@ must not move) and state removal (the state replaced by nothing; how much of the
 Results: runs/<id>-suite-eval/final.json, with per-question predictions per model and suite under predictions/.
 
     uv run python scripts/eval_suites.py --config configs/suite-eval.json [--limit N] [--dry-run]
+    uv run python scripts/eval_suites.py --config configs/suite-eval.json --rescore runs/<id>-suite-eval
 """
 import argparse
 import copy
 import glob
+import gzip
 import json
 import os
 import sys
@@ -104,22 +107,48 @@ def rows_for(enc, recs, spec, limit):
     return rows, skipped
 
 
-def semif_groups(recs, rows, preds):
-    """Perturbation groups: a clean record and its perturbed siblings share _meta.group_id."""
-    groups = defaultdict(dict)
+def semif_metrics(recs, rows, preds):
+    """SemIf protocol numbers. Clean rows: mean over families of balanced accuracy (mean per-class
+    recall). Perturbed rows carry _meta.variant and point at their clean base through _meta.parent_id;
+    a base is 'stable' when its three perturbed siblings are all answered correctly."""
+    by_id = {}
     for r, p in zip(rows, preds):
-        meta = recs[r["rec_idx"]].get("_meta") or {}
-        ok = int(np.argmax(p["logits"]) == p["label"])
-        groups[meta.get("group_id")].setdefault(meta.get("variant", "clean"), []).append(ok)
-    full = [g for g in groups.values() if "clean" in g and len(g) > 1]
-    if not full:
-        return {"groups": 0}
-    clean = [all(g["clean"]) for g in full]
-    pert = [all(ok for v, oks in g.items() if v != "clean" for ok in oks) for g in full]
-    return {"groups": len(full), "clean_correct": float(np.mean(clean)),
-            "perturbed_all_correct": float(np.mean(pert)),
-            "both_correct": float(np.mean([c and p for c, p in zip(clean, pert)])),
-            "flip_clean_right_perturbed_wrong": float(np.mean([c and not p for c, p in zip(clean, pert)]))}
+        rec = recs[r["rec_idx"]]
+        meta = rec.get("_meta") or {}
+        label = rec["questions"][r["qid"]]["label"]
+        by_id[meta.get("id", r["rec_idx"])] = (meta, int(np.argmax(p["logits"]) == p["label"]), str(label))
+
+    def balanced(keep):
+        fam = defaultdict(lambda: defaultdict(list))
+        for meta, ok, label in by_id.values():
+            if keep(meta):
+                fam[meta.get("family", "?")][label].append(ok)
+        per = {f: float(np.mean([np.mean(v) for v in classes.values()])) for f, classes in sorted(fam.items())}
+        return per, (float(np.mean(list(per.values()))) if per else None)
+
+    clean_fam, clean_bal = balanced(lambda m: m.get("variant", "clean") == "clean")
+    pert_fam, pert_bal = balanced(lambda m: m.get("variant", "clean") != "clean")
+    by_variant = defaultdict(list)
+    for meta, ok, _ in by_id.values():
+        by_variant[meta.get("variant", "clean")].append(ok)
+    out = {"n": len(by_id),
+           "clean_balanced_accuracy": clean_bal, "clean_balanced_by_family": clean_fam,
+           "perturbed_balanced_accuracy": pert_bal, "perturbed_balanced_by_family": pert_fam,
+           "by_variant": {k: {"n": len(v), "accuracy": float(np.mean(v))} for k, v in sorted(by_variant.items())}}
+    bases = defaultdict(dict)
+    for meta, ok, _ in by_id.values():
+        if meta.get("variant", "clean") != "clean" and meta.get("parent_id") in by_id:
+            bases[meta["parent_id"]][meta["variant"]] = ok
+    if bases:
+        base_ok = [bool(by_id[b][1]) for b in bases]
+        pert_all = [all(v.values()) for v in bases.values()]
+        out["bases"] = {"n": len(bases), "base_correct": float(np.mean(base_ok)),
+                        "perturbed_all_correct": float(np.mean(pert_all)),
+                        "both_correct": float(np.mean([a and b for a, b in zip(base_ok, pert_all)])),
+                        "base_right_any_perturbed_wrong": float(np.mean([a and not b for a, b in zip(base_ok, pert_all)]))}
+    else:
+        out["bases"] = {"n": 0}
+    return out
 
 
 def permutation_metrics(rows_a, preds_a, rows_b, preds_b):
@@ -150,9 +179,29 @@ def main():
     ap.add_argument("--config", required=True)
     ap.add_argument("--limit", type=int, default=0, help="records per suite (smoke test); 0 = all")
     ap.add_argument("--dry-run", action="store_true", help="load suites and build rows only; no model, no run")
+    ap.add_argument("--rescore", metavar="RUN_DIR", help="recompute the SemIf metrics of a finished run from its saved predictions")
     args = ap.parse_args()
     cfg = json.load(open(args.config))
     limit = args.limit
+
+    if args.rescore:
+        final_path = os.path.join(args.rescore, "final.json")
+        results = json.load(open(final_path))
+        recs, _ = load_any("semif-v1", "development")
+        for name, res in results["models"].items():
+            entry = res.get("suites", {}).get("semif-v1/development")
+            if not entry:
+                continue
+            with gzip.open(os.path.join(args.rescore, "predictions", f"{name}--semif-v1--development.jsonl.gz"), "rt") as fh:
+                rows = [json.loads(line) for line in fh]
+            entry.pop("groups", None)
+            entry["semif"] = s = semif_metrics(recs, rows, rows)
+            print(f"[rescore] {name}: clean balanced {s['clean_balanced_accuracy']:.3f}, perturbed balanced "
+                  f"{s['perturbed_balanced_accuracy']:.3f}, bases with all perturbations right {s['bases'].get('perturbed_all_correct', float('nan')):.3f}")
+        with open(final_path, "w") as fh:
+            json.dump(results, fh, indent=1)
+        print(f"[rescore] wrote {final_path}")
+        return
 
     if args.dry_run:
         from transformers import AutoTokenizer
@@ -210,7 +259,7 @@ def main():
             entry = {"n": len(rows), "data": prov, "skipped": skipped, "sec_per_question": spq,
                      "raw": summarize(preds), "calibrated": summarize(preds, T)}
             if spec["suite"].startswith("semif"):
-                entry["groups"] = semif_groups(recs, rows, preds)
+                entry["semif"] = semif_metrics(recs, rows, preds)
             write_predictions(run.dir, f"{m['name']}/{spec['name']}", rows, preds)
             res["suites"][spec["name"]] = entry
             print(f"[eval] {m['name']} {spec['name']}: n {len(rows)} acc {entry['raw']['accuracy']:.4f} "
