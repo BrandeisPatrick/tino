@@ -141,3 +141,4 @@
 {"step": 2820, "free_pct": 34, "swap_gb": 4.0, "mlx_active_gb": 5.22, "mlx_cache_gb": 1.01, "mlx_peak_gb": 6.51}
 {"step": 2840, "free_pct": 35, "swap_gb": 4.0, "mlx_active_gb": 5.22, "mlx_cache_gb": 1.01, "mlx_peak_gb": 6.51}
 {"step": 2860, "free_pct": 36, "swap_gb": 4.0, "mlx_active_gb": 5.22, "mlx_cache_gb": 1.0, "mlx_peak_gb": 6.51}
+{"step": 2880, "free_pct": 48, "swap_gb": 4.03, "mlx_active_gb": 5.22, "mlx_cache_gb": 1.0, "mlx_peak_gb": 6.51}
