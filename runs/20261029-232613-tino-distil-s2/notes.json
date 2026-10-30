@@ -1,0 +1,12 @@
+{
+ "suspensions": [
+  {
+   "from": "2026-10-30 00:15:42",
+   "to": "2026-10-30 00:21:43",
+   "step": 640,
+   "how": "SIGSTOP to the training process; MLX memory kept, no GPU or CPU use",
+   "reason": "GPU handed to another session (inbroswer-engine) for a 45-minute measurement sweep; elapsed_min and train_minutes include this pause",
+   "ended_by": "sweep reported done"
+  }
+ ]
+}
