@@ -1,0 +1,147 @@
+{
+  "name": "suite-eval-phase2",
+  "kind": "suite-eval",
+  "models": [
+    {
+      "name": "tino-adapter-s2",
+      "run": "runs/*-tino-adapter-s2"
+    },
+    {
+      "name": "tino-distil-s2",
+      "run": "runs/*-tino-distil-s2"
+    },
+    {
+      "name": "tino-finetuned-s2",
+      "run": "runs/*-tino-finetuned-s2"
+    },
+    {
+      "name": "tino-distil-a1-s2",
+      "run": "runs/*-tino-distil-a1-s2"
+    },
+    {
+      "name": "tino-distil-raw",
+      "run": "runs/*-tino-distil-raw"
+    },
+    {
+      "name": "tino-distil-raw-s1",
+      "run": "runs/*-tino-distil-raw-s1"
+    },
+    {
+      "name": "tino-distil-a025",
+      "run": "runs/*-tino-distil-a025"
+    },
+    {
+      "name": "tino-distil-a075",
+      "run": "runs/*-tino-distil-a075"
+    },
+    {
+      "name": "tino-distil-a025-s1",
+      "run": "runs/*-tino-distil-a025-s1"
+    },
+    {
+      "name": "tino-distil-a075-s1",
+      "run": "runs/*-tino-distil-a075-s1"
+    },
+    {
+      "name": "tino-adapter-post-s1",
+      "run": "runs/*-tino-adapter-post-s1"
+    },
+    {
+      "name": "tino-distil-t1.7b",
+      "run": "runs/*-tino-distil-t1.7b"
+    },
+    {
+      "name": "tino-distil-t1.7b-s1",
+      "run": "runs/*-tino-distil-t1.7b-s1"
+    },
+    {
+      "name": "tino-distil-t8b",
+      "run": "runs/*-tino-distil-t8b"
+    },
+    {
+      "name": "tino-distil-t8b-s1",
+      "run": "runs/*-tino-distil-t8b-s1"
+    },
+    {
+      "name": "tino-distil-t8b-a1",
+      "run": "runs/*-tino-distil-t8b-a1"
+    },
+    {
+      "name": "tino-distil-t8b-a1-s1",
+      "run": "runs/*-tino-distil-t8b-a1-s1"
+    },
+    {
+      "name": "tino-adapter-bf16",
+      "run": "runs/*-tino-adapter-bf16"
+    },
+    {
+      "name": "tino-adapter-1.7b",
+      "run": "runs/*-tino-adapter-1.7b"
+    },
+    {
+      "name": "tino-adapter-1.7b-s1",
+      "run": "runs/*-tino-adapter-1.7b-s1"
+    },
+    {
+      "name": "tino-adapter-1.7b-s2",
+      "run": "runs/*-tino-adapter-1.7b-s2"
+    },
+    {
+      "name": "tino-distil-1.7b",
+      "run": "runs/*-tino-distil-1.7b"
+    },
+    {
+      "name": "tino-distil-1.7b-s1",
+      "run": "runs/*-tino-distil-1.7b-s1"
+    }
+  ],
+  "suites": [
+    "semif-v1/development",
+    "scienthoon-v1/development",
+    "binding-v1/all",
+    {
+      "suite": "public-pool-v6/test",
+      "sources": [
+        "arc",
+        "openbookqa",
+        "csqa"
+      ],
+      "name": "public-trio"
+    },
+    "transfer-r3/test"
+  ],
+  "probes": {
+    "permutation": [
+      "transfer-v4/development",
+      "semif-v1/development",
+      "binding-v1/all",
+      {
+        "suite": "public-pool-v6/test",
+        "sources": [
+          "arc",
+          "openbookqa",
+          "csqa"
+        ],
+        "name": "public-trio"
+      }
+    ],
+    "no_state": [
+      "transfer-v4/development",
+      "binding-v1/all",
+      "semif-v1/development"
+    ]
+  },
+  "calibration": [
+    "decision-v7",
+    "calibration"
+  ],
+  "token_budget": 4096,
+  "guard": {
+    "mlx_cap_gb": 10.0,
+    "cache_gb": 1.0,
+    "pause_free_pct": 25,
+    "abort_free_pct": 12,
+    "max_swap_growth_gb": 3.0,
+    "max_pause_min": 30
+  }
+}

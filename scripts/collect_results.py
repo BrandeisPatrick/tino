@@ -45,6 +45,8 @@ def parse_run(d):
         r["backbone_lr"], r["brier_weight"] = cfg.get("backbone_lr"), cfg.get("brier_weight")
     elif cfg and "teacher" in cfg:
         r["kind"] = "teacher labels"; r["teacher"] = cfg["teacher"]
+    elif cfg and cfg.get("kind") == "suite-eval":
+        r["kind"] = "suite eval"
     elif cfg and "models" in cfg:
         r["kind"] = "zero-shot eval"
     else:

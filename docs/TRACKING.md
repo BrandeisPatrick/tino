@@ -18,7 +18,7 @@ The rule: nothing about an experiment lives only on a laptop or in a chat. Every
 | [`docs/ENGINEERING.md`](ENGINEERING.md) | What broke, the symptom, the fix, the commit | by hand |
 | [`docs/pages/`](pages/) | The four published pages (plan, findings, lessons, article) as self-contained HTML snapshots | plan, findings and lessons saved from the published artifacts; the article built by `scripts/build_article.py` |
 | [`configs/`](../configs/) | One JSON per recipe or evaluation; a run's `config.json` is the config plus any `--set` overrides | by hand |
-| [`scripts/`](../scripts/) | Training, labeling, evaluation, publishing, reporting, the experiment queues that ran, and the figure and article builders | by hand |
+| [`scripts/`](../scripts/) | Training, labeling, evaluation, publishing, reporting, the experiment queues that ran (`queue_run.sh` with the `phase2_*.jobs` lists for Phase 2), the figure and article builders, the never-seen-suite evaluation with its probes (`eval_suites.py`) and the Kev port (`kev_port.py`) | by hand |
 | [`tino/`](../tino/) | The library: input format, model and pointer head, data loading with checksums, metrics, teacher, distillation loss, memory guard, tracking, inference API | by hand |
 | `checkpoints/` | Local weights, ignored by git; the Hub copy is the record | `scripts/train.py` |
 

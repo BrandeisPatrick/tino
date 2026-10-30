@@ -78,6 +78,10 @@ Distilling from the thinking teacher at full data (about 60 h of generation), 8B
 3. Tier 3 once M0 and the smoke run confirm memory and time; M3 and M4 only if the hours fit.
 4. Re-score everything on the new suites, update `RESEARCH.md`, regenerate figures, add a scaling figure (student size × teacher size) and the new-suite table to the article as v0.2.
 
+## How it runs
+
+Everything above except M3 and M4 is queued, in this order, in `queue/pending.txt` by `scripts/queue_run.sh` (one job at a time, low priority, under the guard): the Tier 1 jobs in `scripts/phase2_tier1.jobs`, then `scripts/phase2_tier23.jobs`. The first suite evaluation (`configs/suite-eval.json`: the Phase 1 models and the Kev port) runs right after the first Tier 1 job; the last job scores every Phase 2 model on the same suites (`configs/suite-eval-phase2.json`). Lines can be added to the pending file while the queue runs. The Kev port is `scripts/kev_port.py`; the suite evaluation and probes are `scripts/eval_suites.py`.
+
 ## 1.7B smoke run, measured October 29
 
 Adapter recipe on `Qwen/Qwen3-1.7B-Base` (revision `ea980cb0`), bf16 backbone, 240 questions, 25 steps, under the guard: run [`20261029-170321`](../runs/20261029-170321-tino-adapter-1.7b-smoke). 18.5M trainable parameters; 4.9 GB peak MLX memory against 4.0 GB for the 0.6B adapter; 206 tokens per second against 470 for the 0.6B at the same step, so 2.3 times slower. Training completed. The guard then stopped the run during the final evaluation because system swap had grown 3.1 GB: the Mac already had 6 GB swapped out before the run started, and evaluation batches use a 4,096-token budget. Two consequences for Tier 3: evaluation at 1.7B uses the training budget of 2,048 tokens, and memory-heavy applications are closed for the long runs. Estimate: about 8 h per full-data 1.7B run (7.4 h of training plus slower evaluations).
