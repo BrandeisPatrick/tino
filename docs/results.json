@@ -1,7 +1,7 @@
 {
  "summary": {
   "generated": "2026-10-29",
-  "runs_total": 43,
+  "runs_total": 44,
   "runs_finished_nonsmoke": 30,
   "train_hours_nonsmoke": 43.7,
   "published_models": [
@@ -11,7 +11,7 @@
    "BrandeisPatrick/tino-adapter-post",
    "BrandeisPatrick/tino-distil-a1"
   ],
-  "timeline_events": 89
+  "timeline_events": 91
  },
  "runs": [
   {
@@ -3784,10 +3784,40 @@
    "alpha": null,
    "backbone_lr": 0.0001,
    "brier_weight": null,
+   "status": "stopped",
+   "stopped_reason": "system free memory fell to 9% while paused",
+   "metrics": {},
+   "peak_gb": 4.01,
+   "min_free_pct": 47,
+   "has_predictions": false
+  },
+  {
+   "id": "20261029-232613-tino-distil-s2",
+   "name": "tino-distil-s2",
+   "started": "20261029-232613",
+   "smoke": false,
+   "dir": "runs/20261029-232613-tino-distil-s2",
+   "code_commit": "13b39fa8",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora + distillation",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 2,
+   "epochs": 2,
+   "train_limit": null,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": 0.5,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
    "status": "incomplete",
    "metrics": {},
    "peak_gb": 4.0,
-   "min_free_pct": 48,
+   "min_free_pct": 33,
    "has_predictions": false
   }
  ]

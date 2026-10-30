@@ -4,12 +4,39 @@
 # evaluation between two training jobs, the next tier); the queue exits when the file is empty. Every job tracks
 # itself (runs/ on GitHub). Start it wrapped in caffeinate at low priority:
 #     caffeinate -i nice -n 10 bash scripts/queue_run.sh
+# Before each job the runner waits until the Mac has memory to spare: the guard's free-memory level
+# (kern.memorystatus_level) at or above QUEUE_MIN_FREE_PCT (default 35) for three checks a minute apart, and no
+# Ollama model server running. A crowded machine then delays the queue instead of aborting job after job.
 cd "$(dirname "$0")/.." || exit 1
 mkdir -p queue
 PENDING=queue/pending.txt; DONE=queue/done.txt; LOG=queue/log.txt
+MIN_FREE=${QUEUE_MIN_FREE_PCT:-35}
 touch "$PENDING"
+
+wait_for_memory() {
+  local ok=0 last_log=0 now free why
+  while [ "$ok" -lt 3 ]; do
+    free=$(sysctl -n kern.memorystatus_level)
+    why=""
+    if pgrep -x llama-server >/dev/null 2>&1; then why="an Ollama model is loaded"; fi
+    if [ "${free:-0}" -lt "$MIN_FREE" ]; then why="${why:+$why, }${free}% free, need ${MIN_FREE}%"; fi
+    if [ -z "$why" ]; then
+      ok=$((ok+1))
+    else
+      ok=0; now=$(date +%s)
+      if [ $((now - last_log)) -ge 600 ]; then
+        echo "[queue] $(date '+%F %T') WAITING for memory: $why" | tee -a "$LOG"; last_log=$now
+      fi
+    fi
+    [ "$ok" -lt 3 ] && sleep 60
+  done
+}
+
 while :; do
   line=$(grep -vE '^[[:space:]]*(#|$)' "$PENDING" | head -1)
+  [ -z "$line" ] && break
+  wait_for_memory
+  line=$(grep -vE '^[[:space:]]*(#|$)' "$PENDING" | head -1)   # the file may have changed while waiting
   [ -z "$line" ] && break
   python3 - "$PENDING" "$line" <<'EOF'
 import sys
