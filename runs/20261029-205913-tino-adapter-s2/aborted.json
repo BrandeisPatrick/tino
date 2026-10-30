@@ -1,0 +1,13 @@
+{
+ "reason": "swap grew 3.3 GB since start (limit 3.0 GB)",
+ "step": 689,
+ "resources": {
+  "free_pct": 36,
+  "swap_gb": 7.13,
+  "mlx_active_gb": 2.42,
+  "mlx_cache_gb": 1.0,
+  "mlx_peak_gb": 4.01
+ },
+ "best_dev_accuracy": 0.6777929155313351,
+ "best_checkpoint_kept": true
+}
