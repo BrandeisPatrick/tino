@@ -1,0 +1,6 @@
+{
+ "reason": "Metal out-of-memory in batched answer generation at the first development check (mlx_lm batch_generate, 16 prompts in fp32); fixed by reading questions one at a time, docs/ENGINEERING.md, Oct 31",
+ "step": 12,
+ "phase": "development evaluation",
+ "recorded_by": "hand, after the crash"
+}

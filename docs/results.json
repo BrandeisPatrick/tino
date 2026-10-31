@@ -1,7 +1,7 @@
 {
  "summary": {
   "generated": "2026-10-31",
-  "runs_total": 55,
+  "runs_total": 57,
   "runs_finished_nonsmoke": 41,
   "train_hours_nonsmoke": 79.3,
   "published_models": [
@@ -11,7 +11,7 @@
    "BrandeisPatrick/tino-adapter-post",
    "BrandeisPatrick/tino-distil-a1"
   ],
-  "timeline_events": 111
+  "timeline_events": 114
  },
  "runs": [
   {
@@ -5088,6 +5088,47 @@
      "sec_per_question": 0.3
     }
    },
+   "has_predictions": false
+  },
+  {
+   "id": "20261031-164825-tino-gen-smoke",
+   "name": "tino-gen-smoke",
+   "started": "20261031-164825",
+   "smoke": true,
+   "dir": "runs/20261031-164825-tino-gen-smoke",
+   "code_commit": "170e5662",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora + generation (text)",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": null,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": null,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "stopped",
+   "stopped_reason": "Metal out-of-memory in batched answer generation at the first development check (mlx_lm batch_generate, 16 prompts in fp32); fixed by reading questions one at a time, docs/ENGINEERING.md, Oct 31",
+   "metrics": {},
+   "has_predictions": false
+  },
+  {
+   "id": "20261031-165141-think-eval-800",
+   "name": "think-eval-800",
+   "started": "20261031-165141",
+   "smoke": false,
+   "dir": "runs/20261031-165141-think-eval-800",
+   "code_commit": "170e5662",
+   "code_dirty": false,
+   "kind": "zero-shot eval",
+   "status": "incomplete",
+   "metrics": {},
    "has_predictions": false
   }
  ]
