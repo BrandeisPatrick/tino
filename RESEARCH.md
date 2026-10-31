@@ -209,3 +209,20 @@ Bar set at the start: trained sources ≥ 0.808 and new sources ≥ 0.642 (Kev-0
 ## Out of scope on this machine
 
 Distilling from the thinking teacher would need reasoning traces for all 15,576 training questions, about 60 hours of generation on the M4. It needs a cloud GPU, so RQ3a measures the thinking model as a decision maker instead.
+
+## Later: are decision models more parameter-efficient?
+
+Raised by Patrick on October 30; recorded here, not scheduled. Phase 2 runs first.
+
+**Hypothesis.** A decision model only has to understand the situation and score the options. A generative model also spends capacity producing fluent text: grammar, wording, format. So a decision model should reach the same decision quality with far fewer parameters.
+
+**How to test it.**
+
+- Vary the whole model's size (0.6B, 1.7B, 4B on this machine). Grammar lives in the whole network, so this is the main knob. Fine-tuned parameters (adapter rank, full fine-tune) are a secondary check.
+- At every size, train a generative counterpart of the same backbone on the same questions. It should write its answer, or reason first and then answer; a model that emits a single option letter is almost a decision model already.
+- What would confirm it: the decision model's lead over the generative one is largest at small sizes and shrinks as size grows. A lead that stays the same at every size points to something else, such as the training signal.
+- Caveat: the decision model still reads language, so the saving is on the output side, not on comprehension.
+
+**What Phase 2 already provides.** Decision models at 0.6B and 1.7B (M0–M2), adapter-size and full fine-tune cells from the RQ1 ablation, and prompted generative teachers at 1.7B, 4B and 8B (K1). The teachers are prompted, not fine-tuned, so they are not a fair comparison.
+
+**What is missing.** A fine-tuned generative model at 0.6B and 1.7B on the same data and splits. Both fit on the M4. The curve tops out at about three points (4B only at the 4,000-question scale).
