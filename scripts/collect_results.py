@@ -38,7 +38,7 @@ def parse_run(d):
     r["code_dirty"] = (prov or {}).get("code", {}).get("dirty")
     if cfg and "method" in cfg:
         r["kind"] = "training"
-        r["method"] = cfg["method"] + (" + distillation" if cfg.get("distil") else "")
+        r["method"] = cfg["method"] + (" + distillation" if cfg.get("distil") else "") + (f" + generation ({cfg['answer_mode']})" if cfg.get("answer_mode") else "")
         r["base_model"], r["base_revision"] = cfg.get("base_model"), (cfg.get("base_revision") or "")[:8]
         r["seed"], r["epochs"], r["train_limit"] = cfg.get("seed"), cfg.get("epochs"), cfg.get("train_limit")
         r["lora"], r["alpha"] = cfg.get("lora"), (cfg.get("distil") or {}).get("alpha")
@@ -64,6 +64,9 @@ def parse_run(d):
         for sp, e in fin["evals"].items():
             r["metrics"][sp] = {"acc": round(e["raw"]["accuracy"], 4), "brier": round(e["raw"]["brier"], 4), "ece_raw": round(e["raw"]["ece"], 4),
                                 "ece_cal": round(e["calibrated"]["ece"], 4), "ms": round(e["sec_per_question"] * 1000), "n": e["raw"]["n"]}
+            if "written" in e:   # generative runs: headline accuracy is what the model writes; scored is over the options
+                r["metrics"][sp].update(acc=round(e["written"]["accuracy"], 4), scored_acc=round(e["raw"]["accuracy"], 4),
+                                        invalid=round(e["written"]["invalid"], 4))
         r["temperature"] = round(fin["temperature"], 3); r["best_step"] = fin.get("best_step"); r["train_minutes"] = round(fin.get("train_minutes", 0))
         r["trainable_params"] = fin.get("trainable_params")
         bt = fin["evals"].get("decision-v7/test", {}).get("raw", {}).get("by_type")
@@ -97,8 +100,8 @@ def parse_run(d):
     if os.path.exists(ev):
         rows = [json.loads(l) for l in open(ev)]
         r["dev_curve"] = [[e["step"], round(e["accuracy"], 4)] for e in rows]
-        nlls = {round(e["nll"], 3) for e in rows}
-        r["collapsed"] = bool(rows) and (len(nlls) == 1 and abs(rows[-1]["nll"] - 1.478) < 0.002 or r.get("temperature", 1) <= 0.11)
+        nlls = {round(e["nll"], 3) for e in rows if "nll" in e}   # generative dev checks report written accuracy only
+        r["collapsed"] = bool(nlls) and (len(nlls) == 1 and abs(rows[-1]["nll"] - 1.478) < 0.002 or r.get("temperature", 1) <= 0.11)
     res = os.path.join(d, "resources.jsonl")
     if os.path.exists(res):
         rs = [json.loads(l) for l in open(res)]

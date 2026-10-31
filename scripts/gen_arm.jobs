@@ -1,0 +1,11 @@
+# Generative arm (RESEARCH.md, "Later: are decision models more parameter-efficient?"), queued October 31.
+# Same rows, batches and adapter recipe as tino-adapter; the model writes its answer (tino/generative.py).
+# Smoke runs go first (pipeline, memory and speed on the GPU at both sizes); the full runs follow the Phase 2 queue.
+uv run python scripts/train_gen.py --config configs/tino-gen.json --smoke
+uv run python scripts/train_gen.py --config configs/tino-gen.json --smoke --set name=tino-gen-1.7b base_model=Qwen/Qwen3-1.7B-Base base_revision=ea980cb0a6c2ae4b936e82123acc929f1cec04c1 dtype=bfloat16
+# G1: 0.6B, written answers, two seeds (decision counterpart: tino-adapter, three seeds)
+uv run python scripts/train_gen.py --config configs/tino-gen.json --set name=tino-gen seed=0
+uv run python scripts/train_gen.py --config configs/tino-gen.json --set name=tino-gen-s1 seed=1
+# G2: 1.7B in bf16, written answers, two seeds (decision counterpart: tino-adapter-1.7b, three seeds)
+uv run python scripts/train_gen.py --config configs/tino-gen.json --set name=tino-gen-1.7b seed=0 base_model=Qwen/Qwen3-1.7B-Base base_revision=ea980cb0a6c2ae4b936e82123acc929f1cec04c1 dtype=bfloat16
+uv run python scripts/train_gen.py --config configs/tino-gen.json --set name=tino-gen-1.7b-s1 seed=1 base_model=Qwen/Qwen3-1.7B-Base base_revision=ea980cb0a6c2ae4b936e82123acc929f1cec04c1 dtype=bfloat16

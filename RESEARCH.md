@@ -225,4 +225,12 @@ Raised by Patrick on October 30; recorded here, not scheduled. Phase 2 runs firs
 
 **What Phase 2 already provides.** Decision models at 0.6B and 1.7B (M0–M2), adapter-size and full fine-tune cells from the RQ1 ablation, and prompted generative teachers at 1.7B, 4B and 8B (K1). The teachers are prompted, not fine-tuned, so they are not a fair comparison.
 
-**What is missing.** A fine-tuned generative model at 0.6B and 1.7B on the same data and splits. Both fit on the M4. The curve tops out at about three points (4B only at the 4,000-question scale).
+**What was missing.** A fine-tuned generative model at 0.6B and 1.7B on the same data and splits. Both fit on the M4. The curve tops out at about three points (4B only at the 4,000-question scale).
+
+**The generative arm (built October 31).** [`tino/generative.py`](tino/generative.py) and [`scripts/train_gen.py`](scripts/train_gen.py), with [`configs/tino-gen.json`](configs/tino-gen.json); `scripts/train.py` is untouched, so Phase 2 runs the same code as before.
+
+- Same input as the decision model, token for token: the answer follows `<DECIDE>` as ordinary tokens and ends with the end-of-text token. Text mode writes the option exactly as shown; letter mode (a control, not queued) shows "A. option" and writes the letter.
+- Same recipe as `tino-adapter`: LoRA r16 on every projection, lr 1e-4, 2 epochs, 2,048-token batches built from prompt lengths, so a text-mode run sees the same questions in the same order for the same number of steps as the decision run with its seed. Loss is the cross-entropy of the answer tokens only. The output layer stays frozen (tied to the embeddings at both sizes).
+- Read two ways. Written: greedy generation, parsed back to an option; an answer that names no option is wrong. This is the headline accuracy and picks the best checkpoint on the development split. Scored: the log-probability of each option's answer given the prompt, a distribution over the options that gives log-loss, Brier and calibration (temperature fitted on the calibration split) on the same footing as the decision model. The gap between the two is the cost of having to write.
+- Checked on the CPU against slow references with a tiny random Qwen3 ([`scripts/check_generative.py`](scripts/check_generative.py)): row parity with the decision encoder, answer-position loss, cached option scores (largest difference 4e-5), batched greedy answers, the parser, and a full smoke run.
+- Queued ([`scripts/gen_arm.jobs`](scripts/gen_arm.jobs)): GPU smoke runs at 0.6B and 1.7B now; two seeds at each size after the Phase 2 queue.
