@@ -13,6 +13,7 @@ language-model head but removes nearly all of the writing.
 
 Training loss is the cross-entropy of the answer tokens only. Evaluation reads the model two ways:
 - written: greedy generation, parsed back to an option. An answer that matches no option counts as wrong.
+  Questions are read one at a time with their own KV cache: the prompt runs once for both readings.
 - scored: the log-probability of each option's answer given the prompt, a distribution over the options that gives
   accuracy, log-loss and calibration on the same footing as the decision model.
 """
@@ -140,26 +141,6 @@ def gen_loss(model, ids, pos, tgt, own, n_rows):
     return ce.sum(), (miss == 0).sum()
 
 
-def write_answers(lm, tokw, rows, batch_size=16, guard=None, chunk=128):
-    """Greedy answers for every row, generated in batches with a KV cache. -> (generated token ids per row, without the
-    end token; seconds per question). Rows are processed shortest first to keep padding low, results in row order."""
-    from mlx_lm.generate import batch_generate
-    order = sorted(range(len(rows)), key=lambda i: len(rows[i]["ids"]))
-    out = [None] * len(rows)
-    t0 = time.time()
-    for c in range(0, len(order), chunk):
-        if guard is not None:
-            guard.check()
-        part = order[c:c + chunk]
-        res = batch_generate(lm, tokw, [rows[i]["ids"] for i in part],
-                             max_tokens=[max(len(a) for a in rows[i]["answer_ids"]) + 2 for i in part],
-                             return_token_ids=True, completion_batch_size=batch_size, prefill_batch_size=min(8, batch_size))
-        for i, t in zip(part, res.token_ids):
-            out[i] = [int(x) for x in t]
-        mx.clear_cache()
-    return out, (time.time() - t0) / max(len(rows), 1)
-
-
 def _norm(s):
     return re.sub(r"\s+", " ", s).strip().strip(".").strip().lower()
 
@@ -192,47 +173,92 @@ def written_summary(rows, idx):
             "by_type": {k: {"n": len(v), "accuracy": float(np.mean(v))} for k, v in sorted(by_type.items())}}
 
 
-def score_options(model, lm, rows, guard=None, chunk=8):
-    """Log-probability of every option's full answer (end token included) given the prompt. The prompt runs once;
-    its KV cache is copied for up to `chunk` options at a time (copying it for all 77 banking77 intents at once would
-    take gigabytes). -> (list of per-option log-prob lists, seconds per question)."""
+def _prefill(model, lm, ids):
+    """Run the prompt once. -> (cache, log-probs of the first answer token [1, V], prompt keys/values, prompt length)."""
     from mlx_lm.models.cache import make_prompt_cache
-    out = []
-    t0 = time.time()
+    cache = make_prompt_cache(lm)
+    h = model.backbone(mx.array(ids)[None], cache=cache)
+    first = model.project(h[0, -1:])
+    first = first - mx.logsumexp(first, axis=-1, keepdims=True)
+    P = cache[0].offset
+    base = [(c.keys[..., :P, :], c.values[..., :P, :]) for c in cache]
+    mx.eval(first, base)
+    return cache, first, base, P
+
+
+def _restore(cache, base, P, n=1):
+    """Reset the cache to the prompt, copied n times along the batch axis."""
+    for c, (k, v) in zip(cache, base):
+        c.keys, c.values, c.offset = (k, v, P) if n == 1 else (mx.repeat(k, n, axis=0), mx.repeat(v, n, axis=0), P)
+
+
+def _greedy(model, cache, first, stop, max_new):
+    toks, t = [], int(mx.argmax(first[0]).item())
+    while t not in stop and len(toks) < max_new:
+        toks.append(t)
+        if len(toks) == max_new:
+            break
+        h = model.backbone(mx.array([[t]]), cache=cache)
+        t = int(mx.argmax(model.project(h[0, -1])).item())
+    return toks
+
+
+def _score(model, cache, first, base, P, answers, chunk):
+    scores = []
+    for s in range(0, len(answers), chunk):
+        part = answers[s:s + chunk]
+        lp = first[0, mx.array([a[0] for a in part])]
+        M = max(len(a) for a in part)
+        if M > 1:
+            _restore(cache, base, P, len(part))
+            opt = np.full((len(part), M - 1), part[0][-1], dtype=np.int32)
+            for i, a in enumerate(part):
+                opt[i, : len(a) - 1] = a[:-1]
+            h = model.backbone(mx.array(opt), cache=cache)
+            pos = [i * (M - 1) + j - 1 for i, a in enumerate(part) for j in range(1, len(a))]
+            tgt = [a[j] for a in part for j in range(1, len(a))]
+            own = [i for i, a in enumerate(part) for j in range(1, len(a))]
+            z = model.project(h.reshape(len(part) * (M - 1), -1)[mx.array(pos)])
+            tok_lp = mx.take_along_axis(z, mx.array(tgt)[:, None], axis=-1).squeeze(-1) - mx.logsumexp(z, axis=-1)
+            lp = lp + mx.zeros((len(part),)).at[mx.array(own)].add(tok_lp)
+        mx.eval(lp)
+        scores += np.array(lp).tolist()
+    return scores
+
+
+def read_rows(model, lm, tokw, rows, write=True, score=True, guard=None, chunk=4):
+    """One question at a time, each with its own KV cache (at most about 0.35 GB for a 1,536-token prompt at 0.6B in
+    fp32; batched generation of 16 long prompts ran out of GPU memory in the first smoke run). The prompt runs once;
+    the written answer is greedy decoding from it, and each option's score is the log-probability of its full answer
+    (end token included), with the prompt cache copied for up to `chunk` options at a time.
+    -> {"written": token ids per row (end token dropped) or None, "scores": per-option log-probs per row or None,
+        "write_sec": seconds per question to read the prompt and write the answer, "score_sec": seconds per question
+        to score the options}."""
+    stop = set(tokw.eos_token_ids)
+    written, scores, t_write, t_score = [], [], 0.0, 0.0
     for n, r in enumerate(rows):
         if guard is not None and n % 32 == 0:
             guard.check()
-        cache = make_prompt_cache(lm)
-        h = model.backbone(mx.array(r["ids"])[None], cache=cache)
-        first = model.project(h[0, -1:])
-        first = first - mx.logsumexp(first, axis=-1, keepdims=True)
-        P = cache[0].offset
-        base = [(c.keys[..., :P, :], c.values[..., :P, :]) for c in cache]
-        scores = []
-        A = r["answer_ids"]
-        for s in range(0, len(A), chunk):
-            part = A[s:s + chunk]
-            lp = first[0, mx.array([a[0] for a in part])]
-            M = max(len(a) for a in part)
-            if M > 1:
-                for c, (k, v) in zip(cache, base):
-                    c.keys, c.values, c.offset = mx.repeat(k, len(part), axis=0), mx.repeat(v, len(part), axis=0), P
-                opt = np.full((len(part), M - 1), part[0][-1], dtype=np.int32)
-                for i, a in enumerate(part):
-                    opt[i, : len(a) - 1] = a[:-1]
-                h2 = model.backbone(mx.array(opt), cache=cache)
-                pos = [i * (M - 1) + j - 1 for i, a in enumerate(part) for j in range(1, len(a))]
-                tgt = [a[j] for a in part for j in range(1, len(a))]
-                own = [i for i, a in enumerate(part) for j in range(1, len(a))]
-                z = model.project(h2.reshape(len(part) * (M - 1), -1)[mx.array(pos)])
-                tok_lp = mx.take_along_axis(z, mx.array(tgt)[:, None], axis=-1).squeeze(-1) - mx.logsumexp(z, axis=-1)
-                lp = lp + mx.zeros((len(part),)).at[mx.array(own)].add(tok_lp)
-            mx.eval(lp)
-            scores += np.array(lp).tolist()
-        out.append(scores)
+        t0 = time.time()
+        cache, first, base, P = _prefill(model, lm, r["ids"])
+        t_pre = time.time() - t0
+        if score:
+            t0 = time.time()
+            scores.append(_score(model, cache, first, base, P, r["answer_ids"], chunk))
+            t_score += time.time() - t0 + (0.0 if write else t_pre)
+        if write:
+            t0 = time.time()
+            if score:
+                _restore(cache, base, P)
+            written.append(_greedy(model, cache, first, stop, max(len(a) for a in r["answer_ids"]) + 1))
+            t_write += time.time() - t0 + t_pre
+        del cache, base
         if n % 64 == 63:
             mx.clear_cache()
-    return out, (time.time() - t0) / max(len(rows), 1)
+    mx.clear_cache()
+    k = max(len(rows), 1)
+    return {"written": written if write else None, "scores": scores if score else None,
+            "write_sec": t_write / k, "score_sec": t_score / k}
 
 
 def load_lm(repo, revision=None):

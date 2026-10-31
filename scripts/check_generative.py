@@ -1,10 +1,11 @@
 """CPU checks for the generative arm (tino/generative.py) on a tiny random Qwen3 built from the real tokenizer.
-Each fast path is compared with a slow, obvious one: answer-position loss vs full logits, cached option scores vs
-full-sequence log-probs, batched greedy answers vs one-at-a-time greedy answers, plus row parity with the decision
-encoder and the answer parser.
+Each fast path is compared with a slow, obvious one that recomputes the whole sequence with no cache: answer-position
+loss, cached option scores, cached greedy answers, and one combined pass against separate passes; plus row parity
+with the decision encoder and the answer parser.
 
-The slow references build full-vocabulary logits and take a few GB: run this only when no queue job is running
-(on October 31 it ran beside the thinking evaluation and pushed swap past that job's guard limit).
+The references project to the vocabulary only at the positions they need, so the checks stay under about 1 GB. The
+first version built full-vocabulary logits (several GB) and, run beside the thinking evaluation on October 31, pushed
+swap past that job's guard limit: still run this only while the queue is held at a job boundary (queue/hold).
 
     uv run python scripts/check_generative.py
 """
@@ -75,13 +76,17 @@ model.eval()
 batch = [r for r in rows if len(r["ids"]) < 300][:6]
 ids, pos, tgt, own = gen.collate_gen(batch, enc.pad_id)
 loss, correct = gen.gen_loss(model, ids, pos, tgt, own, len(batch))
-full = lm(ids).astype(mx.float32)
-logp = full - mx.logsumexp(full, axis=-1, keepdims=True)
+def logp_at(h, t, tok_id):
+    """log p(tok_id) from hidden state h[t], projected alone."""
+    z = model.project(h[t][None])[0]
+    return (z[tok_id] - mx.logsumexp(z)).item()
+
+hb = lm.model(ids)
 ref = 0.0
 for b, r in enumerate(batch):
     s = r["ids"] + r["answer_ids"][r["label"]]
     for t in range(len(r["ids"]), len(s)):
-        ref -= logp[b, t - 1, s[t]].item()
+        ref -= logp_at(hb[b], t - 1, s[t])
 check("answer-position loss equals full-logit loss", abs(loss.item() - ref) < 1e-3 * max(1, abs(ref)), f"{loss.item():.5f} vs {ref:.5f}")
 
 # gradients flow, with gradient checkpointing on
@@ -96,21 +101,20 @@ model.eval()
 
 def naive_seq_logprob(r, a):
     s = r["ids"] + a
-    z = lm(mx.array(s)[None]).astype(mx.float32)[0]
-    lp = z - mx.logsumexp(z, axis=-1, keepdims=True)
-    return sum(lp[t - 1, s[t]].item() for t in range(len(r["ids"]), len(s)))
+    h = lm.model(mx.array(s)[None])[0]
+    return sum(logp_at(h, t - 1, s[t]) for t in range(len(r["ids"]), len(s)))
 
 many = [r for r in rows if len(r["answer_ids"]) > 8][:2]
 probe = [r for r in rows if len(r["answer_ids"]) <= 8][:4] + many
 with gen.no_checkpoint():
-    sc, _ = gen.score_options(model, lm, probe, chunk=8)
+    sc = gen.read_rows(model, lm, tokw, probe, write=False, score=True, chunk=4)["scores"]
 diffs = [abs(s - naive_seq_logprob(r, a)) for r, ss in zip(probe, sc) for a, s in zip(r["answer_ids"], ss)]
-check("cached option scores equal full-sequence log-probs (incl. >8 options)", max(diffs) < 2e-3, f"max diff {max(diffs):.2e} over {len(diffs)} options; option counts {[len(r['answer_ids']) for r in probe]}")
+check("cached option scores equal full-sequence log-probs (incl. >4 options, several chunks)", max(diffs) < 2e-3, f"max diff {max(diffs):.2e} over {len(diffs)} options; option counts {[len(r['answer_ids']) for r in probe]}")
 
 def naive_greedy(r, max_new):
     s, out = list(r["ids"]), []
     for _ in range(max_new):
-        z = lm(mx.array(s)[None])[0, -1]
+        z = model.project(lm.model(mx.array(s)[None])[0, -1][None])[0]
         t = int(mx.argmax(z).item())
         if t in tokw.eos_token_ids:
             break
@@ -119,9 +123,16 @@ def naive_greedy(r, max_new):
 
 gr = rows[:12]
 with gen.no_checkpoint():
-    got, spq = gen.write_answers(lm, tokw, gr, batch_size=4, chunk=8)
-same = [g == naive_greedy(r, max(len(a) for a in r["answer_ids"]) + 2) for r, g in zip(gr, got)]
-check("batched greedy answers equal one-at-a-time greedy answers", all(same), f"{sum(same)}/{len(same)} identical")
+    got = gen.read_rows(model, lm, tokw, gr, write=True, score=False)["written"]
+same = [g == naive_greedy(r, max(len(a) for a in r["answer_ids"]) + 1) for r, g in zip(gr, got)]
+check("cached greedy answers equal uncached greedy answers", all(same), f"{sum(same)}/{len(same)} identical")
+both_rows = gr[:6] + many[:1]
+with gen.no_checkpoint():
+    both = gen.read_rows(model, lm, tokw, both_rows, write=True, score=True, chunk=4)
+    w_only = gen.read_rows(model, lm, tokw, both_rows, write=True, score=False)["written"]
+    s_only = gen.read_rows(model, lm, tokw, both_rows, write=False, score=True, chunk=4)["scores"]
+sd = max(abs(a - b) for x, y in zip(both["scores"], s_only) for a, b in zip(x, y))
+check("one pass writing and scoring equals separate passes", both["written"] == w_only and sd < 1e-5, f"score diff {sd:.1e}")
 
 r0 = rows[0]
 check("parse: exact tokens", gen.parse_written(r0, r0["answer_ids"][1][:-1], tok, tok.eos_token_id) == 1)

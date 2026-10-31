@@ -126,10 +126,10 @@ def main():
     def evaluate_written(rows):
         model.eval()
         with gen.no_checkpoint():
-            ids, sec = gen.write_answers(lm, tokw, rows, cfg["gen_batch"], guard)
+            out = gen.read_rows(model, lm, tokw, rows, write=True, score=False, guard=guard)
         model.train()
-        idx = [gen.parse_written(r, t, tok, enc.eos_id) for r, t in zip(rows, ids)]
-        return gen.written_summary(rows, idx) | {"sec_per_question": sec}
+        idx = [gen.parse_written(r, t, tok, enc.eos_id) for r, t in zip(rows, out["written"])]
+        return gen.written_summary(rows, idx) | {"sec_per_question": out["write_sec"]}
 
     grads_acc, micro_in_step, rows_in_step = None, 0, 0
     model.train()
@@ -201,8 +201,8 @@ def main():
             cal_rows, _ = build_rows(enc, recs, suite)
             if args.smoke:
                 cal_rows = cal_rows[:100]
-            cal_scores, _ = gen.score_options(model, lm, cal_rows, guard, cfg["score_chunk"])
-            T = fit_temperature([{"logits": s, "label": r["label"]} for r, s in zip(cal_rows, cal_scores)])
+            cal = gen.read_rows(model, lm, tokw, cal_rows, write=False, score=True, guard=guard, chunk=cfg["score_chunk"])
+            T = fit_temperature([{"logits": s, "label": r["label"]} for r, s in zip(cal_rows, cal["scores"])])
             final = {"run_id": run.id, "kind": "generative", "answer_mode": cfg["answer_mode"], "best_step": best["step"],
                      "temperature": T, "calibration_data": cal_prov, "train_minutes": (time.time() - t0) / 60,
                      "trainable_params": trainable, "evals": {}}
@@ -211,9 +211,9 @@ def main():
                 rows, skipped = build_rows(enc, recs, suite)
                 if args.smoke:
                     rows = rows[:100]
-                written_ids, w_sec = gen.write_answers(lm, tokw, rows, cfg["gen_batch"], guard)
+                out = gen.read_rows(model, lm, tokw, rows, write=True, score=True, guard=guard, chunk=cfg["score_chunk"])
+                written_ids, scores, w_sec, s_sec = out["written"], out["scores"], out["write_sec"], out["score_sec"]
                 written_idx = [gen.parse_written(r, t, tok, enc.eos_id) for r, t in zip(rows, written_ids)]
-                scores, s_sec = gen.score_options(model, lm, rows, guard, cfg["score_chunk"])
                 preds = [{"logits": s, "label": r["label"], "src": r["src"], "qtype": r["qtype"]} for r, s in zip(rows, scores)]
                 write_predictions(run.dir, f"{suite}/{split}", rows, scores, written_ids, written_idx, tok)
                 final["evals"][f"{suite}/{split}"] = {"written": gen.written_summary(rows, written_idx), "raw": summarize(preds),
