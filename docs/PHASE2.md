@@ -172,4 +172,13 @@ Test accuracy, mean ± standard deviation over seeds; calibration on new sources
 
 Thinking costs 33.9 s per question against 0.31 s (110 times), with a median of 910 thinking tokens; 151 of 800 answers (19%) hit the 2,048-token cap. The largest gains are on MMLU (+12.5, p 0.04) and offensive-tweet detection (+12.5, p 0.09); QNLI and PAWS do not move. H3, first half: the overall gain is inside ±4 points as a point estimate, but its interval reaches +6.5 and excludes zero, so reasoning does help, mostly on new sources. "Loses on QNLI" is refuted (0.863 both ways); "gains on rule-following sources" cannot be read from this subset, which has too few of them. A 0.6B student scores about 0.81 / 0.62 on the test splits in 0.05 s.
 
-**Order from here.** At Patrick's request ("full speed"), the generative arm goes next: GPU smoke runs at 0.6B and 1.7B once its memory fix passes the CPU checks, then two 0.6B generative runs, which can be compared with the three 0.6B adapter seeds as soon as they finish. Then the rest of Tier 1, Tiers 2 and 3, and the two 1.7B generative runs, which need the 1.7B adapter runs (M1) for comparison.
+**Order from here.** At Patrick's request ("full speed"), the generative arm went next. Its memory fix passed the CPU checks with the queue held after T1, both GPU smoke runs passed, and the first 0.6B generative run started on November 1 at 01:12. Estimated finish times, from measured rates:
+
+| Work | Ends about |
+|---|---|
+| Two 0.6B generative runs (about 6 h each) | November 1, 13:00 |
+| S5 ablation seeds (8 × 0.9 h) | November 1, 20:00 |
+| Tier 2: 1.7B and 8B teacher labels, six students | November 2, 23:30 |
+| Tier 3: bf16 control, five 1.7B runs | November 4, 19:00 |
+| Final suite evaluation | November 4, 21:30 |
+| Two 1.7B generative runs (about 13 h each) | November 6, early morning |
