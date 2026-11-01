@@ -1,0 +1,431 @@
+{
+ "run_id": "20261101-165524-abl-distil-a025-4k-s1",
+ "best_step": 744,
+ "temperature": 0.8527617203219664,
+ "calibration_data": {
+  "repo": "jaredpalmer/kev-suites",
+  "revision": "cc4bac803e73112689ec327ffa481c519cbc7a05",
+  "file": "v7/decision-v7/calibration.jsonl",
+  "sha256": "12c2029a07d24828f5f8cc48f09f572c81457de96f3d5d16180be4c090abd5ca",
+  "manifest_checked": true,
+  "records": 968
+ },
+ "train_minutes": 56.56607284943263,
+ "trainable_params": 10617344,
+ "evals": {
+  "decision-v7/development": {
+   "raw": {
+    "n": 1468,
+    "accuracy": 0.7227520435967303,
+    "nll": 0.6504253465223622,
+    "brier": 0.34785765028541255,
+    "ece": 0.024386521021979905,
+    "confident_error": 0.019754768392370572,
+    "mean_confidence": 0.7353881063322342,
+    "macro_source_accuracy": 0.6657645135765451,
+    "by_source": {
+     "agnews": {
+      "n": 116,
+      "accuracy": 0.8620689655172413
+     },
+     "agnews_yn": {
+      "n": 184,
+      "accuracy": 0.8967391304347826
+     },
+     "amazon": {
+      "n": 80,
+      "accuracy": 0.475
+     },
+     "banking77": {
+      "n": 116,
+      "accuracy": 0.6810344827586207
+     },
+     "boolq": {
+      "n": 80,
+      "accuracy": 0.675
+     },
+     "composition_atom": {
+      "n": 16,
+      "accuracy": 0.875
+     },
+     "composition_conditional": {
+      "n": 16,
+      "accuracy": 0.625
+     },
+     "composition_conjunction": {
+      "n": 16,
+      "accuracy": 0.6875
+     },
+     "composition_disjunction": {
+      "n": 16,
+      "accuracy": 0.625
+     },
+     "composition_exception": {
+      "n": 16,
+      "accuracy": 0.3125
+     },
+     "composition_negation": {
+      "n": 16,
+      "accuracy": 0.125
+     },
+     "composition_nested_and": {
+      "n": 16,
+      "accuracy": 0.375
+     },
+     "composition_nested_or": {
+      "n": 16,
+      "accuracy": 0.5
+     },
+     "contrastive_age_eligibility": {
+      "n": 24,
+      "accuracy": 1.0
+     },
+     "contrastive_quantity_limit": {
+      "n": 24,
+      "accuracy": 0.7083333333333334
+     },
+     "contrastive_return_window": {
+      "n": 24,
+      "accuracy": 0.5
+     },
+     "contrastive_spend_threshold": {
+      "n": 24,
+      "accuracy": 1.0
+     },
+     "dbpedia14": {
+      "n": 116,
+      "accuracy": 0.8448275862068966
+     },
+     "imdb": {
+      "n": 80,
+      "accuracy": 0.8625
+     },
+     "mnli": {
+      "n": 116,
+      "accuracy": 0.4827586206896552
+     },
+     "sst5": {
+      "n": 80,
+      "accuracy": 0.4875
+     },
+     "trec": {
+      "n": 116,
+      "accuracy": 0.8275862068965517
+     },
+     "yelp": {
+      "n": 80,
+      "accuracy": 0.65
+     },
+     "yelp_yn": {
+      "n": 80,
+      "accuracy": 0.9
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 756,
+      "accuracy": 0.708994708994709
+     },
+     "noul": {
+      "n": 472,
+      "accuracy": 0.8389830508474576
+     },
+     "score": {
+      "n": 240,
+      "accuracy": 0.5375
+     }
+    }
+   },
+   "calibrated": {
+    "n": 1468,
+    "accuracy": 0.7227520435967303,
+    "nll": 0.6560896763915941,
+    "brier": 0.3491101661167701,
+    "ece": 0.04474615166688209,
+    "confident_error": 0.027247956403269755,
+    "mean_confidence": 0.7634074021706166,
+    "macro_source_accuracy": 0.6657645135765451,
+    "by_source": {
+     "agnews": {
+      "n": 116,
+      "accuracy": 0.8620689655172413
+     },
+     "agnews_yn": {
+      "n": 184,
+      "accuracy": 0.8967391304347826
+     },
+     "amazon": {
+      "n": 80,
+      "accuracy": 0.475
+     },
+     "banking77": {
+      "n": 116,
+      "accuracy": 0.6810344827586207
+     },
+     "boolq": {
+      "n": 80,
+      "accuracy": 0.675
+     },
+     "composition_atom": {
+      "n": 16,
+      "accuracy": 0.875
+     },
+     "composition_conditional": {
+      "n": 16,
+      "accuracy": 0.625
+     },
+     "composition_conjunction": {
+      "n": 16,
+      "accuracy": 0.6875
+     },
+     "composition_disjunction": {
+      "n": 16,
+      "accuracy": 0.625
+     },
+     "composition_exception": {
+      "n": 16,
+      "accuracy": 0.3125
+     },
+     "composition_negation": {
+      "n": 16,
+      "accuracy": 0.125
+     },
+     "composition_nested_and": {
+      "n": 16,
+      "accuracy": 0.375
+     },
+     "composition_nested_or": {
+      "n": 16,
+      "accuracy": 0.5
+     },
+     "contrastive_age_eligibility": {
+      "n": 24,
+      "accuracy": 1.0
+     },
+     "contrastive_quantity_limit": {
+      "n": 24,
+      "accuracy": 0.7083333333333334
+     },
+     "contrastive_return_window": {
+      "n": 24,
+      "accuracy": 0.5
+     },
+     "contrastive_spend_threshold": {
+      "n": 24,
+      "accuracy": 1.0
+     },
+     "dbpedia14": {
+      "n": 116,
+      "accuracy": 0.8448275862068966
+     },
+     "imdb": {
+      "n": 80,
+      "accuracy": 0.8625
+     },
+     "mnli": {
+      "n": 116,
+      "accuracy": 0.4827586206896552
+     },
+     "sst5": {
+      "n": 80,
+      "accuracy": 0.4875
+     },
+     "trec": {
+      "n": 116,
+      "accuracy": 0.8275862068965517
+     },
+     "yelp": {
+      "n": 80,
+      "accuracy": 0.65
+     },
+     "yelp_yn": {
+      "n": 80,
+      "accuracy": 0.9
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 756,
+      "accuracy": 0.708994708994709
+     },
+     "noul": {
+      "n": 472,
+      "accuracy": 0.8389830508474576
+     },
+     "score": {
+      "n": 240,
+      "accuracy": 0.5375
+     }
+    }
+   },
+   "sec_per_question": 0.08306166618981219,
+   "data": {
+    "repo": "jaredpalmer/kev-suites",
+    "revision": "cc4bac803e73112689ec327ffa481c519cbc7a05",
+    "file": "v7/decision-v7/development.jsonl",
+    "sha256": "8d5765d7aec4d08c61854f4664ca79ec2ba44ed092e9b967eaf61ed86c496d9c",
+    "manifest_checked": true,
+    "records": 1204,
+    "skipped": {
+     "no_label": 0,
+     "too_long": 0
+    }
+   }
+  },
+  "transfer-v4/development": {
+   "raw": {
+    "n": 764,
+    "accuracy": 0.5759162303664922,
+    "nll": 0.8468848208809568,
+    "brier": 0.5069193219666835,
+    "ece": 0.05657356072149812,
+    "confident_error": 0.005235602094240838,
+    "mean_confidence": 0.6104547882102969,
+    "macro_source_accuracy": 0.5478644200626959,
+    "by_source": {
+     "composition_held_and_or": {
+      "n": 32,
+      "accuracy": 0.5625
+     },
+     "composition_held_conditional": {
+      "n": 32,
+      "accuracy": 0.46875
+     },
+     "composition_held_or_not": {
+      "n": 32,
+      "accuracy": 0.5
+     },
+     "contrastive_authorization": {
+      "n": 40,
+      "accuracy": 0.5
+     },
+     "contrastive_deadline": {
+      "n": 40,
+      "accuracy": 0.275
+     },
+     "emotion": {
+      "n": 116,
+      "accuracy": 0.45689655172413796
+     },
+     "mmlu": {
+      "n": 116,
+      "accuracy": 0.4396551724137931
+     },
+     "paws": {
+      "n": 80,
+      "accuracy": 0.6
+     },
+     "qnli": {
+      "n": 80,
+      "accuracy": 0.6375
+     },
+     "sciq": {
+      "n": 116,
+      "accuracy": 0.8362068965517241
+     },
+     "tweet_offensive": {
+      "n": 80,
+      "accuracy": 0.75
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 444,
+      "accuracy": 0.5630630630630631
+     },
+     "noul": {
+      "n": 280,
+      "accuracy": 0.6392857142857142
+     },
+     "score": {
+      "n": 40,
+      "accuracy": 0.275
+     }
+    }
+   },
+   "calibrated": {
+    "n": 764,
+    "accuracy": 0.5759162303664922,
+    "nll": 0.8505894623213078,
+    "brier": 0.5119024028898886,
+    "ece": 0.06605445373635102,
+    "confident_error": 0.011780104712041885,
+    "mean_confidence": 0.6404676156517278,
+    "macro_source_accuracy": 0.5478644200626959,
+    "by_source": {
+     "composition_held_and_or": {
+      "n": 32,
+      "accuracy": 0.5625
+     },
+     "composition_held_conditional": {
+      "n": 32,
+      "accuracy": 0.46875
+     },
+     "composition_held_or_not": {
+      "n": 32,
+      "accuracy": 0.5
+     },
+     "contrastive_authorization": {
+      "n": 40,
+      "accuracy": 0.5
+     },
+     "contrastive_deadline": {
+      "n": 40,
+      "accuracy": 0.275
+     },
+     "emotion": {
+      "n": 116,
+      "accuracy": 0.45689655172413796
+     },
+     "mmlu": {
+      "n": 116,
+      "accuracy": 0.4396551724137931
+     },
+     "paws": {
+      "n": 80,
+      "accuracy": 0.6
+     },
+     "qnli": {
+      "n": 80,
+      "accuracy": 0.6375
+     },
+     "sciq": {
+      "n": 116,
+      "accuracy": 0.8362068965517241
+     },
+     "tweet_offensive": {
+      "n": 80,
+      "accuracy": 0.75
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 444,
+      "accuracy": 0.5630630630630631
+     },
+     "noul": {
+      "n": 280,
+      "accuracy": 0.6392857142857142
+     },
+     "score": {
+      "n": 40,
+      "accuracy": 0.275
+     }
+    }
+   },
+   "sec_per_question": 0.0508306307318323,
+   "data": {
+    "repo": "jaredpalmer/kev-suites",
+    "revision": "cc4bac803e73112689ec327ffa481c519cbc7a05",
+    "file": "v4/transfer-v4/development.jsonl",
+    "sha256": "ff374c49c6c9f15f8a56fb274b4a4857d20497eb8dd1ac07ce01560e682a5f2e",
+    "manifest_checked": true,
+    "records": 764,
+    "skipped": {
+     "no_label": 0,
+     "too_long": 0
+    }
+   }
+  }
+ }
+}
