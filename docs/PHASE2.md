@@ -162,4 +162,14 @@ Test accuracy, mean ± standard deviation over seeds; calibration on new sources
 - **Tiny-model tests catch logic, not scale.** The generative arm passed every CPU check, then ran out of GPU memory on its first real development check (fp32 caches for 16 long prompts). Memory has to be estimated at full size; the GPU smoke run is the test that counts.
 - **The queue design held.** One job at a time, a memory pre-check, a hold file and a guard in every job let several sessions share a 16 GB Mac for two days without losing a training run.
 
+**Thinking against direct answering (T1, finished November 1, 00:27).** Qwen3-4B on 800 development questions, paired question by question ([run](../runs/20261031-165141-think-eval-800)):
+
+| Subset | Questions | Thinking | Direct | Difference (95% interval) | McNemar p |
+|---|---|---|---|---|---|
+| All | 800 | 0.786 | 0.749 | +3.8 (+1.0 to +6.5) | 0.010 |
+| Trained sources (decision-v7) | 400 | 0.818 | 0.797 | +2.0 (−1.2 to +5.0) | 0.28 |
+| New sources (transfer-v4) | 400 | 0.755 | 0.700 | +5.5 (+1.0 to +10.0) | 0.021 |
+
+Thinking costs 33.9 s per question against 0.31 s (110 times), with a median of 910 thinking tokens; 151 of 800 answers (19%) hit the 2,048-token cap. The largest gains are on MMLU (+12.5, p 0.04) and offensive-tweet detection (+12.5, p 0.09); QNLI and PAWS do not move. H3, first half: the overall gain is inside ±4 points as a point estimate, but its interval reaches +6.5 and excludes zero, so reasoning does help, mostly on new sources. "Loses on QNLI" is refuted (0.863 both ways); "gains on rule-following sources" cannot be read from this subset, which has too few of them. A 0.6B student scores about 0.81 / 0.62 on the test splits in 0.05 s.
+
 **Order from here.** At Patrick's request ("full speed"), the generative arm goes next: GPU smoke runs at 0.6B and 1.7B once its memory fix passes the CPU checks, then two 0.6B generative runs, which can be compared with the three 0.6B adapter seeds as soon as they finish. Then the rest of Tier 1, Tiers 2 and 3, and the two 1.7B generative runs, which need the 1.7B adapter runs (M1) for comparison.
