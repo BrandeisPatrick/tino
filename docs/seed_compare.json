@@ -1,0 +1,805 @@
+{
+ "recipes": {
+  "full fine-tune": {
+   "seeds": 3,
+   "runs": [
+    "20261022-225150-tino-finetuned",
+    "20261024-142648-tino-finetuned-s1",
+    "20261030-063558-tino-finetuned-s2"
+   ],
+   "decision-v7/test": {
+    "mean": 0.8157407407407408,
+    "sd": 0.005212189930184103,
+    "per_seed": [
+     0.8104,
+     0.8208,
+     0.816
+    ]
+   },
+   "transfer-v4/test": {
+    "mean": 0.6116928446771378,
+    "sd": 0.005449387433157426,
+    "per_seed": [
+     0.6178,
+     0.6073,
+     0.6099
+    ]
+   },
+   "transfer-v9/test": {
+    "mean": 0.5340189873417721,
+    "sd": 0.0099129462706817,
+    "per_seed": [
+     0.5443,
+     0.5332,
+     0.5245
+    ]
+   }
+  },
+  "adapter": {
+   "seeds": 3,
+   "runs": [
+    "20261023-085627-tino-adapter",
+    "20261024-110527-tino-adapter-s1",
+    "20261030-031703-tino-adapter-s2"
+   ],
+   "decision-v7/test": {
+    "mean": 0.8106481481481481,
+    "sd": 0.007294421878050312,
+    "per_seed": [
+     0.8104,
+     0.8181,
+     0.8035
+    ]
+   },
+   "transfer-v4/test": {
+    "mean": 0.6365619546247818,
+    "sd": 0.02087412515515824,
+    "per_seed": [
+     0.6126,
+     0.6505,
+     0.6466
+    ]
+   },
+   "transfer-v9/test": {
+    "mean": 0.556698312236287,
+    "sd": 0.010203345001135612,
+    "per_seed": [
+     0.5483,
+     0.568,
+     0.5538
+    ]
+   }
+  },
+  "adapter, post-trained start": {
+   "seeds": 2,
+   "runs": [
+    "20261023-204028-tino-adapter-post",
+    "20261031-093124-tino-adapter-post-s1"
+   ],
+   "decision-v7/test": {
+    "mean": 0.8128472222222223,
+    "sd": 0.0034373246307679273,
+    "per_seed": [
+     0.8104,
+     0.8153
+    ]
+   },
+   "transfer-v4/test": {
+    "mean": 0.6125654450261779,
+    "sd": 0.003702129744432229,
+    "per_seed": [
+     0.6152,
+     0.6099
+    ]
+   },
+   "transfer-v9/test": {
+    "mean": 0.5340189873417721,
+    "sd": 0.0033565195309488193,
+    "per_seed": [
+     0.5316,
+     0.5364
+    ]
+   }
+  },
+  "teacher 0.25": {
+   "seeds": 2,
+   "runs": [
+    "20261030-200522-tino-distil-a025",
+    "20261031-025049-tino-distil-a025-s1"
+   ],
+   "decision-v7/test": {
+    "mean": 0.8263888888888888,
+    "sd": 0.007856742013183912,
+    "per_seed": [
+     0.8319,
+     0.8208
+    ]
+   },
+   "transfer-v4/test": {
+    "mean": 0.6380890052356021,
+    "sd": 0.017585116286052832,
+    "per_seed": [
+     0.6505,
+     0.6257
+    ]
+   },
+   "transfer-v9/test": {
+    "mean": 0.553006329113924,
+    "sd": 0.0022376796872991345,
+    "per_seed": [
+     0.5546,
+     0.5514
+    ]
+   }
+  },
+  "teacher 0.5": {
+   "seeds": 3,
+   "runs": [
+    "20261023-153602-tino-distil",
+    "20261025-014322-tino-distil-s1",
+    "20261029-232613-tino-distil-s2"
+   ],
+   "decision-v7/test": {
+    "mean": 0.8097222222222222,
+    "sd": 0.009796344430323496,
+    "per_seed": [
+     0.8083,
+     0.8201,
+     0.8007
+    ]
+   },
+   "transfer-v4/test": {
+    "mean": 0.6239092495636999,
+    "sd": 0.013175976326825087,
+    "per_seed": [
+     0.6361,
+     0.6257,
+     0.6099
+    ]
+   },
+   "transfer-v9/test": {
+    "mean": 0.5487869198312235,
+    "sd": 0.005556779405513019,
+    "per_seed": [
+     0.5546,
+     0.5483,
+     0.5435
+    ]
+   }
+  },
+  "teacher 0.75": {
+   "seeds": 2,
+   "runs": [
+    "20261030-233025-tino-distil-a075",
+    "20261031-061030-tino-distil-a075-s1"
+   ],
+   "decision-v7/test": {
+    "mean": 0.7861111111111111,
+    "sd": 0.003928371006591917,
+    "per_seed": [
+     0.7833,
+     0.7889
+    ]
+   },
+   "transfer-v4/test": {
+    "mean": 0.619109947643979,
+    "sd": 0.0018510648722160753,
+    "per_seed": [
+     0.6178,
+     0.6204
+    ]
+   },
+   "transfer-v9/test": {
+    "mean": 0.5427215189873418,
+    "sd": 0.0011188398436496065,
+    "per_seed": [
+     0.5419,
+     0.5435
+    ]
+   }
+  },
+  "teacher only": {
+   "seeds": 3,
+   "runs": [
+    "20261024-222253-tino-distil-a1",
+    "20261025-083634-tino-distil-a1-s1",
+    "20261030-094408-tino-distil-a1-s2"
+   ],
+   "decision-v7/test": {
+    "mean": 0.7597222222222223,
+    "sd": 0.008533476199614252,
+    "per_seed": [
+     0.75,
+     0.766,
+     0.7632
+    ]
+   },
+   "transfer-v4/test": {
+    "mean": 0.6396160558464223,
+    "sd": 0.027652621077645396,
+    "per_seed": [
+     0.6715,
+     0.6257,
+     0.6217
+    ]
+   },
+   "transfer-v9/test": {
+    "mean": 0.5524789029535865,
+    "sd": 0.02114479038544418,
+    "per_seed": [
+     0.5767,
+     0.5427,
+     0.538
+    ]
+   }
+  },
+  "teacher 0.5, unsoftened": {
+   "seeds": 2,
+   "runs": [
+    "20261030-131321-tino-distil-raw",
+    "20261030-164341-tino-distil-raw-s1"
+   ],
+   "decision-v7/test": {
+    "mean": 0.7965277777777777,
+    "sd": 0.007856742013183912,
+    "per_seed": [
+     0.791,
+     0.8021
+    ]
+   },
+   "transfer-v4/test": {
+    "mean": 0.6276178010471204,
+    "sd": 0.02498937577491729,
+    "per_seed": [
+     0.6453,
+     0.6099
+    ]
+   },
+   "transfer-v9/test": {
+    "mean": 0.5490506329113924,
+    "sd": 0.017901437498393624,
+    "per_seed": [
+     0.5617,
+     0.5364
+    ]
+   }
+  }
+ },
+ "tests": [
+  {
+   "a": "adapter",
+   "b": "full fine-tune",
+   "question": "RQ2",
+   "split": "decision-v7/test",
+   "n": 1440,
+   "seeds": [
+    3,
+    3
+   ],
+   "diff": -0.005092592592592592,
+   "ci95": [
+    -0.015515046296296296,
+    0.00486111111111111
+   ],
+   "p": 0.3414829258537073,
+   "seed_matched_diffs": [
+    0.0,
+    -0.0028,
+    -0.0125
+   ],
+   "seeds_agree": false,
+   "p_holm_all": 1.0,
+   "p_holm": 0.3414829258537073,
+   "verdict": "no difference shown"
+  },
+  {
+   "a": "adapter",
+   "b": "full fine-tune",
+   "question": "RQ2",
+   "split": "transfer-v4/test",
+   "n": 764,
+   "seeds": [
+    3,
+    3
+   ],
+   "diff": 0.024869109947643978,
+   "ci95": [
+    0.006108202443280979,
+    0.043630017452006974
+   ],
+   "p": 0.010449477526123694,
+   "seed_matched_diffs": [
+    -0.0052,
+    0.0432,
+    0.0366
+   ],
+   "seeds_agree": false,
+   "p_holm_all": 0.1671916404179791,
+   "p_holm": 0.020898955052247387,
+   "verdict": "lean"
+  },
+  {
+   "a": "adapter",
+   "b": "full fine-tune",
+   "question": "RQ2",
+   "split": "transfer-v9/test",
+   "n": 1264,
+   "seeds": [
+    3,
+    3
+   ],
+   "diff": 0.022679324894514765,
+   "ci95": [
+    0.00870253164556962,
+    0.03639240506329114
+   ],
+   "p": 0.0018499075046247689,
+   "seed_matched_diffs": [
+    0.004,
+    0.0348,
+    0.0293
+   ],
+   "seeds_agree": true,
+   "p_holm_all": 0.03514824258787061,
+   "p_holm": 0.005549722513874307,
+   "verdict": "claim"
+  },
+  {
+   "a": "teacher 0.5",
+   "b": "adapter",
+   "question": "RQ4",
+   "split": "decision-v7/test",
+   "n": 1440,
+   "seeds": [
+    3,
+    3
+   ],
+   "diff": -0.0009259259259259244,
+   "ci95": [
+    -0.01296296296296296,
+    0.011111111111111112
+   ],
+   "p": 0.9127543622818859,
+   "seed_matched_diffs": [
+    -0.0021,
+    0.0021,
+    -0.0028
+   ],
+   "seeds_agree": false,
+   "p_holm_all": 1.0,
+   "p_holm": 1.0,
+   "verdict": "no difference shown"
+  },
+  {
+   "a": "teacher 0.5",
+   "b": "adapter",
+   "question": "RQ4",
+   "split": "transfer-v4/test",
+   "n": 764,
+   "seeds": [
+    3,
+    3
+   ],
+   "diff": -0.012652705061082027,
+   "ci95": [
+    -0.033595113438045374,
+    0.0087260034904014
+   ],
+   "p": 0.25453727313634317,
+   "seed_matched_diffs": [
+    0.0236,
+    -0.0249,
+    -0.0366
+   ],
+   "seeds_agree": false,
+   "p_holm_all": 1.0,
+   "p_holm": 1.0,
+   "verdict": "no difference shown"
+  },
+  {
+   "a": "teacher 0.5",
+   "b": "adapter",
+   "question": "RQ4",
+   "split": "transfer-v9/test",
+   "n": 1264,
+   "seeds": [
+    3,
+    3
+   ],
+   "diff": -0.007911392405063288,
+   "ci95": [
+    -0.023734177215189875,
+    0.007647679324894517
+   ],
+   "p": 0.3450827458627069,
+   "seed_matched_diffs": [
+    0.0063,
+    -0.0198,
+    -0.0103
+   ],
+   "seeds_agree": false,
+   "p_holm_all": 1.0,
+   "p_holm": 1.0,
+   "verdict": "no difference shown"
+  },
+  {
+   "a": "teacher only",
+   "b": "adapter",
+   "question": "RQ4",
+   "split": "decision-v7/test",
+   "n": 1440,
+   "seeds": [
+    3,
+    3
+   ],
+   "diff": -0.05092592592592593,
+   "ci95": [
+    -0.06828703703703703,
+    -0.03333333333333333
+   ],
+   "p": 4.999750012499375e-05,
+   "seed_matched_diffs": [
+    -0.0604,
+    -0.0521,
+    -0.0403
+   ],
+   "seeds_agree": true,
+   "p_holm_all": 0.0010499475026248687,
+   "p_holm": 0.000599970001499925,
+   "verdict": "claim"
+  },
+  {
+   "a": "teacher only",
+   "b": "adapter",
+   "question": "RQ4",
+   "split": "transfer-v4/test",
+   "n": 764,
+   "seeds": [
+    3,
+    3
+   ],
+   "diff": 0.0030541012216404877,
+   "ci95": [
+    -0.01919720767888307,
+    0.02488001745200683
+   ],
+   "p": 0.8179091045447727,
+   "seed_matched_diffs": [
+    0.0589,
+    -0.0249,
+    -0.0249
+   ],
+   "seeds_agree": false,
+   "p_holm_all": 1.0,
+   "p_holm": 1.0,
+   "verdict": "no difference shown"
+  },
+  {
+   "a": "teacher only",
+   "b": "adapter",
+   "question": "RQ4",
+   "split": "transfer-v9/test",
+   "n": 1264,
+   "seeds": [
+    3,
+    3
+   ],
+   "diff": -0.00421940928270042,
+   "ci95": [
+    -0.022949630801687763,
+    0.014767932489451475
+   ],
+   "p": 0.6689165541722913,
+   "seed_matched_diffs": [
+    0.0285,
+    -0.0253,
+    -0.0158
+   ],
+   "seeds_agree": false,
+   "p_holm_all": 1.0,
+   "p_holm": 1.0,
+   "verdict": "no difference shown"
+  },
+  {
+   "a": "teacher 0.25",
+   "b": "adapter",
+   "question": "RQ4",
+   "split": "decision-v7/test",
+   "n": 1440,
+   "seeds": [
+    2,
+    3
+   ],
+   "diff": 0.015740740740740746,
+   "ci95": [
+    0.006134259259259264,
+    0.025347222222222226
+   ],
+   "p": 0.0017499125043747813,
+   "seed_matched_diffs": [
+    0.0215,
+    0.0028
+   ],
+   "seeds_agree": true,
+   "p_holm_all": 0.03499825008749562,
+   "p_holm": 0.019249037548122593,
+   "verdict": "claim"
+  },
+  {
+   "a": "teacher 0.25",
+   "b": "adapter",
+   "question": "RQ4",
+   "split": "transfer-v4/test",
+   "n": 764,
+   "seeds": [
+    2,
+    3
+   ],
+   "diff": 0.0015270506108202547,
+   "ci95": [
+    -0.020724258289703302,
+    0.023778359511343817
+   ],
+   "p": 0.9094045297735113,
+   "seed_matched_diffs": [
+    0.038,
+    -0.0249
+   ],
+   "seeds_agree": false,
+   "p_holm_all": 1.0,
+   "p_holm": 1.0,
+   "verdict": "no difference shown"
+  },
+  {
+   "a": "teacher 0.25",
+   "b": "adapter",
+   "question": "RQ4",
+   "split": "transfer-v9/test",
+   "n": 1264,
+   "seeds": [
+    2,
+    3
+   ],
+   "diff": -0.0036919831223628584,
+   "ci95": [
+    -0.020174050632911382,
+    0.012658227848101278
+   ],
+   "p": 0.6730663466826659,
+   "seed_matched_diffs": [
+    0.0063,
+    -0.0166
+   ],
+   "seeds_agree": false,
+   "p_holm_all": 1.0,
+   "p_holm": 1.0,
+   "verdict": "no difference shown"
+  },
+  {
+   "a": "teacher 0.75",
+   "b": "adapter",
+   "question": "RQ4",
+   "split": "decision-v7/test",
+   "n": 1440,
+   "seeds": [
+    2,
+    3
+   ],
+   "diff": -0.024537037037037027,
+   "ci95": [
+    -0.040509259259259245,
+    -0.008333333333333326
+   ],
+   "p": 0.0021498925053747312,
+   "seed_matched_diffs": [
+    -0.0271,
+    -0.0292
+   ],
+   "seeds_agree": true,
+   "p_holm_all": 0.038698065096745164,
+   "p_holm": 0.021498925053747314,
+   "verdict": "claim"
+  },
+  {
+   "a": "teacher 0.75",
+   "b": "adapter",
+   "question": "RQ4",
+   "split": "transfer-v4/test",
+   "n": 764,
+   "seeds": [
+    2,
+    3
+   ],
+   "diff": -0.017452006980802782,
+   "ci95": [
+    -0.04363001745200697,
+    0.008507853403141374
+   ],
+   "p": 0.19889005549722513,
+   "seed_matched_diffs": [
+    0.0052,
+    -0.0301
+   ],
+   "seeds_agree": false,
+   "p_holm_all": 1.0,
+   "p_holm": 1.0,
+   "verdict": "no difference shown"
+  },
+  {
+   "a": "teacher 0.75",
+   "b": "adapter",
+   "question": "RQ4",
+   "split": "transfer-v9/test",
+   "n": 1264,
+   "seeds": [
+    2,
+    3
+   ],
+   "diff": -0.013976793248945135,
+   "ci95": [
+    -0.03375527426160336,
+    0.004881988396624438
+   ],
+   "p": 0.159942002899855,
+   "seed_matched_diffs": [
+    -0.0063,
+    -0.0245
+   ],
+   "seeds_agree": true,
+   "p_holm_all": 1.0,
+   "p_holm": 1.0,
+   "verdict": "no difference shown"
+  },
+  {
+   "a": "teacher 0.5, unsoftened",
+   "b": "teacher 0.5",
+   "question": "H4",
+   "split": "decision-v7/test",
+   "n": 1440,
+   "seeds": [
+    2,
+    3
+   ],
+   "diff": -0.01319444444444444,
+   "ci95": [
+    -0.02430555555555555,
+    -0.0024276620370370745
+   ],
+   "p": 0.015949202539873007,
+   "seed_matched_diffs": [
+    -0.0174,
+    -0.0181
+   ],
+   "seeds_agree": true,
+   "p_holm_all": 0.2392380380980951,
+   "p_holm": 0.04784760761961902,
+   "verdict": "claim"
+  },
+  {
+   "a": "teacher 0.5, unsoftened",
+   "b": "teacher 0.5",
+   "question": "H4",
+   "split": "transfer-v4/test",
+   "n": 764,
+   "seeds": [
+    2,
+    3
+   ],
+   "diff": 0.0037085514834206013,
+   "ci95": [
+    -0.01243455497382198,
+    0.019202661431064503
+   ],
+   "p": 0.6745662716864157,
+   "seed_matched_diffs": [
+    0.0092,
+    -0.0157
+   ],
+   "seeds_agree": false,
+   "p_holm_all": 1.0,
+   "p_holm": 1.0,
+   "verdict": "no difference shown"
+  },
+  {
+   "a": "teacher 0.5, unsoftened",
+   "b": "teacher 0.5",
+   "question": "H4",
+   "split": "transfer-v9/test",
+   "n": 1264,
+   "seeds": [
+    2,
+    3
+   ],
+   "diff": 0.0002637130801687839,
+   "ci95": [
+    -0.012262658227848094,
+    0.012526371308016886
+   ],
+   "p": 0.9826508674566272,
+   "seed_matched_diffs": [
+    0.0071,
+    -0.0119
+   ],
+   "seeds_agree": false,
+   "p_holm_all": 1.0,
+   "p_holm": 1.0,
+   "verdict": "no difference shown"
+  },
+  {
+   "a": "adapter, post-trained start",
+   "b": "adapter",
+   "question": "RQ3b",
+   "split": "decision-v7/test",
+   "n": 1440,
+   "seeds": [
+    2,
+    3
+   ],
+   "diff": 0.0021990740740740807,
+   "ci95": [
+    -0.009837962962962956,
+    0.014120370370370375
+   ],
+   "p": 0.736563171841408,
+   "seed_matched_diffs": [
+    0.0,
+    -0.0028
+   ],
+   "seeds_agree": false,
+   "p_holm_all": 1.0,
+   "p_holm": 0.736563171841408,
+   "verdict": "no difference shown"
+  },
+  {
+   "a": "adapter, post-trained start",
+   "b": "adapter",
+   "question": "RQ3b",
+   "split": "transfer-v4/test",
+   "n": 764,
+   "seeds": [
+    2,
+    3
+   ],
+   "diff": -0.023996509598603825,
+   "ci95": [
+    -0.04537521815008725,
+    -0.001745200698080272
+   ],
+   "p": 0.03529823508824559,
+   "seed_matched_diffs": [
+    0.0026,
+    -0.0406
+   ],
+   "seeds_agree": false,
+   "p_holm_all": 0.49417529123543824,
+   "p_holm": 0.07059647017649118,
+   "verdict": "lean"
+  },
+  {
+   "a": "adapter, post-trained start",
+   "b": "adapter",
+   "question": "RQ3b",
+   "split": "transfer-v9/test",
+   "n": 1264,
+   "seeds": [
+    2,
+    3
+   ],
+   "diff": -0.022679324894514758,
+   "ci95": [
+    -0.03969211497890294,
+    -0.006065400843881847
+   ],
+   "p": 0.008999550022498875,
+   "seed_matched_diffs": [
+    -0.0166,
+    -0.0316
+   ],
+   "seeds_agree": true,
+   "p_holm_all": 0.15299235038248088,
+   "p_holm": 0.026998650067496625,
+   "verdict": "claim"
+  }
+ ],
+ "method": "For each recipe, every finished full-data run with that name (seed suffixes -s1, -s2 folded together) is loaded from\nits saved predictions. A question's score for a recipe is its correctness averaged over that recipe's seeds. Each\ncomparison is a paired sign-flip permutation test on those per-question differences, with a bootstrap 95% interval,\nHolm's correction within each research question (the Phase 2 rule) and across all comparisons (stricter), and\nwhether every seed-matched pair (seed k of A against seed k of B) agrees in sign. Phase 2 claims a difference when the\ncorrected interval excludes zero and every seed agrees; otherwise it is a lean. Seeds are averaged, not modelled."
+}

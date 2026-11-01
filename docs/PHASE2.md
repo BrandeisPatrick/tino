@@ -122,3 +122,44 @@ First reading, before any test (two seeds per recipe, so differences under about
 - Option-order probe: reversing the options leaves the answer unchanged on 0.59–0.97 of choice questions, by model and suite. `tino-distil` (0.84 on transfer-v4, 0.91 on SemIf, 0.88 on binding) and Kev-0.6B (0.85, 0.83, 0.91) are the steadiest; the teacher-only students the least (0.68–0.80 on the same suites); the public trio is the least stable for everyone (0.63–0.78).
 - State-removal probe: with the state blanked, accuracy drops by 15–27 points on transfer-v4 development, 5–19 on binding and 27–40 on SemIf. Every model reads the state.
 - One defect surfaced and was fixed: the SemIf perturbation groups came out empty because perturbed rows point at their base through `_meta.parent_id`, not the group id. `scripts/eval_suites.py` now follows `parent_id` and reports SemIf's family-balanced accuracy; `--rescore` recomputed this run from its saved predictions, so no model was re-run.
+
+### October 31: three seeds, the teacher-weight curve, and reflections
+
+Twenty full-data runs are finished: three seeds of the four main recipes, the teacher-weight curve at 0.25 and 0.75 (two seeds each), the unsoftened-teacher control (two seeds) and a second seed of the post-trained start. None collapsed. Comparisons come from [`scripts/seed_compare.py`](../scripts/seed_compare.py), numbers in [`seed_compare.json`](seed_compare.json): each question's correctness averaged over a recipe's seeds, a paired sign-flip permutation test, a bootstrap 95% interval, Holm's correction within each research question. Following the rule above, a difference is a claim only when the corrected test passes and every seed-matched pair agrees in sign; otherwise it is a lean. The final write-up repeats this with all seeds once the queue ends.
+
+Test accuracy, mean ± standard deviation over seeds; calibration on new sources (transfer-v4 test):
+
+| Recipe | Seeds | Trained sources | New sources | Hardest (v9) | ECE raw | ECE after scaling | Temperature |
+|---|---|---|---|---|---|---|---|
+| Full fine-tune | 3 | 0.816 ± 0.005 | 0.612 ± 0.005 | 0.534 ± 0.010 | 0.166 | 0.049 | 2.52 |
+| Adapter (teacher weight 0) | 3 | 0.811 ± 0.007 | 0.637 ± 0.021 | 0.557 ± 0.010 | 0.128 | 0.046 | 1.95 |
+| Teacher weight 0.25 | 2 | **0.826** ± 0.008 | 0.638 ± 0.018 | 0.553 ± 0.002 | 0.055 | 0.055 | 0.95 |
+| Teacher weight 0.5 | 3 | 0.810 ± 0.010 | 0.624 ± 0.013 | 0.549 ± 0.006 | **0.045** | 0.052 | 0.87 |
+| Teacher weight 0.75 | 2 | 0.786 ± 0.004 | 0.619 ± 0.002 | 0.543 ± 0.001 | 0.048 | 0.053 | 0.80 |
+| Teacher only | 3 | 0.760 ± 0.009 | 0.640 ± 0.028 | 0.552 ± 0.021 | 0.068 | 0.058 | 0.89 |
+| Teacher 0.5, unsoftened (T = 1) | 2 | 0.797 ± 0.008 | 0.628 ± 0.025 | 0.549 ± 0.018 | 0.093 | 0.050 | 1.42 |
+| Adapter, post-trained start | 2 | 0.813 ± 0.003 | 0.613 ± 0.004 | 0.534 ± 0.003 | 0.162 | 0.080 | 1.92 |
+
+**What the seeds now support**
+
+- **The adapter transfers better than the full fine-tune** (RQ2). +2.3 points on transfer-v9 (interval +0.9 to +3.6, Holm p 0.006, every seed agrees): a claim. +2.5 on transfer-v4 is a lean, because seed 0 disagrees (−0.5). In domain they tie (−0.5). H2 predicted a tie inside [−1, +4]: the edge is inside that band but no longer zero.
+- **Teacher weight buys in-domain accuracy only at 0.25, and nothing out of domain** (RQ4). In domain, accuracy rises from 0.811 at weight 0 to 0.826 at 0.25 (+1.6, a claim on two seeds), then falls: 0.810, 0.786, 0.760. Teacher-only costs 5.1 points (claim) and 0.75 costs 2.5 (claim). On new sources no weight differs from gold labels: every gap is within ±1.7 points and none is significant. Phase 1's out-of-domain edge for teacher-only was seed luck: its seeds score 0.671, 0.626 and 0.622.
+- **Calibration is what distillation buys.** Distilled students' raw ECE on new sources is 0.045–0.068 against 0.128–0.166 for gold-label models, and their temperatures are 0.78–0.95 against 1.9–2.5, on every seed. After temperature scaling every recipe lands at 0.046–0.058 except the post-trained start (0.080).
+- **The softening carries most of it** (H4). Students of the unsoftened teacher come out over-confident (temperature 1.37–1.47, raw ECE 0.093, twice the softened students' 0.045) and gain no accuracy (−1.3 in domain, a claim within RQ4 that does not survive correction across all tests). H4 predicted a temperature of at least 1.5 and a [0.8, 1.1] band for softened students: the direction holds, both thresholds miss slightly (1.42; one softened student at 0.78).
+- **The post-trained start transfers worse** (H3, second half). Equal in domain, −2.3 on transfer-v9 (claim, interval −4.0 to −0.6) and −2.4 on transfer-v4 (lean), and the worst calibrated after scaling. H3 expected no difference.
+- **No collapses** in 20 full-data runs (H1, full-data half). The ablation half waits for S5.
+- **Best model so far: teacher weight 0.25.** 0.826 / 0.638 / 0.553 with raw ECE 0.055: it clears the in-domain bar and misses the new-source bar (0.642) by 0.4 points and the ECE bar (0.05) by 0.005, on two seeds.
+- **Direct answering by the 4B instruct model** on the T1 subset: 0.798 on trained sources and 0.700 on new sources at 0.31 s per question, raw ECE 0.19 and 0.28. The thinking half is running.
+
+**Reading across.** Out-of-domain accuracy barely moves with the training signal: every 0.6B recipe sits at 0.61–0.64 on new sources, with seed spread up to 2.8 points, while the 4B teacher scores 0.70. What moves it is how much of the pretrained network a method changes or starts from: the full fine-tune and the post-trained start both lose about 2.3 points on the hardest suite. That is a hypothesis, not a result. It bears on the parameter-efficiency question in RESEARCH.md: at a fixed size, limiting what changes helps transfer; Tier 3 and the generative arm test whether size does.
+
+**Reflections**
+
+- **Single seeds misled twice.** Both Phase 1 conclusions that rested on one seed moved by 4–5 points. Third seeds turned the adapter's out-of-domain lean into a claim on the hardest suite and the teacher-only edge into nothing. The three-seed rule was the most valuable decision in Phase 2.
+- **Effects with a mechanism replicated; small accuracy gaps did not.** The temperature split between distilled and gold-label models held on every seed from the first run. Out-of-domain accuracy gaps under 3 points flipped sign between seeds more often than not.
+- **The machine was the main risk, not the code.** Four memory incidents in two days: an 8B Ollama model (two aborts), a one-word OpenAgent chat (a 4.5-minute pause), and CPU checks of mine beside the thinking evaluation (an abort that cost 3.6 hours). The guard turned each into a pause or a clean abort with its record kept, and the Mac never froze. On unified memory, the CPU and the GPU share one pool: "it runs on the CPU" does not mean "it is safe beside a job".
+- **Long jobs should save as they go.** Training pushes its record at every evaluation and lost at most one interval to an abort; the thinking evaluation saves only after each model and lost everything at question 475.
+- **Tiny-model tests catch logic, not scale.** The generative arm passed every CPU check, then ran out of GPU memory on its first real development check (fp32 caches for 16 long prompts). Memory has to be estimated at full size; the GPU smoke run is the test that counts.
+- **The queue design held.** One job at a time, a memory pre-check, a hold file and a guard in every job let several sessions share a 16 GB Mac for two days without losing a training run.
+
+**Order from here.** At Patrick's request ("full speed"), the generative arm goes next: GPU smoke runs at 0.6B and 1.7B once its memory fix passes the CPU checks, then two 0.6B generative runs, which can be compared with the three 0.6B adapter seeds as soon as they finish. Then the rest of Tier 1, Tiers 2 and 3, and the two 1.7B generative runs, which need the 1.7B adapter runs (M1) for comparison.
