@@ -42,7 +42,9 @@ def make_tiny(out):
     mx.save_safetensors(os.path.join(out, "model.safetensors"), dict(tree_flatten(qwen3.Model(qwen3.ModelArgs.from_dict(cfg)).parameters())))
 
 
+import atexit, shutil
 TINY = tempfile.mkdtemp(prefix="tino-tiny-")
+atexit.register(shutil.rmtree, TINY, ignore_errors=True)   # the tiny model is about 48 MB; leave nothing behind
 make_tiny(TINY)
 
 fails = []
