@@ -1449,6 +1449,377 @@
      }
     }
    }
+  },
+  "transfer-v9/test": {
+   "questions": 1264,
+   "labelled": 1264,
+   "minutes": 3.0961065173149107,
+   "hub_commit": "384f6781eb3076de10f9a58bfd0e7b13668d968a",
+   "path": "qwen3-1.7b/transfer-v9/test.jsonl",
+   "data": {
+    "repo": "jaredpalmer/kev-suites",
+    "revision": "cc4bac803e73112689ec327ffa481c519cbc7a05",
+    "file": "v9/transfer-v9/test.jsonl",
+    "sha256": "048abea5e12c73c3a622ce5836898c00fa43766e0bf48fb2459e77ee9873497f",
+    "manifest_checked": true,
+    "records": 1264
+   },
+   "raw": {
+    "n": 1264,
+    "accuracy": 0.48180379746835444,
+    "nll": 5.761339115035349,
+    "brier": 0.9612139165535195,
+    "ece": 0.46504969014186515,
+    "confident_error": 0.40427215189873417,
+    "mean_confidence": 0.946620148734382,
+    "macro_source_accuracy": 0.4705195099818511,
+    "by_source": {
+     "buried_emotion": {
+      "n": 20,
+      "accuracy": 0.45
+     },
+     "buried_paws": {
+      "n": 20,
+      "accuracy": 0.6
+     },
+     "buried_qnli": {
+      "n": 20,
+      "accuracy": 0.55
+     },
+     "buried_tweet_offensive": {
+      "n": 20,
+      "accuracy": 0.15
+     },
+     "composition_final_combination": {
+      "n": 32,
+      "accuracy": 0.3125
+     },
+     "composition_final_exception": {
+      "n": 32,
+      "accuracy": 0.5625
+     },
+     "composition_final_negation": {
+      "n": 32,
+      "accuracy": 0.375
+     },
+     "contrastive_authorization": {
+      "n": 40,
+      "accuracy": 0.5
+     },
+     "contrastive_deadline": {
+      "n": 40,
+      "accuracy": 0.5
+     },
+     "emotion": {
+      "n": 116,
+      "accuracy": 0.5431034482758621
+     },
+     "mmlu": {
+      "n": 116,
+      "accuracy": 0.3793103448275862
+     },
+     "mmlu_pro": {
+      "n": 200,
+      "accuracy": 0.225
+     },
+     "paws": {
+      "n": 80,
+      "accuracy": 0.5375
+     },
+     "qnli": {
+      "n": 80,
+      "accuracy": 0.675
+     },
+     "sciq": {
+      "n": 116,
+      "accuracy": 0.8448275862068966
+     },
+     "tweet_offensive": {
+      "n": 80,
+      "accuracy": 0.575
+     },
+     "unknowable_age_eligibility": {
+      "n": 10,
+      "accuracy": 0.5
+     },
+     "unknowable_authorization": {
+      "n": 10,
+      "accuracy": 0.5
+     },
+     "unknowable_control_age_eligibility": {
+      "n": 10,
+      "accuracy": 1.0
+     },
+     "unknowable_control_authorization": {
+      "n": 10,
+      "accuracy": 0.5
+     },
+     "unknowable_control_deadline": {
+      "n": 10,
+      "accuracy": 0.5
+     },
+     "unknowable_control_late_fee": {
+      "n": 10,
+      "accuracy": 0.7
+     },
+     "unknowable_control_quantity_limit": {
+      "n": 10,
+      "accuracy": 0.5
+     },
+     "unknowable_control_return_window": {
+      "n": 10,
+      "accuracy": 0.6
+     },
+     "unknowable_control_shipping_delay": {
+      "n": 10,
+      "accuracy": 0.2
+     },
+     "unknowable_control_sla_response": {
+      "n": 10,
+      "accuracy": 0.5
+     },
+     "unknowable_control_spend_threshold": {
+      "n": 10,
+      "accuracy": 0.5
+     },
+     "unknowable_control_volume_discount": {
+      "n": 10,
+      "accuracy": 0.6
+     },
+     "unknowable_control_warranty_claim": {
+      "n": 10,
+      "accuracy": 0.2
+     },
+     "unknowable_deadline": {
+      "n": 10,
+      "accuracy": 0.5
+     },
+     "unknowable_late_fee": {
+      "n": 10,
+      "accuracy": 0.3
+     },
+     "unknowable_quantity_limit": {
+      "n": 10,
+      "accuracy": 0.5
+     },
+     "unknowable_return_window": {
+      "n": 10,
+      "accuracy": 0.5
+     },
+     "unknowable_shipping_delay": {
+      "n": 10,
+      "accuracy": 0.2
+     },
+     "unknowable_sla_response": {
+      "n": 10,
+      "accuracy": 0.2
+     },
+     "unknowable_spend_threshold": {
+      "n": 10,
+      "accuracy": 0.5
+     },
+     "unknowable_volume_discount": {
+      "n": 10,
+      "accuracy": 0.4
+     },
+     "unknowable_warranty_claim": {
+      "n": 10,
+      "accuracy": 0.2
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 704,
+      "accuracy": 0.453125
+     },
+     "noul": {
+      "n": 400,
+      "accuracy": 0.5625
+     },
+     "score": {
+      "n": 160,
+      "accuracy": 0.40625
+     }
+    }
+   },
+   "calibrated": {
+    "n": 1264,
+    "accuracy": 0.48180379746835444,
+    "nll": 1.1835992379990055,
+    "brier": 0.6475964840385106,
+    "ece": 0.1199283186600503,
+    "confident_error": 0.04272151898734177,
+    "mean_confidence": 0.5965606116686768,
+    "macro_source_accuracy": 0.4705195099818511,
+    "by_source": {
+     "buried_emotion": {
+      "n": 20,
+      "accuracy": 0.45
+     },
+     "buried_paws": {
+      "n": 20,
+      "accuracy": 0.6
+     },
+     "buried_qnli": {
+      "n": 20,
+      "accuracy": 0.55
+     },
+     "buried_tweet_offensive": {
+      "n": 20,
+      "accuracy": 0.15
+     },
+     "composition_final_combination": {
+      "n": 32,
+      "accuracy": 0.3125
+     },
+     "composition_final_exception": {
+      "n": 32,
+      "accuracy": 0.5625
+     },
+     "composition_final_negation": {
+      "n": 32,
+      "accuracy": 0.375
+     },
+     "contrastive_authorization": {
+      "n": 40,
+      "accuracy": 0.5
+     },
+     "contrastive_deadline": {
+      "n": 40,
+      "accuracy": 0.5
+     },
+     "emotion": {
+      "n": 116,
+      "accuracy": 0.5431034482758621
+     },
+     "mmlu": {
+      "n": 116,
+      "accuracy": 0.3793103448275862
+     },
+     "mmlu_pro": {
+      "n": 200,
+      "accuracy": 0.225
+     },
+     "paws": {
+      "n": 80,
+      "accuracy": 0.5375
+     },
+     "qnli": {
+      "n": 80,
+      "accuracy": 0.675
+     },
+     "sciq": {
+      "n": 116,
+      "accuracy": 0.8448275862068966
+     },
+     "tweet_offensive": {
+      "n": 80,
+      "accuracy": 0.575
+     },
+     "unknowable_age_eligibility": {
+      "n": 10,
+      "accuracy": 0.5
+     },
+     "unknowable_authorization": {
+      "n": 10,
+      "accuracy": 0.5
+     },
+     "unknowable_control_age_eligibility": {
+      "n": 10,
+      "accuracy": 1.0
+     },
+     "unknowable_control_authorization": {
+      "n": 10,
+      "accuracy": 0.5
+     },
+     "unknowable_control_deadline": {
+      "n": 10,
+      "accuracy": 0.5
+     },
+     "unknowable_control_late_fee": {
+      "n": 10,
+      "accuracy": 0.7
+     },
+     "unknowable_control_quantity_limit": {
+      "n": 10,
+      "accuracy": 0.5
+     },
+     "unknowable_control_return_window": {
+      "n": 10,
+      "accuracy": 0.6
+     },
+     "unknowable_control_shipping_delay": {
+      "n": 10,
+      "accuracy": 0.2
+     },
+     "unknowable_control_sla_response": {
+      "n": 10,
+      "accuracy": 0.5
+     },
+     "unknowable_control_spend_threshold": {
+      "n": 10,
+      "accuracy": 0.5
+     },
+     "unknowable_control_volume_discount": {
+      "n": 10,
+      "accuracy": 0.6
+     },
+     "unknowable_control_warranty_claim": {
+      "n": 10,
+      "accuracy": 0.2
+     },
+     "unknowable_deadline": {
+      "n": 10,
+      "accuracy": 0.5
+     },
+     "unknowable_late_fee": {
+      "n": 10,
+      "accuracy": 0.3
+     },
+     "unknowable_quantity_limit": {
+      "n": 10,
+      "accuracy": 0.5
+     },
+     "unknowable_return_window": {
+      "n": 10,
+      "accuracy": 0.5
+     },
+     "unknowable_shipping_delay": {
+      "n": 10,
+      "accuracy": 0.2
+     },
+     "unknowable_sla_response": {
+      "n": 10,
+      "accuracy": 0.2
+     },
+     "unknowable_spend_threshold": {
+      "n": 10,
+      "accuracy": 0.5
+     },
+     "unknowable_volume_discount": {
+      "n": 10,
+      "accuracy": 0.4
+     },
+     "unknowable_warranty_claim": {
+      "n": 10,
+      "accuracy": 0.2
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 704,
+      "accuracy": 0.453125
+     },
+     "noul": {
+      "n": 400,
+      "accuracy": 0.5625
+     },
+     "score": {
+      "n": 160,
+      "accuracy": 0.40625
+     }
+    }
+   }
   }
  },
  "temperature": 10.401588237065393
