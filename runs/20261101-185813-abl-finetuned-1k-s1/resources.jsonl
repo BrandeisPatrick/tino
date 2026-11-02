@@ -4,3 +4,6 @@
 {"step": 80, "free_pct": 35, "swap_gb": 5.57, "mlx_active_gb": 5.22, "mlx_cache_gb": 1.01, "mlx_peak_gb": 6.51}
 {"step": 100, "free_pct": 35, "swap_gb": 5.91, "mlx_active_gb": 5.22, "mlx_cache_gb": 1.0, "mlx_peak_gb": 6.51}
 {"step": 120, "free_pct": 35, "swap_gb": 5.85, "mlx_active_gb": 5.22, "mlx_cache_gb": 1.0, "mlx_peak_gb": 6.51}
+{"step": 140, "free_pct": 34, "swap_gb": 5.83, "mlx_active_gb": 5.22, "mlx_cache_gb": 1.0, "mlx_peak_gb": 6.52}
+{"step": 160, "free_pct": 36, "swap_gb": 5.78, "mlx_active_gb": 5.22, "mlx_cache_gb": 1.01, "mlx_peak_gb": 6.52}
+{"step": 180, "free_pct": 36, "swap_gb": 5.74, "mlx_active_gb": 5.22, "mlx_cache_gb": 1.01, "mlx_peak_gb": 6.52}
