@@ -1820,6 +1820,705 @@
      }
     }
    }
+  },
+  "decision-v7/train": {
+   "questions": 15576,
+   "labelled": 14576,
+   "minutes": 37.64408483505249,
+   "hub_commit": "e33a5752221db00f0380d893fb5efd6f09d9b0b4",
+   "path": "qwen3-1.7b/decision-v7/train.jsonl",
+   "data": {
+    "repo": "jaredpalmer/kev-suites",
+    "revision": "cc4bac803e73112689ec327ffa481c519cbc7a05",
+    "file": "v7/decision-v7/train.jsonl",
+    "sha256": "7ed5254b5cb5291baefaceb09edf7e13110258211518c8038f4a12c11bd628ad",
+    "manifest_checked": true,
+    "records": 12576
+   },
+   "raw": {
+    "n": 14576,
+    "accuracy": 0.6158754116355654,
+    "nll": 4.077178914276683,
+    "brier": 0.710780494137395,
+    "ece": 0.34203995985891456,
+    "confident_error": 0.3035126234906696,
+    "mean_confidence": 0.9579153714944798,
+    "macro_source_accuracy": 0.5282341772151901,
+    "by_source": {
+     "agnews": {
+      "n": 1000,
+      "accuracy": 0.83
+     },
+     "agnews_yn": {
+      "n": 2000,
+      "accuracy": 0.674
+     },
+     "amazon": {
+      "n": 1000,
+      "accuracy": 0.306
+     },
+     "boolq": {
+      "n": 1000,
+      "accuracy": 0.747
+     },
+     "composition_rand:and(0,1)": {
+      "n": 28,
+      "accuracy": 0.75
+     },
+     "composition_rand:and(0,and(1,or(2,3)))": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:and(0,not(1))": {
+      "n": 28,
+      "accuracy": 0.6071428571428571
+     },
+     "composition_rand:and(0,not(if(1,2,3)))": {
+      "n": 28,
+      "accuracy": 0.6071428571428571
+     },
+     "composition_rand:and(0,unless(1,2))": {
+      "n": 28,
+      "accuracy": 0.6428571428571429
+     },
+     "composition_rand:and(0,unless(1,not(2)))": {
+      "n": 28,
+      "accuracy": 0.6071428571428571
+     },
+     "composition_rand:and(and(0,1),and(2,3))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:and(and(0,1),or(2,3))": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:and(and(0,1),unless(2,3))": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:and(and(0,not(1)),and(2,not(3)))": {
+      "n": 28,
+      "accuracy": 0.42857142857142855
+     },
+     "composition_rand:and(if(0,1,2),not(3))": {
+      "n": 28,
+      "accuracy": 0.25
+     },
+     "composition_rand:and(not(not(0)),or(and(1,2),not(3)))": {
+      "n": 28,
+      "accuracy": 0.5357142857142857
+     },
+     "composition_rand:and(or(0,1),or(2,3))": {
+      "n": 28,
+      "accuracy": 0.5357142857142857
+     },
+     "composition_rand:and(or(0,1),unless(2,3))": {
+      "n": 28,
+      "accuracy": 0.6071428571428571
+     },
+     "composition_rand:if(0,1,and(2,3))": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:if(0,and(1,2),not(3))": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:if(0,and(not(1),not(2)),not(not(3)))": {
+      "n": 28,
+      "accuracy": 0.6785714285714286
+     },
+     "composition_rand:if(0,not(1),and(2,3))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:if(0,not(or(1,2)),not(3))": {
+      "n": 28,
+      "accuracy": 0.5357142857142857
+     },
+     "composition_rand:if(and(0,1),2,3)": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:if(not(0),1,2)": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:not(and(0,1))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:not(and(0,or(1,2)))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:not(if(0,1,2))": {
+      "n": 28,
+      "accuracy": 0.6071428571428571
+     },
+     "composition_rand:not(if(0,not(1),or(2,3)))": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:not(not(or(0,1)))": {
+      "n": 28,
+      "accuracy": 0.6071428571428571
+     },
+     "composition_rand:not(or(0,1))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:not(or(0,or(1,2)))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:not(unless(0,1))": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:or(0,and(1,2))": {
+      "n": 28,
+      "accuracy": 0.5357142857142857
+     },
+     "composition_rand:or(0,if(1,2,3))": {
+      "n": 28,
+      "accuracy": 0.6071428571428571
+     },
+     "composition_rand:or(0,not(and(1,2)))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:or(0,not(or(1,2)))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:or(0,or(1,2))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:or(0,or(1,or(2,3)))": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:or(0,or(1,unless(2,3)))": {
+      "n": 28,
+      "accuracy": 0.5357142857142857
+     },
+     "composition_rand:or(0,or(and(1,2),not(3)))": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:or(and(0,1),and(2,3))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:or(and(0,1),or(2,3))": {
+      "n": 28,
+      "accuracy": 0.6071428571428571
+     },
+     "composition_rand:or(and(0,1),unless(2,3))": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:or(if(0,1,2),not(3))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:or(not(0),unless(1,2))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:or(or(0,1),or(2,3))": {
+      "n": 28,
+      "accuracy": 0.5357142857142857
+     },
+     "composition_rand:or(or(0,1),unless(2,3))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:or(unless(0,1),unless(2,3))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:unless(0,and(1,2))": {
+      "n": 28,
+      "accuracy": 0.6071428571428571
+     },
+     "composition_rand:unless(0,and(1,and(2,3)))": {
+      "n": 28,
+      "accuracy": 0.6428571428571429
+     },
+     "composition_rand:unless(0,and(and(1,2),not(3)))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:unless(0,or(1,2))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:unless(and(0,1),2)": {
+      "n": 28,
+      "accuracy": 0.5
+     },
+     "composition_rand:unless(and(0,1),and(2,3))": {
+      "n": 28,
+      "accuracy": 0.5357142857142857
+     },
+     "composition_rand:unless(and(0,1),unless(2,3))": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:unless(not(0),unless(1,2))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:unless(not(or(0,1)),not(and(2,3)))": {
+      "n": 28,
+      "accuracy": 0.6785714285714286
+     },
+     "composition_rand:unless(or(0,1),2)": {
+      "n": 28,
+      "accuracy": 0.5357142857142857
+     },
+     "composition_rand:unless(or(0,1),and(2,3))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:unless(or(0,1),or(2,3))": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:unless(or(not(0),unless(1,2)),3)": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:unless(unless(0,1),2)": {
+      "n": 28,
+      "accuracy": 0.6071428571428571
+     },
+     "composition_rand:unless(unless(0,or(1,2)),3)": {
+      "n": 28,
+      "accuracy": 0.6071428571428571
+     },
+     "contrastive_age_eligibility": {
+      "n": 112,
+      "accuracy": 0.9464285714285714
+     },
+     "contrastive_late_fee": {
+      "n": 112,
+      "accuracy": 0.6964285714285714
+     },
+     "contrastive_quantity_limit": {
+      "n": 112,
+      "accuracy": 0.6339285714285714
+     },
+     "contrastive_return_window": {
+      "n": 112,
+      "accuracy": 0.5178571428571429
+     },
+     "contrastive_sla_response": {
+      "n": 112,
+      "accuracy": 0.6607142857142857
+     },
+     "contrastive_spend_threshold": {
+      "n": 112,
+      "accuracy": 0.5446428571428571
+     },
+     "contrastive_volume_discount": {
+      "n": 112,
+      "accuracy": 0.5625
+     },
+     "contrastive_warranty_claim": {
+      "n": 112,
+      "accuracy": 0.32142857142857145
+     },
+     "dbpedia14": {
+      "n": 1000,
+      "accuracy": 0.921
+     },
+     "imdb": {
+      "n": 1000,
+      "accuracy": 0.795
+     },
+     "mnli": {
+      "n": 1000,
+      "accuracy": 0.521
+     },
+     "sst5": {
+      "n": 1000,
+      "accuracy": 0.413
+     },
+     "trec": {
+      "n": 1000,
+      "accuracy": 0.517
+     },
+     "yelp": {
+      "n": 1000,
+      "accuracy": 0.402
+     },
+     "yelp_yn": {
+      "n": 1000,
+      "accuracy": 0.792
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 5904,
+      "accuracy": 0.6366869918699187
+     },
+     "noul": {
+      "n": 5224,
+      "accuracy": 0.7362174578866769
+     },
+     "score": {
+      "n": 3448,
+      "accuracy": 0.39791183294663574
+     }
+    }
+   },
+   "calibrated": {
+    "n": 14576,
+    "accuracy": 0.6158754116355654,
+    "nll": 0.9009363775301779,
+    "brier": 0.5090683718916523,
+    "ece": 0.08201157048443082,
+    "confident_error": 0.01886663007683864,
+    "mean_confidence": 0.6412372930115997,
+    "macro_source_accuracy": 0.5282341772151901,
+    "by_source": {
+     "agnews": {
+      "n": 1000,
+      "accuracy": 0.83
+     },
+     "agnews_yn": {
+      "n": 2000,
+      "accuracy": 0.674
+     },
+     "amazon": {
+      "n": 1000,
+      "accuracy": 0.306
+     },
+     "boolq": {
+      "n": 1000,
+      "accuracy": 0.747
+     },
+     "composition_rand:and(0,1)": {
+      "n": 28,
+      "accuracy": 0.75
+     },
+     "composition_rand:and(0,and(1,or(2,3)))": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:and(0,not(1))": {
+      "n": 28,
+      "accuracy": 0.6071428571428571
+     },
+     "composition_rand:and(0,not(if(1,2,3)))": {
+      "n": 28,
+      "accuracy": 0.6071428571428571
+     },
+     "composition_rand:and(0,unless(1,2))": {
+      "n": 28,
+      "accuracy": 0.6428571428571429
+     },
+     "composition_rand:and(0,unless(1,not(2)))": {
+      "n": 28,
+      "accuracy": 0.6071428571428571
+     },
+     "composition_rand:and(and(0,1),and(2,3))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:and(and(0,1),or(2,3))": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:and(and(0,1),unless(2,3))": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:and(and(0,not(1)),and(2,not(3)))": {
+      "n": 28,
+      "accuracy": 0.42857142857142855
+     },
+     "composition_rand:and(if(0,1,2),not(3))": {
+      "n": 28,
+      "accuracy": 0.25
+     },
+     "composition_rand:and(not(not(0)),or(and(1,2),not(3)))": {
+      "n": 28,
+      "accuracy": 0.5357142857142857
+     },
+     "composition_rand:and(or(0,1),or(2,3))": {
+      "n": 28,
+      "accuracy": 0.5357142857142857
+     },
+     "composition_rand:and(or(0,1),unless(2,3))": {
+      "n": 28,
+      "accuracy": 0.6071428571428571
+     },
+     "composition_rand:if(0,1,and(2,3))": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:if(0,and(1,2),not(3))": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:if(0,and(not(1),not(2)),not(not(3)))": {
+      "n": 28,
+      "accuracy": 0.6785714285714286
+     },
+     "composition_rand:if(0,not(1),and(2,3))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:if(0,not(or(1,2)),not(3))": {
+      "n": 28,
+      "accuracy": 0.5357142857142857
+     },
+     "composition_rand:if(and(0,1),2,3)": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:if(not(0),1,2)": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:not(and(0,1))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:not(and(0,or(1,2)))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:not(if(0,1,2))": {
+      "n": 28,
+      "accuracy": 0.6071428571428571
+     },
+     "composition_rand:not(if(0,not(1),or(2,3)))": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:not(not(or(0,1)))": {
+      "n": 28,
+      "accuracy": 0.6071428571428571
+     },
+     "composition_rand:not(or(0,1))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:not(or(0,or(1,2)))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:not(unless(0,1))": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:or(0,and(1,2))": {
+      "n": 28,
+      "accuracy": 0.5357142857142857
+     },
+     "composition_rand:or(0,if(1,2,3))": {
+      "n": 28,
+      "accuracy": 0.6071428571428571
+     },
+     "composition_rand:or(0,not(and(1,2)))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:or(0,not(or(1,2)))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:or(0,or(1,2))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:or(0,or(1,or(2,3)))": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:or(0,or(1,unless(2,3)))": {
+      "n": 28,
+      "accuracy": 0.5357142857142857
+     },
+     "composition_rand:or(0,or(and(1,2),not(3)))": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:or(and(0,1),and(2,3))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:or(and(0,1),or(2,3))": {
+      "n": 28,
+      "accuracy": 0.6071428571428571
+     },
+     "composition_rand:or(and(0,1),unless(2,3))": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:or(if(0,1,2),not(3))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:or(not(0),unless(1,2))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:or(or(0,1),or(2,3))": {
+      "n": 28,
+      "accuracy": 0.5357142857142857
+     },
+     "composition_rand:or(or(0,1),unless(2,3))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:or(unless(0,1),unless(2,3))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:unless(0,and(1,2))": {
+      "n": 28,
+      "accuracy": 0.6071428571428571
+     },
+     "composition_rand:unless(0,and(1,and(2,3)))": {
+      "n": 28,
+      "accuracy": 0.6428571428571429
+     },
+     "composition_rand:unless(0,and(and(1,2),not(3)))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:unless(0,or(1,2))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:unless(and(0,1),2)": {
+      "n": 28,
+      "accuracy": 0.5
+     },
+     "composition_rand:unless(and(0,1),and(2,3))": {
+      "n": 28,
+      "accuracy": 0.5357142857142857
+     },
+     "composition_rand:unless(and(0,1),unless(2,3))": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:unless(not(0),unless(1,2))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:unless(not(or(0,1)),not(and(2,3)))": {
+      "n": 28,
+      "accuracy": 0.6785714285714286
+     },
+     "composition_rand:unless(or(0,1),2)": {
+      "n": 28,
+      "accuracy": 0.5357142857142857
+     },
+     "composition_rand:unless(or(0,1),and(2,3))": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:unless(or(0,1),or(2,3))": {
+      "n": 28,
+      "accuracy": 0.39285714285714285
+     },
+     "composition_rand:unless(or(not(0),unless(1,2)),3)": {
+      "n": 28,
+      "accuracy": 0.4642857142857143
+     },
+     "composition_rand:unless(unless(0,1),2)": {
+      "n": 28,
+      "accuracy": 0.6071428571428571
+     },
+     "composition_rand:unless(unless(0,or(1,2)),3)": {
+      "n": 28,
+      "accuracy": 0.6071428571428571
+     },
+     "contrastive_age_eligibility": {
+      "n": 112,
+      "accuracy": 0.9464285714285714
+     },
+     "contrastive_late_fee": {
+      "n": 112,
+      "accuracy": 0.6964285714285714
+     },
+     "contrastive_quantity_limit": {
+      "n": 112,
+      "accuracy": 0.6339285714285714
+     },
+     "contrastive_return_window": {
+      "n": 112,
+      "accuracy": 0.5178571428571429
+     },
+     "contrastive_sla_response": {
+      "n": 112,
+      "accuracy": 0.6607142857142857
+     },
+     "contrastive_spend_threshold": {
+      "n": 112,
+      "accuracy": 0.5446428571428571
+     },
+     "contrastive_volume_discount": {
+      "n": 112,
+      "accuracy": 0.5625
+     },
+     "contrastive_warranty_claim": {
+      "n": 112,
+      "accuracy": 0.32142857142857145
+     },
+     "dbpedia14": {
+      "n": 1000,
+      "accuracy": 0.921
+     },
+     "imdb": {
+      "n": 1000,
+      "accuracy": 0.795
+     },
+     "mnli": {
+      "n": 1000,
+      "accuracy": 0.521
+     },
+     "sst5": {
+      "n": 1000,
+      "accuracy": 0.413
+     },
+     "trec": {
+      "n": 1000,
+      "accuracy": 0.517
+     },
+     "yelp": {
+      "n": 1000,
+      "accuracy": 0.402
+     },
+     "yelp_yn": {
+      "n": 1000,
+      "accuracy": 0.792
+     }
+    },
+    "by_type": {
+     "choice": {
+      "n": 5904,
+      "accuracy": 0.6366869918699187
+     },
+     "noul": {
+      "n": 5224,
+      "accuracy": 0.7362174578866769
+     },
+     "score": {
+      "n": 3448,
+      "accuracy": 0.39791183294663574
+     }
+    }
+   }
   }
  },
  "temperature": 10.401588237065393
