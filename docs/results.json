@@ -1,9 +1,9 @@
 {
  "summary": {
   "generated": "2026-11-02",
-  "runs_total": 75,
-  "runs_finished_nonsmoke": 57,
-  "train_hours_nonsmoke": 106.2,
+  "runs_total": 78,
+  "runs_finished_nonsmoke": 60,
+  "train_hours_nonsmoke": 115.9,
   "published_models": [
    "BrandeisPatrick/tino-finetuned",
    "BrandeisPatrick/tino-adapter",
@@ -11,7 +11,7 @@
    "BrandeisPatrick/tino-adapter-post",
    "BrandeisPatrick/tino-distil-a1"
   ],
-  "timeline_events": 138
+  "timeline_events": 143
  },
  "runs": [
   {
@@ -6676,8 +6676,58 @@
    "alpha": 0.5,
    "backbone_lr": 0.0001,
    "brier_weight": null,
-   "status": "incomplete",
-   "metrics": {},
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.8025,
+     "brier": 0.2846,
+     "ece_raw": 0.0304,
+     "ece_cal": 0.0371,
+     "ms": 83,
+     "n": 1468
+    },
+    "decision-v7/test": {
+     "acc": 0.8187,
+     "brier": 0.2755,
+     "ece_raw": 0.0489,
+     "ece_cal": 0.0445,
+     "ms": 83,
+     "n": 1440
+    },
+    "transfer-v4/development": {
+     "acc": 0.6178,
+     "brier": 0.4841,
+     "ece_raw": 0.0592,
+     "ece_cal": 0.0693,
+     "ms": 51,
+     "n": 764
+    },
+    "transfer-v4/test": {
+     "acc": 0.6518,
+     "brier": 0.4729,
+     "ece_raw": 0.0572,
+     "ece_cal": 0.067,
+     "ms": 51,
+     "n": 764
+    },
+    "transfer-v9/test": {
+     "acc": 0.5688,
+     "brier": 0.5474,
+     "ece_raw": 0.0503,
+     "ece_cal": 0.0761,
+     "ms": 61,
+     "n": 1264
+    }
+   },
+   "temperature": 0.786,
+   "best_step": 2878,
+   "train_minutes": 194,
+   "trainable_params": 10617344,
+   "by_type_test": {
+    "choice": 0.8635,
+    "noul": 0.873,
+    "score": 0.575
+   },
    "dev_curve": [
     [
      359,
@@ -6686,11 +6736,311 @@
     [
      718,
      0.75
+    ],
+    [
+     1077,
+     0.78
+    ],
+    [
+     1436,
+     0.782
+    ],
+    [
+     1795,
+     0.7827
+    ],
+    [
+     2154,
+     0.7895
+    ],
+    [
+     2513,
+     0.7977
+    ],
+    [
+     2872,
+     0.8011
+    ],
+    [
+     2878,
+     0.8025
     ]
    ],
    "collapsed": false,
    "peak_gb": 4.06,
    "min_free_pct": 44,
+   "has_predictions": true
+  },
+  {
+   "id": "20261102-142142-tino-distil-t8b-a1",
+   "name": "tino-distil-t8b-a1",
+   "started": "20261102-142142",
+   "smoke": false,
+   "dir": "runs/20261102-142142-tino-distil-t8b-a1",
+   "code_commit": "6e206d9b",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora + distillation",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": null,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": 1.0,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.7595,
+     "brier": 0.3404,
+     "ece_raw": 0.0411,
+     "ece_cal": 0.0476,
+     "ms": 83,
+     "n": 1468
+    },
+    "decision-v7/test": {
+     "acc": 0.7556,
+     "brier": 0.3354,
+     "ece_raw": 0.0389,
+     "ece_cal": 0.0381,
+     "ms": 84,
+     "n": 1440
+    },
+    "transfer-v4/development": {
+     "acc": 0.5969,
+     "brier": 0.4757,
+     "ece_raw": 0.0599,
+     "ece_cal": 0.0727,
+     "ms": 51,
+     "n": 764
+    },
+    "transfer-v4/test": {
+     "acc": 0.6178,
+     "brier": 0.4697,
+     "ece_raw": 0.0632,
+     "ece_cal": 0.0676,
+     "ms": 51,
+     "n": 764
+    },
+    "transfer-v9/test": {
+     "acc": 0.5451,
+     "brier": 0.5483,
+     "ece_raw": 0.0631,
+     "ece_cal": 0.0589,
+     "ms": 61,
+     "n": 1264
+    }
+   },
+   "temperature": 0.905,
+   "best_step": 2520,
+   "train_minutes": 194,
+   "trainable_params": 10617344,
+   "by_type_test": {
+    "choice": 0.796,
+    "noul": 0.8234,
+    "score": 0.4958
+   },
+   "dev_curve": [
+    [
+     360,
+     0.6723
+    ],
+    [
+     720,
+     0.7241
+    ],
+    [
+     1080,
+     0.7241
+    ],
+    [
+     1440,
+     0.7446
+    ],
+    [
+     1800,
+     0.7473
+    ],
+    [
+     2160,
+     0.7554
+    ],
+    [
+     2520,
+     0.7595
+    ],
+    [
+     2880,
+     0.7514
+    ],
+    [
+     2881,
+     0.7514
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 4.02,
+   "min_free_pct": 40,
+   "has_predictions": true
+  },
+  {
+   "id": "20261102-174406-tino-distil-t8b-a1-s1",
+   "name": "tino-distil-t8b-a1-s1",
+   "started": "20261102-174406",
+   "smoke": false,
+   "dir": "runs/20261102-174406-tino-distil-t8b-a1-s1",
+   "code_commit": "2fc45fc7",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora + distillation",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 1,
+   "epochs": 2,
+   "train_limit": null,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": 1.0,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.7548,
+     "brier": 0.3461,
+     "ece_raw": 0.0471,
+     "ece_cal": 0.046,
+     "ms": 89,
+     "n": 1468
+    },
+    "decision-v7/test": {
+     "acc": 0.7472,
+     "brier": 0.3429,
+     "ece_raw": 0.0425,
+     "ece_cal": 0.0473,
+     "ms": 87,
+     "n": 1440
+    },
+    "transfer-v4/development": {
+     "acc": 0.5864,
+     "brier": 0.4952,
+     "ece_raw": 0.031,
+     "ece_cal": 0.0385,
+     "ms": 51,
+     "n": 764
+    },
+    "transfer-v4/test": {
+     "acc": 0.6335,
+     "brier": 0.4801,
+     "ece_raw": 0.0556,
+     "ece_cal": 0.0494,
+     "ms": 51,
+     "n": 764
+    },
+    "transfer-v9/test": {
+     "acc": 0.5546,
+     "brier": 0.5568,
+     "ece_raw": 0.0449,
+     "ece_cal": 0.0476,
+     "ms": 61,
+     "n": 1264
+    }
+   },
+   "temperature": 0.911,
+   "best_step": 2872,
+   "train_minutes": 194,
+   "trainable_params": 10617344,
+   "by_type_test": {
+    "choice": 0.7902,
+    "noul": 0.8175,
+    "score": 0.475
+   },
+   "dev_curve": [
+    [
+     359,
+     0.6594
+    ],
+    [
+     718,
+     0.7207
+    ],
+    [
+     1077,
+     0.7221
+    ],
+    [
+     1436,
+     0.7493
+    ],
+    [
+     1795,
+     0.7514
+    ],
+    [
+     2154,
+     0.75
+    ],
+    [
+     2513,
+     0.7541
+    ],
+    [
+     2872,
+     0.7548
+    ],
+    [
+     2878,
+     0.7541
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 4.03,
+   "min_free_pct": 46,
+   "has_predictions": true
+  },
+  {
+   "id": "20261102-210717-tino-adapter-bf16",
+   "name": "tino-adapter-bf16",
+   "started": "20261102-210717",
+   "smoke": false,
+   "dir": "runs/20261102-210717-tino-adapter-bf16",
+   "code_commit": "414bff2b",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora",
+   "base_model": "Qwen/Qwen3-0.6B-Base",
+   "base_revision": "da87bfb6",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": null,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": null,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "incomplete",
+   "metrics": {},
+   "dev_curve": [
+    [
+     360,
+     0.6723
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 2.36,
+   "min_free_pct": 52,
    "has_predictions": false
   }
  ]
