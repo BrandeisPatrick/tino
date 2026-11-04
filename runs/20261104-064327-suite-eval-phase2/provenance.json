@@ -1,0 +1,18 @@
+{
+ "run_id": "20261104-064327-suite-eval-phase2",
+ "code": {
+  "commit": "ad59871c541528c5c8ab20fc6bb1459f04822453",
+  "dirty": false,
+  "dirty_files": []
+ },
+ "environment": {
+  "python": "3.12.13",
+  "mlx": "0.32.3",
+  "mlx_lm": "0.32.0",
+  "machine": "arm64",
+  "os": "macOS-27.2-arm64-arm-64bit",
+  "chip": "Apple M4",
+  "memory_gb": 16
+ },
+ "started": "2026-11-04T06:43:28-0500"
+}
