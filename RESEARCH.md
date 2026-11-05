@@ -212,7 +212,7 @@ Distilling from the thinking teacher would need reasoning traces for all 15,576 
 
 ## Later: are decision models more parameter-efficient?
 
-Raised by Patrick on October 30; recorded here, not scheduled. Phase 2 runs first.
+Raised by Patrick on October 30. The generative arm ran from October 31 to November 5; results at the end of this section.
 
 **Hypothesis.** A decision model only has to understand the situation and score the options. A generative model also spends capacity producing fluent text: grammar, wording, format. So a decision model should reach the same decision quality with far fewer parameters.
 
@@ -235,3 +235,21 @@ Raised by Patrick on October 30; recorded here, not scheduled. Phase 2 runs firs
 - Checked on the CPU against slow references with a tiny random Qwen3 ([`scripts/check_generative.py`](scripts/check_generative.py)): row parity with the decision encoder, answer-position loss, cached option scores (largest difference 4e-5), cached greedy answers, one combined pass against separate passes, the parser, and a full smoke run. Questions are read one at a time with their own KV cache: the first GPU smoke run ran out of memory generating 16 answers at once.
 - GPU smoke runs passed on November 1 ([0.6B](runs/20261101-003217-tino-gen-smoke), [1.7B](runs/20261101-004944-tino-gen-1.7b-smoke)): peak 4.1 and 5.0 GB, free memory never under 48%. Writing an answer takes about 0.3 s per question at 0.6B and 0.5 s at 1.7B (the decision model answers in 0.05 s); scoring takes about 0.1 s, or 1.7 s for banking77's 77 options.
 - Runs ([`scripts/gen_arm.jobs`](scripts/gen_arm.jobs)): the two 0.6B runs first, from November 1 at 01:12 (2,881 steps, the same as `tino-adapter`; about 350–430 tokens per second against 470 for the decision adapter; about 6 hours each with the written development checks and final readings); the two 1.7B runs after Phase 2, compared with the 1.7B adapter (M1).
+
+**Results (November 5).** Test accuracy with seeds averaged. Generative runs are scored on the answer they wrote, and an answer that names no option counts as wrong. Paired tests are by [`scripts/seed_compare.py`](scripts/seed_compare.py) ([`docs/seed_compare.json`](docs/seed_compare.json)): a sign-flip permutation test with a bootstrap interval, Holm-corrected within this question (PE). A "claim" needs every seed-matched pair to agree.
+
+| Model | Seeds | In domain | New sources (v4) | Hardest (v9) | Seconds per question |
+|---|---|---|---|---|---|
+| Decision adapter, 0.6B | 3 | 0.811 | 0.637 | 0.557 | 0.05 |
+| Generative, 0.6B | 2 | 0.791 | 0.621 | 0.555 | 0.27 |
+| Decision adapter, 1.7B | 3 | 0.841 | 0.671 | 0.594 | 0.18 |
+| Generative, 1.7B | 2 | 0.778 | 0.620 | 0.566 | 0.47 |
+| Generative, 1.7B, seed 0 only | 1 | 0.821 | 0.643 | 0.577 | 0.47 |
+
+- **At 0.6B,** the decision model leads by 2.0 points in domain, a claim (interval +0.7 to +3.2). Out of domain, its leads of 1.5 and 0.2 points are not shown.
+- **At 1.7B,** the leads are 6.3, 5.0 and 2.8 points, all claims, but most of the gap comes from one generative seed. [Seed 1](runs/20261104-190036-tino-gen-1.7b-s1) diverged between steps 1,040 and 1,200: its loss rose to 4.5 and its gradient norm before clipping to 624. Its development accuracy fell from 0.729 to 0.605 and recovered only to 0.734. [Seed 0](runs/20261104-102646-tino-gen-1.7b) trails the decision model by 2.4, 1.2 and 0.3 points, about the same as at 0.6B. None of the three 1.7B decision runs had such an episode.
+- **The 0.6B decision model against the 1.7B generative one:** it leads by 3.3 points in domain. That is a lean, not a claim, because generative seed 0 is 1.0 point ahead of decision seed 0. Out of domain the differences are +1.6 and −0.9 points, not shown. With about a third of the parameters, the decision model is as accurate, and it answers about nine times faster.
+- **Writing almost never fails.** Between 0.1% and 3.2% of written answers name no option, most of them on transfer-v9. Written and scored accuracy differ by under half a point. The cost of writing is accuracy, time and stability, not invalid output.
+- **Run times:** about 4.2 hours per 0.6B run and 8.6 hours per 1.7B run, with every development check written out.
+
+**Reading.** In practice, the decision format is the more parameter-efficient one: a 0.6B decision model matches a generative model three times its size, and it trains more stably. The test written down on October 30 does not confirm the proposed mechanism, though. The lead did not shrink from 0.6B to 1.7B: 2.0 points in domain at 0.6B, against 2.4 for the stable 1.7B seed. A lead that holds across sizes points to the training signal or the output format, not to capacity spent on grammar. This evidence covers two sizes with two seeds each, and one of those runs diverged. Before the shape of the curve counts as a finding, it needs a third size (4B, at the 4,000-question scale on this machine) and a third generative seed at 1.7B.

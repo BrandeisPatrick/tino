@@ -3,7 +3,7 @@
 For each recipe, every finished full-data run with that name (seed suffixes -s1, -s2 folded together) is loaded from
 its saved predictions. A question's score for a recipe is its correctness averaged over that recipe's seeds. Each
 comparison is a paired sign-flip permutation test on those per-question differences, with a bootstrap 95% interval,
-Holm's correction within each research question (the Phase 2 rule) and across all comparisons (stricter), and
+Holm's correction within each research question (the Phase 2 rule; PE is the decision-against-generative question) and across all comparisons (stricter), and
 whether every seed-matched pair (seed k of A against seed k of B) agrees in sign. Phase 2 claims a difference when the
 corrected interval excludes zero and every seed agrees; otherwise it is a lean. Seeds are averaged, not modelled.
 
@@ -22,10 +22,14 @@ ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SPLITS = ["decision-v7/test", "transfer-v4/test", "transfer-v9/test"]
 RECIPES = {"full fine-tune": "tino-finetuned", "adapter": "tino-adapter", "adapter, post-trained start": "tino-adapter-post",
            "teacher 0.25": "tino-distil-a025", "teacher 0.5": "tino-distil", "teacher 0.75": "tino-distil-a075",
-           "teacher only": "tino-distil-a1", "teacher 0.5, unsoftened": "tino-distil-raw"}
+           "teacher only": "tino-distil-a1", "teacher 0.5, unsoftened": "tino-distil-raw", "adapter, bf16": "tino-adapter-bf16",
+           "adapter 1.7B": "tino-adapter-1.7b", "teacher 0.5, 1.7B": "tino-distil-1.7b", "generative": "tino-gen",
+           "generative 1.7B": "tino-gen-1.7b"}
 COMPARISONS = [("adapter", "full fine-tune", "RQ2"), ("teacher 0.5", "adapter", "RQ4"), ("teacher only", "adapter", "RQ4"),
                ("teacher 0.25", "adapter", "RQ4"), ("teacher 0.75", "adapter", "RQ4"),
-               ("teacher 0.5, unsoftened", "teacher 0.5", "H4"), ("adapter, post-trained start", "adapter", "RQ3b")]
+               ("teacher 0.5, unsoftened", "teacher 0.5", "H4"), ("adapter, post-trained start", "adapter", "RQ3b"),
+               ("adapter 1.7B", "adapter", "RQ2"), ("adapter 1.7B", "adapter, bf16", "RQ2"), ("teacher 0.5, 1.7B", "adapter 1.7B", "RQ4"),
+               ("adapter", "generative", "PE"), ("adapter 1.7B", "generative 1.7B", "PE"), ("adapter", "generative 1.7B", "PE")]
 
 
 def finished_runs(base):
@@ -42,7 +46,9 @@ def finished_runs(base):
 def correctness(rid, split):
     with gzip.open(os.path.join(ROOT, "runs", rid, "predictions", split.replace("/", "--") + ".jsonl.gz"), "rt") as f:
         rows = [json.loads(l) for l in f]
-    return {(r["rec_idx"], r["qid"]): int(int(np.argmax(r["logits"])) == r["label"]) for r in rows}
+    # Generative runs are scored on the answer they wrote (an unparsable one is wrong), not on their option scores.
+    return {(r["rec_idx"], r["qid"]): int((r["written_idx"] if "written_idx" in r else int(np.argmax(r["logits"]))) == r["label"])
+            for r in rows}
 
 
 def holm(ps):
