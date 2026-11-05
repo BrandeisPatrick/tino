@@ -1,9 +1,9 @@
 {
  "summary": {
-  "generated": "2026-11-04",
-  "runs_total": 84,
-  "runs_finished_nonsmoke": 67,
-  "train_hours_nonsmoke": 148.0,
+  "generated": "2026-11-05",
+  "runs_total": 86,
+  "runs_finished_nonsmoke": 69,
+  "train_hours_nonsmoke": 163.2,
   "published_models": [
    "BrandeisPatrick/tino-finetuned",
    "BrandeisPatrick/tino-adapter",
@@ -11,7 +11,7 @@
    "BrandeisPatrick/tino-adapter-post",
    "BrandeisPatrick/tino-distil-a1"
   ],
-  "timeline_events": 151
+  "timeline_events": 154
  },
  "runs": [
   {
@@ -8476,8 +8476,844 @@
       "perturbed_balanced": 0.6106,
       "bases_all_perturbations_right": 0.4722222222222222
      }
+    },
+    "tino-distil-t8b": {
+     "semif-v1/development": {
+      "acc": 0.6627,
+      "ece_raw": 0.1242,
+      "ece_cal": 0.087,
+      "n": 252
+     },
+     "scienthoon-v1/development": {
+      "acc": 0.5521,
+      "ece_raw": 0.0774,
+      "ece_cal": 0.1047,
+      "n": 873
+     },
+     "binding-v1/all": {
+      "acc": 0.6911,
+      "ece_raw": 0.0486,
+      "ece_cal": 0.0388,
+      "n": 560
+     },
+     "public-trio": {
+      "acc": 0.546,
+      "ece_raw": 0.0924,
+      "ece_cal": 0.0684,
+      "n": 348
+     },
+     "transfer-r3/test": {
+      "acc": 0.6381,
+      "ece_raw": 0.0315,
+      "ece_cal": 0.0421,
+      "n": 1260
+     },
+     "temperature": 0.86,
+     "permutation_same_answer": {
+      "transfer-v4/development": 0.7928,
+      "semif-v1/development": 0.8452,
+      "binding-v1/all": 0.8929,
+      "public-trio": 0.7615
+     },
+     "no_state": {
+      "transfer-v4/development": [
+       0.627,
+       0.4581
+      ],
+      "binding-v1/all": [
+       0.6911,
+       0.5107
+      ],
+      "semif-v1/development": [
+       0.6627,
+       0.2778
+      ]
+     },
+     "semif": {
+      "clean_balanced": 0.6653,
+      "perturbed_balanced": 0.651,
+      "bases_all_perturbations_right": 0.5
+     }
+    },
+    "tino-distil-t8b-s1": {
+     "semif-v1/development": {
+      "acc": 0.6071,
+      "ece_raw": 0.0894,
+      "ece_cal": 0.0903,
+      "n": 252
+     },
+     "scienthoon-v1/development": {
+      "acc": 0.4994,
+      "ece_raw": 0.1287,
+      "ece_cal": 0.1686,
+      "n": 873
+     },
+     "binding-v1/all": {
+      "acc": 0.675,
+      "ece_raw": 0.0707,
+      "ece_cal": 0.0622,
+      "n": 560
+     },
+     "public-trio": {
+      "acc": 0.5086,
+      "ece_raw": 0.0523,
+      "ece_cal": 0.0724,
+      "n": 348
+     },
+     "transfer-r3/test": {
+      "acc": 0.6548,
+      "ece_raw": 0.0361,
+      "ece_cal": 0.0606,
+      "n": 1260
+     },
+     "temperature": 0.786,
+     "permutation_same_answer": {
+      "transfer-v4/development": 0.7793,
+      "semif-v1/development": 0.8532,
+      "binding-v1/all": 0.9446,
+      "public-trio": 0.7529
+     },
+     "no_state": {
+      "transfer-v4/development": [
+       0.6178,
+       0.4136
+      ],
+      "binding-v1/all": [
+       0.675,
+       0.5107
+      ],
+      "semif-v1/development": [
+       0.6071,
+       0.2579
+      ]
+     },
+     "semif": {
+      "clean_balanced": 0.6366,
+      "perturbed_balanced": 0.6148,
+      "bases_all_perturbations_right": 0.4722222222222222
+     }
+    },
+    "tino-distil-t8b-a1": {
+     "semif-v1/development": {
+      "acc": 0.5873,
+      "ece_raw": 0.0734,
+      "ece_cal": 0.0598,
+      "n": 252
+     },
+     "scienthoon-v1/development": {
+      "acc": 0.5384,
+      "ece_raw": 0.0709,
+      "ece_cal": 0.0761,
+      "n": 873
+     },
+     "binding-v1/all": {
+      "acc": 0.6768,
+      "ece_raw": 0.0774,
+      "ece_cal": 0.0752,
+      "n": 560
+     },
+     "public-trio": {
+      "acc": 0.5057,
+      "ece_raw": 0.0974,
+      "ece_cal": 0.07,
+      "n": 348
+     },
+     "transfer-r3/test": {
+      "acc": 0.6325,
+      "ece_raw": 0.0524,
+      "ece_cal": 0.0482,
+      "n": 1260
+     },
+     "temperature": 0.905,
+     "permutation_same_answer": {
+      "transfer-v4/development": 0.7635,
+      "semif-v1/development": 0.7857,
+      "binding-v1/all": 0.825,
+      "public-trio": 0.7557
+     },
+     "no_state": {
+      "transfer-v4/development": [
+       0.5969,
+       0.4175
+      ],
+      "binding-v1/all": [
+       0.6768,
+       0.5107
+      ],
+      "semif-v1/development": [
+       0.5873,
+       0.2897
+      ]
+     },
+     "semif": {
+      "clean_balanced": 0.6104,
+      "perturbed_balanced": 0.573,
+      "bases_all_perturbations_right": 0.4444444444444444
+     }
+    },
+    "tino-distil-t8b-a1-s1": {
+     "semif-v1/development": {
+      "acc": 0.5992,
+      "ece_raw": 0.117,
+      "ece_cal": 0.0739,
+      "n": 252
+     },
+     "scienthoon-v1/development": {
+      "acc": 0.5143,
+      "ece_raw": 0.0921,
+      "ece_cal": 0.0988,
+      "n": 873
+     },
+     "binding-v1/all": {
+      "acc": 0.6875,
+      "ece_raw": 0.0628,
+      "ece_cal": 0.0471,
+      "n": 560
+     },
+     "public-trio": {
+      "acc": 0.523,
+      "ece_raw": 0.0737,
+      "ece_cal": 0.0599,
+      "n": 348
+     },
+     "transfer-r3/test": {
+      "acc": 0.631,
+      "ece_raw": 0.0344,
+      "ece_cal": 0.0415,
+      "n": 1260
+     },
+     "temperature": 0.911,
+     "permutation_same_answer": {
+      "transfer-v4/development": 0.7387,
+      "semif-v1/development": 0.7738,
+      "binding-v1/all": 0.825,
+      "public-trio": 0.704
+     },
+     "no_state": {
+      "transfer-v4/development": [
+       0.5864,
+       0.4071
+      ],
+      "binding-v1/all": [
+       0.6875,
+       0.5107
+      ],
+      "semif-v1/development": [
+       0.5992,
+       0.2778
+      ]
+     },
+     "semif": {
+      "clean_balanced": 0.5895,
+      "perturbed_balanced": 0.588,
+      "bases_all_perturbations_right": 0.5277777777777778
+     }
+    },
+    "tino-adapter-bf16": {
+     "semif-v1/development": {
+      "acc": 0.5833,
+      "ece_raw": 0.1148,
+      "ece_cal": 0.0893,
+      "n": 252
+     },
+     "scienthoon-v1/development": {
+      "acc": 0.5372,
+      "ece_raw": 0.2458,
+      "ece_cal": 0.1212,
+      "n": 873
+     },
+     "binding-v1/all": {
+      "acc": 0.6393,
+      "ece_raw": 0.0643,
+      "ece_cal": 0.0904,
+      "n": 560
+     },
+     "public-trio": {
+      "acc": 0.5144,
+      "ece_raw": 0.2028,
+      "ece_cal": 0.0704,
+      "n": 348
+     },
+     "transfer-r3/test": {
+      "acc": 0.6484,
+      "ece_raw": 0.1488,
+      "ece_cal": 0.053,
+      "n": 1260
+     },
+     "temperature": 1.933,
+     "permutation_same_answer": {
+      "transfer-v4/development": 0.7365,
+      "semif-v1/development": 0.6865,
+      "binding-v1/all": 0.8036,
+      "public-trio": 0.6839
+     },
+     "no_state": {
+      "transfer-v4/development": [
+       0.627,
+       0.4359
+      ],
+      "binding-v1/all": [
+       0.6393,
+       0.4911
+      ],
+      "semif-v1/development": [
+       0.5833,
+       0.3175
+      ]
+     },
+     "semif": {
+      "clean_balanced": 0.6077,
+      "perturbed_balanced": 0.5533,
+      "bases_all_perturbations_right": 0.4166666666666667
+     }
+    },
+    "tino-adapter-1.7b": {
+     "semif-v1/development": {
+      "acc": 0.7262,
+      "ece_raw": 0.1109,
+      "ece_cal": 0.0622,
+      "n": 252
+     },
+     "scienthoon-v1/development": {
+      "acc": 0.5601,
+      "ece_raw": 0.2178,
+      "ece_cal": 0.1529,
+      "n": 873
+     },
+     "binding-v1/all": {
+      "acc": 0.7518,
+      "ece_raw": 0.0515,
+      "ece_cal": 0.1055,
+      "n": 560
+     },
+     "public-trio": {
+      "acc": 0.6408,
+      "ece_raw": 0.0848,
+      "ece_cal": 0.0713,
+      "n": 348
+     },
+     "transfer-r3/test": {
+      "acc": 0.677,
+      "ece_raw": 0.1425,
+      "ece_cal": 0.0705,
+      "n": 1260
+     },
+     "temperature": 1.575,
+     "permutation_same_answer": {
+      "transfer-v4/development": 0.8086,
+      "semif-v1/development": 0.8849,
+      "binding-v1/all": 0.9286,
+      "public-trio": 0.7471
+     },
+     "no_state": {
+      "transfer-v4/development": [
+       0.6283,
+       0.3822
+      ],
+      "binding-v1/all": [
+       0.7518,
+       0.5018
+      ],
+      "semif-v1/development": [
+       0.7262,
+       0.3571
+      ]
+     },
+     "semif": {
+      "clean_balanced": 0.7302,
+      "perturbed_balanced": 0.7157,
+      "bases_all_perturbations_right": 0.6666666666666666
+     }
+    },
+    "tino-adapter-1.7b-s1": {
+     "semif-v1/development": {
+      "acc": 0.6984,
+      "ece_raw": 0.1194,
+      "ece_cal": 0.0715,
+      "n": 252
+     },
+     "scienthoon-v1/development": {
+      "acc": 0.551,
+      "ece_raw": 0.2232,
+      "ece_cal": 0.1502,
+      "n": 873
+     },
+     "binding-v1/all": {
+      "acc": 0.7429,
+      "ece_raw": 0.0768,
+      "ece_cal": 0.051,
+      "n": 560
+     },
+     "public-trio": {
+      "acc": 0.6379,
+      "ece_raw": 0.1398,
+      "ece_cal": 0.0648,
+      "n": 348
+     },
+     "transfer-r3/test": {
+      "acc": 0.6968,
+      "ece_raw": 0.1286,
+      "ece_cal": 0.0588,
+      "n": 1260
+     },
+     "temperature": 1.552,
+     "permutation_same_answer": {
+      "transfer-v4/development": 0.8356,
+      "semif-v1/development": 0.7897,
+      "binding-v1/all": 0.9607,
+      "public-trio": 0.7989
+     },
+     "no_state": {
+      "transfer-v4/development": [
+       0.6597,
+       0.4123
+      ],
+      "binding-v1/all": [
+       0.7429,
+       0.4893
+      ],
+      "semif-v1/development": [
+       0.6984,
+       0.2937
+      ]
+     },
+     "semif": {
+      "clean_balanced": 0.6873,
+      "perturbed_balanced": 0.7041,
+      "bases_all_perturbations_right": 0.5555555555555556
+     }
+    },
+    "tino-adapter-1.7b-s2": {
+     "semif-v1/development": {
+      "acc": 0.754,
+      "ece_raw": 0.1136,
+      "ece_cal": 0.0534,
+      "n": 252
+     },
+     "scienthoon-v1/development": {
+      "acc": 0.5521,
+      "ece_raw": 0.2259,
+      "ece_cal": 0.1453,
+      "n": 873
+     },
+     "binding-v1/all": {
+      "acc": 0.7196,
+      "ece_raw": 0.0757,
+      "ece_cal": 0.0928,
+      "n": 560
+     },
+     "public-trio": {
+      "acc": 0.6494,
+      "ece_raw": 0.1493,
+      "ece_cal": 0.0681,
+      "n": 348
+     },
+     "transfer-r3/test": {
+      "acc": 0.7087,
+      "ece_raw": 0.1326,
+      "ece_cal": 0.0564,
+      "n": 1260
+     },
+     "temperature": 1.638,
+     "permutation_same_answer": {
+      "transfer-v4/development": 0.8311,
+      "semif-v1/development": 0.8651,
+      "binding-v1/all": 0.9125,
+      "public-trio": 0.8132
+     },
+     "no_state": {
+      "transfer-v4/development": [
+       0.6728,
+       0.4424
+      ],
+      "binding-v1/all": [
+       0.7196,
+       0.4911
+      ],
+      "semif-v1/development": [
+       0.754,
+       0.3135
+      ]
+     },
+     "semif": {
+      "clean_balanced": 0.7269,
+      "perturbed_balanced": 0.7885,
+      "bases_all_perturbations_right": 0.6666666666666666
+     }
+    },
+    "tino-distil-1.7b": {
+     "semif-v1/development": {
+      "acc": 0.7897,
+      "ece_raw": 0.1349,
+      "ece_cal": 0.1009,
+      "n": 252
+     },
+     "scienthoon-v1/development": {
+      "acc": 0.5842,
+      "ece_raw": 0.1228,
+      "ece_cal": 0.1307,
+      "n": 873
+     },
+     "binding-v1/all": {
+      "acc": 0.7429,
+      "ece_raw": 0.0454,
+      "ece_cal": 0.0327,
+      "n": 560
+     },
+     "public-trio": {
+      "acc": 0.6351,
+      "ece_raw": 0.0769,
+      "ece_cal": 0.0353,
+      "n": 348
+     },
+     "transfer-r3/test": {
+      "acc": 0.6865,
+      "ece_raw": 0.058,
+      "ece_cal": 0.0786,
+      "n": 1260
+     },
+     "temperature": 0.799,
+     "permutation_same_answer": {
+      "transfer-v4/development": 0.75,
+      "semif-v1/development": 0.9246,
+      "binding-v1/all": 0.8232,
+      "public-trio": 0.7816
+     },
+     "no_state": {
+      "transfer-v4/development": [
+       0.6387,
+       0.4097
+      ],
+      "binding-v1/all": [
+       0.7429,
+       0.4911
+      ],
+      "semif-v1/development": [
+       0.7897,
+       0.2976
+      ]
+     },
+     "semif": {
+      "clean_balanced": 0.7508,
+      "perturbed_balanced": 0.8674,
+      "bases_all_perturbations_right": 0.75
+     }
+    },
+    "tino-distil-1.7b-s1": {
+     "semif-v1/development": {
+      "acc": 0.7579,
+      "ece_raw": 0.1065,
+      "ece_cal": 0.0674,
+      "n": 252
+     },
+     "scienthoon-v1/development": {
+      "acc": 0.5888,
+      "ece_raw": 0.095,
+      "ece_cal": 0.11,
+      "n": 873
+     },
+     "binding-v1/all": {
+      "acc": 0.75,
+      "ece_raw": 0.0487,
+      "ece_cal": 0.0368,
+      "n": 560
+     },
+     "public-trio": {
+      "acc": 0.6149,
+      "ece_raw": 0.1038,
+      "ece_cal": 0.0665,
+      "n": 348
+     },
+     "transfer-r3/test": {
+      "acc": 0.7079,
+      "ece_raw": 0.0405,
+      "ece_cal": 0.0497,
+      "n": 1260
+     },
+     "temperature": 0.791,
+     "permutation_same_answer": {
+      "transfer-v4/development": 0.7725,
+      "semif-v1/development": 0.881,
+      "binding-v1/all": 0.8357,
+      "public-trio": 0.7701
+     },
+     "no_state": {
+      "transfer-v4/development": [
+       0.6531,
+       0.4346
+      ],
+      "binding-v1/all": [
+       0.75,
+       0.5107
+      ],
+      "semif-v1/development": [
+       0.7579,
+       0.3968
+      ]
+     },
+     "semif": {
+      "clean_balanced": 0.7371,
+      "perturbed_balanced": 0.8039,
+      "bases_all_perturbations_right": 0.6944444444444444
+     }
     }
    },
+   "has_predictions": true
+  },
+  {
+   "id": "20261104-102646-tino-gen-1.7b",
+   "name": "tino-gen-1.7b",
+   "started": "20261104-102646",
+   "smoke": false,
+   "dir": "runs/20261104-102646-tino-gen-1.7b",
+   "code_commit": "36e4d9e3",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora + generation (text)",
+   "base_model": "Qwen/Qwen3-1.7B-Base",
+   "base_revision": "ea980cb0",
+   "seed": 0,
+   "epochs": 2,
+   "train_limit": null,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": null,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.8113,
+     "brier": 0.2885,
+     "ece_raw": 0.0945,
+     "ece_cal": 0.0477,
+     "ms": 478,
+     "n": 1468,
+     "scored_acc": 0.8065,
+     "invalid": 0.0027
+    },
+    "decision-v7/test": {
+     "acc": 0.8208,
+     "brier": 0.2701,
+     "ece_raw": 0.0869,
+     "ece_cal": 0.0322,
+     "ms": 465,
+     "n": 1440,
+     "scored_acc": 0.8222,
+     "invalid": 0.009
+    },
+    "transfer-v4/development": {
+     "acc": 0.6322,
+     "brier": 0.5339,
+     "ece_raw": 0.1622,
+     "ece_cal": 0.0801,
+     "ms": 402,
+     "n": 764,
+     "scored_acc": 0.6335,
+     "invalid": 0.0026
+    },
+    "transfer-v4/test": {
+     "acc": 0.6427,
+     "brier": 0.512,
+     "ece_raw": 0.1459,
+     "ece_cal": 0.0691,
+     "ms": 409,
+     "n": 764,
+     "scored_acc": 0.6453,
+     "invalid": 0.0105
+    },
+    "transfer-v9/test": {
+     "acc": 0.5767,
+     "brier": 0.5829,
+     "ece_raw": 0.1681,
+     "ece_cal": 0.0808,
+     "ms": 463,
+     "n": 1264,
+     "scored_acc": 0.5807,
+     "invalid": 0.0316
+    }
+   },
+   "temperature": 1.585,
+   "best_step": 2520,
+   "train_minutes": 451,
+   "trainable_params": 17432576,
+   "by_type_test": {
+    "choice": 0.8362,
+    "noul": 0.9008,
+    "score": 0.6167
+   },
+   "dev_curve": [
+    [
+     360,
+     0.7425
+    ],
+    [
+     720,
+     0.7738
+    ],
+    [
+     1080,
+     0.7868
+    ],
+    [
+     1440,
+     0.8031
+    ],
+    [
+     1800,
+     0.8059
+    ],
+    [
+     2160,
+     0.8025
+    ],
+    [
+     2520,
+     0.8113
+    ],
+    [
+     2880,
+     0.8099
+    ],
+    [
+     2881,
+     0.8093
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 5.11,
+   "min_free_pct": 40,
+   "has_predictions": true
+  },
+  {
+   "id": "20261104-190036-tino-gen-1.7b-s1",
+   "name": "tino-gen-1.7b-s1",
+   "started": "20261104-190036",
+   "smoke": false,
+   "dir": "runs/20261104-190036-tino-gen-1.7b-s1",
+   "code_commit": "32c34a13",
+   "code_dirty": false,
+   "kind": "training",
+   "method": "lora + generation (text)",
+   "base_model": "Qwen/Qwen3-1.7B-Base",
+   "base_revision": "ea980cb0",
+   "seed": 1,
+   "epochs": 2,
+   "train_limit": null,
+   "lora": {
+    "rank": 16,
+    "scale": 2.0,
+    "dropout": 0.05
+   },
+   "alpha": null,
+   "backbone_lr": 0.0001,
+   "brier_weight": null,
+   "status": "finished",
+   "metrics": {
+    "decision-v7/development": {
+     "acc": 0.7343,
+     "brier": 0.3537,
+     "ece_raw": 0.0771,
+     "ece_cal": 0.0417,
+     "ms": 494,
+     "n": 1468,
+     "scored_acc": 0.7405,
+     "invalid": 0.0027
+    },
+    "decision-v7/test": {
+     "acc": 0.7347,
+     "brier": 0.3479,
+     "ece_raw": 0.0679,
+     "ece_cal": 0.0271,
+     "ms": 477,
+     "n": 1440,
+     "scored_acc": 0.7354,
+     "invalid": 0.0007
+    },
+    "transfer-v4/development": {
+     "acc": 0.5759,
+     "brier": 0.5798,
+     "ece_raw": 0.1703,
+     "ece_cal": 0.1179,
+     "ms": 403,
+     "n": 764,
+     "scored_acc": 0.5772,
+     "invalid": 0.0013
+    },
+    "transfer-v4/test": {
+     "acc": 0.5982,
+     "brier": 0.5532,
+     "ece_raw": 0.1451,
+     "ece_cal": 0.1031,
+     "ms": 411,
+     "n": 764,
+     "scored_acc": 0.5982,
+     "invalid": 0.0013
+    },
+    "transfer-v9/test": {
+     "acc": 0.5546,
+     "brier": 0.6098,
+     "ece_raw": 0.1534,
+     "ece_cal": 0.1027,
+     "ms": 463,
+     "n": 1264,
+     "scored_acc": 0.5538,
+     "invalid": 0.019
+    }
+   },
+   "temperature": 1.312,
+   "best_step": 2872,
+   "train_minutes": 464,
+   "trainable_params": 17432576,
+   "by_type_test": {
+    "choice": 0.7141,
+    "noul": 0.869,
+    "score": 0.5167
+   },
+   "dev_curve": [
+    [
+     359,
+     0.7037
+    ],
+    [
+     718,
+     0.7289
+    ],
+    [
+     1077,
+     0.6049
+    ],
+    [
+     1436,
+     0.6866
+    ],
+    [
+     1795,
+     0.686
+    ],
+    [
+     2154,
+     0.7323
+    ],
+    [
+     2513,
+     0.7337
+    ],
+    [
+     2872,
+     0.7343
+    ],
+    [
+     2878,
+     0.733
+    ]
+   ],
+   "collapsed": false,
+   "peak_gb": 5.16,
+   "min_free_pct": 43,
    "has_predictions": true
   }
  ]
