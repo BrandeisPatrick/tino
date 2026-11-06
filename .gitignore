@@ -5,4 +5,4 @@ data/cache/
 checkpoints/
 *.safetensors
 .DS_Store
-queue/
+/queue/

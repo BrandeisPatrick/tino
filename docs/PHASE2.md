@@ -182,3 +182,5 @@ Thinking costs 33.9 s per question against 0.31 s (110 times), with a median of 
 | Tier 3: bf16 control, five 1.7B runs | November 4, 19:00 |
 | Final suite evaluation | November 4, 21:30 |
 | Two 1.7B generative runs (about 13 h each) | November 6, early morning |
+
+**Status, November 5.** Everything in the schedule above finished by November 5 at 03:46, ahead of the estimate because the 1.7B runs took about 6 hours each and the 1.7B generative runs about 8.6. Every job exited cleanly. The size, 1.7B distillation and generative comparisons are tested in [`scripts/seed_compare.py`](../scripts/seed_compare.py) and written up in [RESEARCH.md](../RESEARCH.md). Resolving H1–H6 one by one, including the never-seen-suite evaluation of 23 models for H6, is the next write-up. Current state and next steps: [JOURNAL.md](../JOURNAL.md).

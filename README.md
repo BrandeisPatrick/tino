@@ -12,6 +12,7 @@ The research questions and their answers are in [RESEARCH.md](RESEARCH.md); the 
 | [LESSONS.md](LESSONS.md) | The nine lessons, each with the table behind it |
 | [docs/PHASE2.md](docs/PHASE2.md) | The Phase 2 plan: gaps a reviewer would raise, pre-registered hypotheses, and every planned run priced in hours |
 | [paper/article.md](paper/article.md) | The research article draft: short text, nine figures rendered from the tracked runs by `scripts/figures.py` |
+| [JOURNAL.md](JOURNAL.md) | What we are doing now and why, the next steps, and one entry per working day from October 30 |
 | [docs/TIMELINE.md](docs/TIMELINE.md) | Day-by-day narrative of the project, plus a generated event log of every run start and commit |
 | [runs/INDEX.md](runs/INDEX.md) | Every run: kind, how it ended, key numbers, where its weights are. One directory per run under `runs/` with config, provenance, logs, evals, final results and per-question predictions |
 | [docs/MODELS.md](docs/MODELS.md) | Registry of the published models and datasets, with Hub revisions and how to load them |
